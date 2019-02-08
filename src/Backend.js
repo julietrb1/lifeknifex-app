@@ -1,7 +1,12 @@
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
-const API = '/api';
+let backendUrl = process.env.REACT_APP_BACKEND_URL;
+if (!backendUrl) {
+    throw new Error('REACT_APP_BACKEND_URL not defined');
+}
+
+const API = `${backendUrl}/api/v1`;
 const API_FEATURES = `${API}/features`;
 const API_ACCOUNT = `${API}/account`;
 const API_CONSUMPTION = `${API}/consumption`;
