@@ -1,0 +1,9 @@
+export const APP_TITLE = 'LifeKnifeX';
+export const COLOR_NUTRITION = 'orange';
+export const COLOR_GOALS = 'pink';
+export const COLOR_CAREER = 'purple';
+export const COLOR_MOOD = 'teal';
+export const COLOR_SCORE = 'olive';
+export const COLOR_ACCOUNT = 'yellow';
+export const TIME_FORMAT_STRING = 'h a';
+export const API_FEATURE_REGISTRATION_ENABLED = 'registrationEnabled';

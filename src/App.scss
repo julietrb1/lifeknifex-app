@@ -1,0 +1,53 @@
+@import 'style/colors';
+
+$form-max-width: 400px;
+.main-links > * {
+  font-size: 36px;
+  margin: 20px 0;
+  display: block;
+}
+
+#root {
+  a.nutrition, .nutrition a {
+    color: $orange-primary;
+  }
+
+  a.goals, .goals a {
+    color: $pink-primary;
+  }
+
+  a.career, .career a {
+    color: $violet-primary;
+  }
+
+  a.mood, .mood a {
+    color: $blue-primary;
+  }
+
+  a.score, .score a {
+    color: $green-primary;
+  }
+
+  a.account, .account a {
+    color: $yellow-primary;
+  }
+}
+
+.body-container {
+  padding: 20px;
+}
+
+@mixin restricted-width($max-width) {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: $max-width;
+}
+
+.login, .register {
+  @include restricted-width(300px);
+}
+
+.nutrition-log, .modify-food {
+  @include restricted-width($form-max-width);
+}
+

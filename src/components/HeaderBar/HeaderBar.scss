@@ -1,0 +1,14 @@
+@import '../../style/colors';
+
+.app-title {
+  margin: 10px 0 40px 0;
+
+  .title-text {
+    font-size: 36px;
+    color: $neutral-text;
+  }
+
+  .subtitle {
+    text-transform: uppercase;
+  }
+}
