@@ -1,9 +1,18 @@
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
-let backendUrl = 'https://api.lifeknifex.com';
-if (document.location.hostname === 'lifeknifex-app.herokuapp.com') {
-    backendUrl = 'https://lifeknifex.herokuapp.com';
+
+let backendUrl = '';
+switch (document.location.hostname) {
+    case 'app.lifeknifex.com':
+        backendUrl = process.env.REACT_APP_BACKEND_URL_PROD;
+        break;
+    case 'lifeknifex-app.herokuapp.com':
+        backendUrl = process.env.REACT_APP_BACKEND_URL;
+        break;
+    default:
+        backendUrl = 'http://localhost:3000';
+        break;
 }
 
 const API = `${backendUrl}/api/v1`;
