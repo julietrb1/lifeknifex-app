@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
-let backendUrl = process.env.REACT_APP_BACKEND_URL;
-if (!backendUrl) {
-    throw new Error('REACT_APP_BACKEND_URL not defined');
+let backendUrl = 'https://api.lifeknifex.com';
+if (document.location.hostname === 'lifeknifex-app.herokuapp.com') {
+    backendUrl = 'https://lifeknifex.herokuapp.com';
 }
 
 const API = `${backendUrl}/api/v1`;
