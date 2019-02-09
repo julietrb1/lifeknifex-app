@@ -8,7 +8,7 @@ if (!backendUrl) {
 
 const API = `${backendUrl}/api/v1`;
 const API_FEATURES = `${API}/features`;
-const API_ACCOUNT = `${API}/account`;
+const API_AUTH = `${API}/auth`;
 const API_CONSUMPTION = `${API}/consumption`;
 const API_FOOD = `${API}/food`;
 
@@ -19,7 +19,7 @@ export function getFeature(cancelToken, featureName) {
 
 export function logIn(cancelToken, username, password) {
     return axios
-        .post(`${API_ACCOUNT}/login`, {
+        .post(`${API_AUTH}/login`, {
             username: username,
             password: password
         }, {cancelToken: cancelToken.token})
@@ -28,7 +28,7 @@ export function logIn(cancelToken, username, password) {
 
 export function register(cancelToken, username, password) {
     return axios
-        .post(`${API_ACCOUNT}/register`, {
+        .post(`${API_AUTH}/register`, {
             username: username,
             password: password
         }, {cancelToken: cancelToken.token});
@@ -42,7 +42,7 @@ export function getAccount(cancelToken) {
 }
 
 export function logOut(cancelToken) {
-    return axios.get(`${API_ACCOUNT}/logout`, {cancelToken: cancelToken.token})
+    return axios.get(`${API_AUTH}/logout`, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
