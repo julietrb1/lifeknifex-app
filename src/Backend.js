@@ -37,7 +37,7 @@ export function register(cancelToken, username, password) {
 export function getAccount(cancelToken) {
     return axios
         .get(API, {cancelToken: cancelToken.token})
-        .then(res => res.data.account)
+        .then(res => res.data)
         .catch(() => null);
 }
 

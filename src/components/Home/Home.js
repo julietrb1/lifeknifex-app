@@ -10,8 +10,8 @@ import RequestComponent from '../common/RequestComponent/RequestComponent';
 class Home extends RequestComponent {
     componentDidMount() {
         getAccount(this.cancelToken)
-            .then(account => {
-                if (!account) {
+            .then(res => {
+                if (!res) {
                     this.props.history.replace('/login');
                 }
             });
