@@ -1,7 +1,7 @@
 import React from 'react';
 import HeaderBar from '../HeaderBar/HeaderBar';
 import PropTypes from 'prop-types';
-import {Button, Divider, Form, Input, Message} from 'semantic-ui-react';
+import {Button, Divider, Form, Message} from 'semantic-ui-react';
 import {extractError} from '../../Utils';
 import RequestComponent from '../common/RequestComponent/RequestComponent';
 import {getAccount, getFeature, logIn} from '../../Backend';
@@ -33,9 +33,20 @@ class Login extends RequestComponent {
     }
 
     performLogin = () => {
-        this.setState({
-            loggingIn: true
-        });
+        if (this.state.loggingIn) {
+            return;
+        }
+
+        this.setState({usernameError: !this.state.username});
+        this.setState({passwordError: !this.state.password});
+
+        if (!this.state.username ||
+            !this.state.password) {
+            this.setState({submissionError: ['Username and password required']});
+            return;
+        }
+
+        this.setState({loggingIn: true});
         logIn(this.cancelToken, this.state.username, this.state.password)
             .then(account => {
                 if (account) {
@@ -60,15 +71,17 @@ class Login extends RequestComponent {
             <Form error={!!this.state.submissionError} onSubmit={this.performLogin} loading={this.state.loggingIn}>
                 <Message
                     error
-                    header='Login Failed'
-                    content={this.state.submissionError}/>
-                <Form.Field>
+                    header='Logging In Failed'
+                    list={this.state.submissionError}/>
+                <Form.Field required>
                     <label>Username</label>
-                    <Input name='username' onChange={this.handleChange} value={this.state.username}/>
+                    <Form.Input error={this.state.usernameError} name='username' onChange={this.handleChange}
+                                value={this.state.username}/>
                 </Form.Field>
-                <Form.Field>
+                <Form.Field required>
                     <label>Password</label>
-                    <Input name='password' type='password' onChange={this.handleChange} value={this.state.password}/>
+                    <Form.Input error={this.state.passwordError} name='password' type='password'
+                                onChange={this.handleChange} value={this.state.password}/>
                 </Form.Field>
                 <Button primary type="submit">Log In</Button>
                 <this.RegistrationButton/>
@@ -79,7 +92,7 @@ class Login extends RequestComponent {
     RegistrationButton = () => this.state.isRegistrationEnabled ?
         <Button
             type='button'
-            onClick={() => this.props.history.push('/register')}
+            onClick={() => this.props.history.replace('/register')}
             basic
         >
             No account? Register now.
