@@ -18,8 +18,29 @@ switch (document.location.hostname) {
 const API = `${backendUrl}/api/v1`;
 const API_FEATURES = `${API}/features`;
 const API_AUTH = `${API}/auth`;
-const API_CONSUMPTION = `${API}/consumption`;
-const API_FOOD = `${API}/food`;
+const API_CONSUMPTIONS = `${API}/consumptions`;
+const API_FOODS = `${API}/foods`;
+const API_GOALS = `${API}/goals`;
+
+export function getGoals(cancelToken) {
+    return axios.get(API_GOALS, {cancelToken: cancelToken.token})
+        .then(res => res.data);
+}
+
+export function updateGoal(cancelToken, goal) {
+    return axios.put(`API_GOALS/${goal.id}`, goal, {cancelToken: cancelToken.token})
+        .then(res => res.data);
+}
+
+export function getGoal(cancelToken, goalId) {
+    return axios.get(`API_GOALS/${goalId}`, {cancelToken: cancelToken.token})
+        .then(res => res.data);
+}
+
+export function createGoal(cancelToken, goal) {
+    return axios.post(API_GOALS, goal, {cancelToken: cancelToken.token})
+        .then(res => res.data);
+}
 
 export function getFeature(cancelToken, featureName) {
     return axios.get(`${API_FEATURES}/${featureName}`, {cancelToken: cancelToken.token})
@@ -57,31 +78,31 @@ export function logOut(cancelToken) {
 
 export function getConsumptions(cancelToken) {
     return axios
-        .get(API_CONSUMPTION, {cancelToken: cancelToken.token})
+        .get(API_CONSUMPTIONS, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
 export function getConsumption(cancelToken, consumptionId) {
     return axios
-        .get(`${API_CONSUMPTION}/${consumptionId}`, {cancelToken: cancelToken.token})
+        .get(`${API_CONSUMPTIONS}/${consumptionId}`, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
 export function createConsumption(cancelToken, consumption) {
     return axios
-        .post(API_CONSUMPTION, consumption, {cancelToken: cancelToken.token})
+        .post(API_CONSUMPTIONS, consumption, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
 export function updateConsumption(cancelToken, consumption) {
     return axios
-        .put(`${API_CONSUMPTION}/${consumption.id}`, consumption, {cancelToken: cancelToken.token})
+        .put(`${API_CONSUMPTIONS}/${consumption.id}`, consumption, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
 export function deleteConsumption(cancelToken, consumptionId) {
     return axios
-        .delete(`${API_CONSUMPTION}/${consumptionId}`, {cancelToken: cancelToken.token})
+        .delete(`${API_CONSUMPTIONS}/${consumptionId}`, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
@@ -95,7 +116,7 @@ export function getFoods(cancelToken, search, isArchivedVisible) {
         queryParams.append('archived', '1');
     }
 
-    const url = `${API_FOOD}?${queryParams}`;
+    const url = `${API_FOODS}?${queryParams}`;
     return axios
         .get(url, {cancelToken: cancelToken.token})
         .then(res => res.data);
@@ -103,18 +124,18 @@ export function getFoods(cancelToken, search, isArchivedVisible) {
 
 export function getFood(cancelToken, foodId) {
     return axios
-        .get(`${API_FOOD}/${foodId}`, {cancelToken: cancelToken.token})
+        .get(`${API_FOODS}/${foodId}`, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
 export function updateFood(cancelToken, food) {
     return axios
-        .put(`${API_FOOD}/${food.id}`, food, {cancelToken: cancelToken.token})
+        .put(`${API_FOODS}/${food.id}`, food, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
 export function createFood(cancelToken, food) {
     return axios
-        .post(API_FOOD, food, {cancelToken: cancelToken.token})
+        .post(API_FOODS, food, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
