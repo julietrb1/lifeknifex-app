@@ -1,7 +1,7 @@
 import {Link} from 'react-router-dom';
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Card, Divider, Header} from 'semantic-ui-react';
+import {Button, Card, Divider, Header, Image} from 'semantic-ui-react';
 import * as constants from '../../constants';
 import {APP_TITLE} from '../../constants';
 import {getAccount} from '../../Backend';
@@ -27,54 +27,89 @@ class Home extends RequestComponent {
             />
             <Divider hidden/>
             <Card.Group centered>
-                <Card
-                    header='Nutrition'
-                    image='/img/home_cover_nutrition.svg'
-                    description='Logging what you eat and drink is the first step to becoming healthier, little by little.'
-                    color={constants.COLOR_NUTRITION}
-                    to='/nutrition'
-                    as={Link}
-                />
-                <Card
-                    header='Goals'
-                    image='/img/home_cover_goals.svg'
-                    description='If you have an aspiration to achieve something big in life, start here. Every bit counts.'
-                    color={constants.COLOR_GOALS}
-                    to='/goals'
-                    as={Link}
-                />
-                <Card
-                    header='Career'
-                    image='/img/home_cover_career.svg'
-                    description="If you don't track how well you're doing in your job, how will you see improvement? Start here."
-                    color={constants.COLOR_CAREER}
-                    to='/career'
-                    as={Link}
-                />
-                <Card
-                    header='Mood'
-                    image='/img/home_cover_mood.svg'
-                    description="If there's one thing that counts more than emotions, it's your mood. Don't let it run you over."
-                    color={constants.COLOR_MOOD}
-                    to='/mood'
-                    as={Link}
-                />
-                <Card
-                    header='Score'
-                    image='/img/home_cover_score.svg'
-                    description="There's no reason why organisation shouldn't be fun! Keep track of your progress and success here."
-                    color={constants.COLOR_SCORE}
-                    to='/score'
-                    as={Link}
-                />
-                <Card
-                    header='Account'
-                    image='/img/home_cover_account.svg'
-                    description="Need to log out, or manage your account? Get all of your paperwork and maintenance done here."
-                    color={constants.COLOR_ACCOUNT}
-                    to='/account'
-                    as={Link}
-                />
+                <Card color={constants.COLOR_NUTRITION}>
+                    <Card.Content>
+                        <Image src='/img/home_cover_nutrition.svg'/>
+                        <Card.Header>Nutrition</Card.Header>
+                        <Card.Description>
+                            Logging what you eat and drink is the first step to becoming healthier, little by little.
+                        </Card.Description>
+                    </Card.Content>
+                    <Card.Content extra>
+                        <Button as={Link} to='/nutrition' color={constants.COLOR_NUTRITION}>Visit</Button>
+                        <Button as={Link} to='/nutrition/log' basic>Log</Button>
+                        <Button as={Link} to='/nutrition/library' basic>Library</Button>
+                    </Card.Content>
+                </Card>
+
+                <Card color={constants.COLOR_GOALS}>
+                    <Card.Content>
+                        <Image src='/img/home_cover_goals.svg'/>
+                        <Card.Header>Goals</Card.Header>
+                        <Card.Description>
+                            If you have an aspiration to achieve something big in life, start here. Every bit counts.
+                        </Card.Description>
+                    </Card.Content>
+                    <Card.Content extra>
+                        <Button as={Link} to='/goals' color={constants.COLOR_GOALS}>Visit</Button>
+                    </Card.Content>
+                </Card>
+
+                <Card color={constants.COLOR_CAREER}>
+                    <Card.Content>
+                        <Image src='/img/home_cover_career.svg'/>
+                        <Card.Header>Career</Card.Header>
+                        <Card.Description>
+                            If you don&apos;t track how well you&apos;re doing in your job, how will you see
+                            improvement? Start here.
+                        </Card.Description>
+                    </Card.Content>
+                    <Card.Content extra>
+                        <Button as={Link} to='/career' color={constants.COLOR_CAREER}>Visit</Button>
+                    </Card.Content>
+                </Card>
+
+                <Card color={constants.COLOR_MOOD}>
+                    <Card.Content>
+                        <Image src='/img/home_cover_mood.svg'/>
+                        <Card.Header>Mood</Card.Header>
+                        <Card.Description>
+                            If there&apos;s one thing that counts more than emotions, it&apos;s your mood. Don&apos;t
+                            let it run you over.
+                        </Card.Description>
+                    </Card.Content>
+                    <Card.Content extra>
+                        <Button as={Link} to='/mood' color={constants.COLOR_MOOD}>Visit</Button>
+                    </Card.Content>
+                </Card>
+
+                <Card color={constants.COLOR_SCORE}>
+                    <Card.Content>
+                        <Image src='/img/home_cover_score.svg'/>
+                        <Card.Header>Score</Card.Header>
+                        <Card.Description>
+                            There&apos;s no reason why organisation shouldn&apos;t be fun! Keep track of your progress
+                            and success here.
+                        </Card.Description>
+                    </Card.Content>
+                    <Card.Content extra>
+                        <Button as={Link} to='/score' color={constants.COLOR_SCORE}>Visit</Button>
+                    </Card.Content>
+                </Card>
+
+                <Card color={constants.COLOR_ACCOUNT}>
+                    <Card.Content>
+                        <Image src='/img/home_cover_account.svg'/>
+                        <Card.Header>Account</Card.Header>
+                        <Card.Description>
+                            Need to log out, or manage your account? Get all of your paperwork and maintenance done
+                            here.
+                        </Card.Description>
+                    </Card.Content>
+                    <Card.Content extra>
+                        <Button as={Link} to='/account' color={constants.COLOR_ACCOUNT}>Visit</Button>
+                    </Card.Content>
+                </Card>
             </Card.Group>
         </div>;
     }
