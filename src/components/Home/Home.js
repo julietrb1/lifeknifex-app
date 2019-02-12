@@ -1,7 +1,7 @@
 import {Link} from 'react-router-dom';
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Button, Card, Divider, Header, Image} from 'semantic-ui-react';
+import {Button, Card, Divider, Header, Icon, Image, Label} from 'semantic-ui-react';
 import * as constants from '../../constants';
 import {APP_TITLE} from '../../constants';
 import {getAccount} from '../../Backend';
@@ -17,6 +17,10 @@ class Home extends RequestComponent {
             });
     }
 
+    comingSoonBadge = <Card.Meta><Label><Icon name='gem'/> Coming Soon</Label></Card.Meta>;
+    alphaBadge = <Card.Meta><Label size='small'><Icon name='bug'/> Alpha</Label></Card.Meta>;
+    betaBadge = <Card.Meta><Label size='small'><Icon name='bug'/> Beta</Label></Card.Meta>;
+
     render() {
         document.title = `Home - ${APP_TITLE}`;
         return <div>
@@ -31,6 +35,7 @@ class Home extends RequestComponent {
                     <Card.Content>
                         <Image src='/img/home_cover_nutrition.svg'/>
                         <Card.Header>Nutrition</Card.Header>
+                        <Card.Meta>{this.betaBadge}</Card.Meta>
                         <Card.Description>
                             Logging what you eat and drink is the first step to becoming healthier, little by little.
                         </Card.Description>
@@ -51,7 +56,7 @@ class Home extends RequestComponent {
                         </Card.Description>
                     </Card.Content>
                     <Card.Content extra>
-                        <Button as={Link} to='/goals' color={constants.COLOR_GOALS}>Visit</Button>
+                        {this.comingSoonBadge}
                     </Card.Content>
                 </Card>
 
@@ -65,7 +70,7 @@ class Home extends RequestComponent {
                         </Card.Description>
                     </Card.Content>
                     <Card.Content extra>
-                        <Button as={Link} to='/career' color={constants.COLOR_CAREER}>Visit</Button>
+                        {this.comingSoonBadge}
                     </Card.Content>
                 </Card>
 
@@ -79,7 +84,7 @@ class Home extends RequestComponent {
                         </Card.Description>
                     </Card.Content>
                     <Card.Content extra>
-                        <Button as={Link} to='/mood' color={constants.COLOR_MOOD}>Visit</Button>
+                        {this.comingSoonBadge}
                     </Card.Content>
                 </Card>
 
@@ -93,7 +98,7 @@ class Home extends RequestComponent {
                         </Card.Description>
                     </Card.Content>
                     <Card.Content extra>
-                        <Button as={Link} to='/score' color={constants.COLOR_SCORE}>Visit</Button>
+                        {this.comingSoonBadge}
                     </Card.Content>
                 </Card>
 
@@ -101,6 +106,7 @@ class Home extends RequestComponent {
                     <Card.Content>
                         <Image src='/img/home_cover_account.svg'/>
                         <Card.Header>Account</Card.Header>
+                        <Card.Meta>{this.alphaBadge}</Card.Meta>
                         <Card.Description>
                             Need to log out, or manage your account? Get all of your paperwork and maintenance done
                             here.
