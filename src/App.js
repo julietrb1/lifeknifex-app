@@ -41,7 +41,7 @@ class App extends React.Component {
 
                     <Divider hidden/>
                     <p className="muted">
-                        <small>Image includes content from <a href="https://icons8.com">Icons8</a> used under <a
+                        <small>Images include content from <a href="https://icons8.com">Icons8</a> used under <a
                             href="https://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0</a></small>
                     </p>
                 </Container>
