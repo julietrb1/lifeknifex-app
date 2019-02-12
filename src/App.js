@@ -14,7 +14,7 @@ import Register from "./components/Register/Register";
 import NutritionLog from "./components/NutritionLog/NutritionLog";
 import NutritionLibrary from "./components/NutritionLibrary/NutritionLibrary";
 import ModifyFood from "./components/ModifyFood/ModifyFood";
-import {Container} from "semantic-ui-react";
+import {Container, Divider} from "semantic-ui-react";
 import NewFood from "./components/NewFood/NewFood";
 import ModifyConsumption from "./components/ModifyConsumption/ModifyConsumption";
 
@@ -38,6 +38,12 @@ class App extends React.Component {
                     <Route exact path="/account" component={Account}/>
                     <Route exact path="/login" component={Login}/>
                     <Route exact path="/register" component={Register}/>
+
+                    <Divider hidden/>
+                    <p className="muted">
+                        <small>Image includes content from <a href="https://icons8.com">Icons8</a> used under <a
+                            href="https://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0</a></small>
+                    </p>
                 </Container>
             </Router>
         );

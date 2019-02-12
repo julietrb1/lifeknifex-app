@@ -7,6 +7,10 @@ $form-max-width: 400px;
   display: block;
 }
 
+.muted {
+  color: hsl(0, 0%, 60%);
+}
+
 #root {
   a.nutrition, .nutrition a {
     color: $orange-primary;
