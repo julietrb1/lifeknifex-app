@@ -103,8 +103,6 @@ export function deleteConsumption(cancelToken, consumptionId) {
         .then(res => res.data);
 }
 
-
-
 export function getFood(cancelToken, foodId) {
     return axios
         .get(`${API_FOODS}/${foodId}`, {cancelToken: cancelToken.token})
@@ -113,7 +111,7 @@ export function getFood(cancelToken, foodId) {
 
 export function updateFood(cancelToken, food) {
     return axios
-        .put(`${API_FOODS}/${food.id}`, food, {cancelToken: cancelToken.token})
+        .patch(`${API_FOODS}/${food.id}`, food, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 

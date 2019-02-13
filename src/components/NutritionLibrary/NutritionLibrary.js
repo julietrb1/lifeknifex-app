@@ -46,7 +46,7 @@ class NutritionLibrary extends RequestComponent {
     }
 
     handleChangeArchived = (e, {checked}) => {
-        // this.setState({isArchivedVisible: checked}, this.loadFoods);
+        this.setState({isArchivedVisible: checked}, () => this.props.fetchData(checked));
     };
 
     PageContent = () => {
@@ -101,7 +101,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchData: () => dispatch(foodsFetchAll())
+        fetchData: isArchived => dispatch(foodsFetchAll(null, isArchived))
     };
 };
 
