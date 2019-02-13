@@ -2,7 +2,6 @@ import React from 'react';
 import {BrowserRouter as Router, Route} from "react-router-dom";
 import './App.scss';
 import Nutrition from './components/Nutrition/Nutrition';
-import NutritionHistory from './components/NutritionHistory/NutritionHistory';
 import Goals from './components/Goals/Goals';
 import Career from './components/Career/Career';
 import Mood from './components/Mood/Mood';
@@ -25,7 +24,6 @@ class App extends React.Component {
                 <Container className='body-container'>
                     <Route exact path="/" component={Home}/>
                     <Route exact path="/nutrition" component={Nutrition}/>
-                    <Route exact path="/nutrition/history" component={NutritionHistory}/>
                     <Route exact path="/nutrition/library" component={NutritionLibrary}/>
                     <Route exact path="/nutrition/log" component={NutritionLog}/>
                     <Route exact path="/nutrition/library/new" component={NewFood}/>
