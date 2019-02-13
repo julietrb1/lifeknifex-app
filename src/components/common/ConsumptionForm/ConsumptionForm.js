@@ -6,9 +6,10 @@ import _ from 'lodash';
 import './ConsumptionForm.scss';
 import {withRouter} from 'react-router-dom';
 import {extractError, healthStrings} from '../../../Utils';
-import {createConsumption, deleteConsumption, getConsumption, getFoods, updateConsumption} from '../../../Backend';
+import {createConsumption, deleteConsumption, getConsumption, updateConsumption} from '../../../Backend';
 import RequestComponent from '../RequestComponent/RequestComponent';
 import {TIME_FORMAT_STRING} from '../../../constants';
+import {foodsFetchAll} from "../../../actions/foods";
 
 const generateHours = () => {
     const hours = [];
@@ -252,7 +253,7 @@ class ConsumptionForm extends RequestComponent {
                 return this.resetSearch();
             }
 
-            getFoods(this.cancelToken, this.state.currentFoodSearch).then(foods => {
+            foodsFetchAll(this.cancelToken, this.state.currentFoodSearch).then(foods => {
                 this.setState({
                     searchLoading: false,
                     foodResults: foods.map(food => ({

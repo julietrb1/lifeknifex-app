@@ -1,26 +1,13 @@
 import axios from 'axios';
 import {foodsFetchDataSuccess, foodsHasErrored, foodsIsLoading} from "./actions/foods";
+import {API} from "./constants";
 
 axios.defaults.withCredentials = true;
 
-let backendUrl = '';
-switch (document.location.hostname) {
-    case 'app.lifeknifex.com':
-        backendUrl = process.env.REACT_APP_BACKEND_URL_PROD;
-        break;
-    case 'lifeknifex-app.herokuapp.com':
-        backendUrl = process.env.REACT_APP_BACKEND_URL;
-        break;
-    default:
-        backendUrl = 'http://localhost:3000';
-        break;
-}
-
-const API = `${backendUrl}/api/v1`;
 const API_FEATURES = `${API}/features`;
 const API_AUTH = `${API}/auth`;
 const API_CONSUMPTIONS = `${API}/consumptions`;
-const API_FOODS = `${API}/foods`;
+export const API_FOODS = `${API}/foods`;
 const API_GOALS = `${API}/goals`;
 
 export function getGoals() {
@@ -116,28 +103,7 @@ export function deleteConsumption(cancelToken, consumptionId) {
         .then(res => res.data);
 }
 
-export function getFoods(search, isArchivedVisible) {
-    const params = {};
-    if (search && search.length) {
-        params['search'] = search;
-    }
 
-    if (isArchivedVisible) {
-        params['archived'] = 1;
-    }
-
-    return dispatch => {
-        dispatch(foodsIsLoading(true));
-        axios.get(API_FOODS, {params: params})
-            .then(response => {
-                dispatch(foodsIsLoading(false));
-                return response;
-            })
-            .then(response => response.data)
-            .then(foods => dispatch(foodsFetchDataSuccess(foods)))
-            .catch(() => dispatch(foodsHasErrored(true)));
-    };
-}
 
 export function getFood(cancelToken, foodId) {
     return axios

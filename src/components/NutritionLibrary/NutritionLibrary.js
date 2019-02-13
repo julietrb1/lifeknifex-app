@@ -7,9 +7,9 @@ import Icon from "semantic-ui-react/dist/commonjs/elements/Icon";
 import NutritionLibraryEmpty from "./NutritionLibraryEmpty/NutritionLibraryEmpty";
 import FoodList from "./FoodList/FoodList";
 import RequestComponent from "../common/RequestComponent/RequestComponent";
-import {getFoods} from "../../Backend";
 import {COLOR_NUTRITION} from "../../constants";
 import {connect} from "react-redux";
+import {foodsFetchAll} from "../../actions/foods";
 
 const sections = [
     {name: 'Nutrition', href: '/nutrition'},
@@ -101,7 +101,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchData: () => dispatch(getFoods())
+        fetchData: () => dispatch(foodsFetchAll())
     };
 };
 
