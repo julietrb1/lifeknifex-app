@@ -38,10 +38,19 @@ class App extends React.Component {
                     <Route exact path="/register" component={Register}/>
 
                     <Divider hidden/>
-                    <p className="muted">
-                        <small>Images include content from <a href="https://icons8.com">Icons8</a> used under <a
-                            href="https://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0</a></small>
-                    </p>
+                    <div className="footer">
+                        <a href="https://www.djangoproject.com/fundraising/">
+                            <img src="/img/django-hero.png" alt="Django Hero badge"/>
+                        </a>
+                        <a href="http://www.djangoproject.com/">
+                            <img src="https://www.djangoproject.com/m/img/badges/djangopowered126x54_grey.gif"
+                                 border="0" alt="Powered by Django." title="Powered by Django."/>
+                        </a>
+                        <p>
+                            <small>Images include content from <a href="https://icons8.com">Icons8</a> used under <a
+                                href="https://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0</a></small>
+                        </p>
+                    </div>
                 </Container>
             </Router>
         );

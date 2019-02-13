@@ -11,8 +11,15 @@ $form-max-width: 400px;
   margin: 8px auto 8px;
 }
 
-.muted {
+.footer {
   color: hsl(0, 0%, 60%);
+  text-align: center;
+  margin-top: 40px;
+
+  img {
+    height: 40px;
+    margin-right: 10px;
+  }
 }
 
 #root {
