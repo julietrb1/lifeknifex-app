@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {foodsFetchDataSuccess, foodsHasErrored, foodsIsLoading} from "./actions/foods";
 
 axios.defaults.withCredentials = true;
 
@@ -22,9 +23,18 @@ const API_CONSUMPTIONS = `${API}/consumptions`;
 const API_FOODS = `${API}/foods`;
 const API_GOALS = `${API}/goals`;
 
-export function getGoals(cancelToken) {
-    return axios.get(API_GOALS, {cancelToken: cancelToken.token})
-        .then(res => res.data);
+export function getGoals() {
+    return dispatch => {
+        dispatch(foodsIsLoading(true));
+        axios.get(API_FOODS)
+            .then(response => {
+                dispatch(foodsIsLoading(false));
+                return response;
+            })
+            .then(response => response.data)
+            .then(foods => dispatch(foodsFetchDataSuccess(foods)))
+            .catch(() => dispatch(foodsHasErrored(true)));
+    };
 }
 
 export function updateGoal(cancelToken, goal) {
@@ -106,20 +116,27 @@ export function deleteConsumption(cancelToken, consumptionId) {
         .then(res => res.data);
 }
 
-export function getFoods(cancelToken, search, isArchivedVisible) {
-    const queryParams = new URLSearchParams();
+export function getFoods(search, isArchivedVisible) {
+    const params = {};
     if (search && search.length) {
-        queryParams.append('search', search);
+        params['search'] = search;
     }
 
     if (isArchivedVisible) {
-        queryParams.append('archived', '1');
+        params['archived'] = 1;
     }
 
-    const url = `${API_FOODS}?${queryParams}`;
-    return axios
-        .get(url, {cancelToken: cancelToken.token})
-        .then(res => res.data);
+    return dispatch => {
+        dispatch(foodsIsLoading(true));
+        axios.get(API_FOODS, {params: params})
+            .then(response => {
+                dispatch(foodsIsLoading(false));
+                return response;
+            })
+            .then(response => response.data)
+            .then(foods => dispatch(foodsFetchDataSuccess(foods)))
+            .catch(() => dispatch(foodsHasErrored(true)));
+    };
 }
 
 export function getFood(cancelToken, foodId) {

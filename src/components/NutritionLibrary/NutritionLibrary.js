@@ -9,6 +9,7 @@ import FoodList from "./FoodList/FoodList";
 import RequestComponent from "../common/RequestComponent/RequestComponent";
 import {getFoods} from "../../Backend";
 import {COLOR_NUTRITION} from "../../constants";
+import {connect} from "react-redux";
 
 const sections = [
     {name: 'Nutrition', href: '/nutrition'},
@@ -19,27 +20,12 @@ class NutritionLibrary extends RequestComponent {
     constructor(props) {
         super(props);
         this.state = {
-            foods: [],
-            loading: false,
             isArchivedVisible: false
         };
     }
 
     componentDidMount() {
-        this.loadFoods();
-    }
-
-    loadFoods() {
-        this.setState({
-            loading: true
-        });
-        getFoods(this.cancelToken, null, this.state.isArchivedVisible)
-            .then(foods => {
-                this.setState({
-                    foods: foods,
-                    loading: false
-                });
-            });
+        this.props.fetchData();
     }
 
     render() {
@@ -60,13 +46,13 @@ class NutritionLibrary extends RequestComponent {
     }
 
     handleChangeArchived = (e, {checked}) => {
-        this.setState({isArchivedVisible: checked}, this.loadFoods);
+        // this.setState({isArchivedVisible: checked}, this.loadFoods);
     };
 
     PageContent = () => {
-        if (!this.state.loading && this.state.foods.length) {
-            return <FoodList foods={this.state.foods}/>;
-        } else if (this.state.loading) {
+        if (!this.props.isLoading && this.props.foods.length) {
+            return <FoodList foods={this.props.foods}/>;
+        } else if (this.props.isLoading) {
             return <Placeholder>
                 <Placeholder.Header>
                     <Placeholder.Line/>
@@ -87,7 +73,7 @@ class NutritionLibrary extends RequestComponent {
     };
 
     NewButton = () => {
-        if (this.state.loading || this.state.foods.length) {
+        if (this.props.isLoading || this.props.foods.length) {
             return <Button
                 floated='right'
                 color={COLOR_NUTRITION}
@@ -105,4 +91,18 @@ class NutritionLibrary extends RequestComponent {
     }
 }
 
-export default NutritionLibrary;
+const mapStateToProps = (state) => {
+    return {
+        foods: state.foods,
+        hasErrored: state.foodsHasErrored,
+        isLoading: state.foodsIsLoading
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchData: () => dispatch(getFoods())
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NutritionLibrary);
