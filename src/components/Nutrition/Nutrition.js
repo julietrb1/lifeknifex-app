@@ -7,6 +7,8 @@ import RequestComponent from '../common/RequestComponent/RequestComponent';
 import {Button, Divider, Icon, Placeholder} from 'semantic-ui-react';
 import NutritionHistoryEmpty from './NutritionHistoryEmpty/NutritionHistoryEmpty';
 import {Link} from 'react-router-dom';
+import {COLOR_NUTRITION} from "../../constants";
+import './Nutrition.scss';
 
 const sections = [
     {name: 'Nutrition'}
@@ -35,9 +37,9 @@ class Nutrition extends RequestComponent {
         return <div>
             <BreadcrumbSet sections={sections}/>
             <HeaderBar title="Nutrition" icon='nutrition'/>
-            <div>
-                <this.LibraryButton/>
+            <div className='buttons'>
                 <this.NewButton/>
+                <this.LibraryButton/>
             </div>
             <Divider hidden/>
             <this.PageContent/>
@@ -45,7 +47,6 @@ class Nutrition extends RequestComponent {
     }
 
     LibraryButton = () => <Button
-        floated='right'
         basic
         as={Link}
         to='/nutrition/library'
@@ -59,8 +60,7 @@ class Nutrition extends RequestComponent {
     NewButton = () => {
         if (this.state.loading || this.state.consumptionItems.length) {
             return <Button
-                floated='right'
-                primary
+                color={COLOR_NUTRITION}
                 as={Link}
                 to='/nutrition/log'
                 animated='vertical'>

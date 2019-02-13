@@ -8,6 +8,7 @@ import NutritionLibraryEmpty from "./NutritionLibraryEmpty/NutritionLibraryEmpty
 import FoodList from "./FoodList/FoodList";
 import RequestComponent from "../common/RequestComponent/RequestComponent";
 import {getFoods} from "../../Backend";
+import {COLOR_NUTRITION} from "../../constants";
 
 const sections = [
     {name: 'Nutrition', href: '/nutrition'},
@@ -89,7 +90,7 @@ class NutritionLibrary extends RequestComponent {
         if (this.state.loading || this.state.foods.length) {
             return <Button
                 floated='right'
-                primary
+                color={COLOR_NUTRITION}
                 as={Link}
                 to='/nutrition/library/new'
                 animated='vertical'>
