@@ -68,7 +68,7 @@ class NutritionLibrary extends RequestComponent {
                 </Placeholder.Paragraph>
             </Placeholder>;
         } else {
-            return <NutritionLibraryEmpty/>;
+            return <NutritionLibraryEmpty isArchivedVisible={this.state.isArchivedVisible}/>;
         }
     };
 

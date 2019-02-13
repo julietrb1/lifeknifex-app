@@ -1,20 +1,28 @@
 import React from 'react';
-import {Button, Header, Icon, Segment} from "semantic-ui-react";
+import {Button, Divider, Icon, Image, Segment} from "semantic-ui-react";
 import {Link} from "react-router-dom";
 import {COLOR_NUTRITION} from "../../../constants";
+import PropTypes from 'prop-types';
 
-const NutritionLibraryEmpty = () =>
+const NutritionLibraryEmpty = props =>
     <Segment placeholder>
-    <Header icon>
-        <Icon name='flag outline' />
-        You don&apos;t have any foods yet.
-    </Header>
+        <div className="placeholder-header">
+            <Image src='/img/undraw_pizza_sharing.svg' size='medium'/>
+            <h3>{props.isArchivedVisible
+                ? 'No archived foods for you!'
+                : 'You don\'t have any foods yet.'}</h3>
+        </div>
+        <Divider hidden/>
         <Button animated='vertical' as={Link} to='/nutrition/library/new' color={COLOR_NUTRITION}>
-        <Button.Content visible>Let&apos;s Create One</Button.Content>
-        <Button.Content hidden>
-            <Icon name='plus'/>
-        </Button.Content>
-    </Button>
-</Segment>;
+            <Button.Content visible>Let&apos;s Create One</Button.Content>
+            <Button.Content hidden>
+                <Icon name='plus'/>
+            </Button.Content>
+        </Button>
+    </Segment>;
+
+NutritionLibraryEmpty.propTypes = {
+    isArchivedVisible: PropTypes.boolean
+};
 
 export default NutritionLibraryEmpty;
