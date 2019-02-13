@@ -2,7 +2,6 @@ import React from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import {Button, Confirm, Divider, Dropdown, Form, Input, Message, Search} from 'semantic-ui-react';
-import _ from 'lodash';
 import './ConsumptionForm.scss';
 import {withRouter} from 'react-router-dom';
 import {extractError, healthStrings} from '../../../Utils';
@@ -10,6 +9,7 @@ import {createConsumption, deleteConsumption, getConsumption, updateConsumption}
 import RequestComponent from '../RequestComponent/RequestComponent';
 import {TIME_FORMAT_STRING} from '../../../constants';
 import {foodsFetchAll} from "../../../actions/foods";
+import {connect} from "react-redux";
 
 const generateHours = () => {
     const hours = [];
@@ -53,11 +53,7 @@ class ConsumptionForm extends RequestComponent {
         super(props);
         this.state = {
             ...generateConsumptionInfo(),
-            foods: [],
-            foodResults: [],
             currentFoodSearch: '',
-            searchLoading: false,
-            loading: false,
             submissionMessage: ''
         };
     }
@@ -68,10 +64,6 @@ class ConsumptionForm extends RequestComponent {
             return;
         }
 
-        this.setState({
-            loading: true
-        });
-
         getConsumption(this.cancelToken, this.props.consumptionId)
             .then(consumption => {
                 this.setState({
@@ -80,11 +72,6 @@ class ConsumptionForm extends RequestComponent {
                         food: consumption.food.id
                     },
                     currentFoodSearch: consumption.food.name
-                });
-            })
-            .finally(() => {
-                this.setState({
-                    loading: false
                 });
             });
     }
@@ -104,10 +91,10 @@ class ConsumptionForm extends RequestComponent {
         } else {
             return <Search
                 autoFocus
-                loading={this.state.searchLoading}
+                loading={this.props.isLoading}
                 onResultSelect={this.handleFoodChange}
-                onSearchChange={_.debounce(this.handleSearchChange, 500, {leading: true})}
-                results={this.state.foodResults}
+                onSearchChange={this.handleSearchChange}
+                results={this.props.foods}
                 value={this.state.currentFoodSearch}
             />;
         }
@@ -190,7 +177,14 @@ class ConsumptionForm extends RequestComponent {
     };
 
     handleFormSubmit = () => {
-        this.setState({loading: true});
+        if (this.state.loading) {
+            return;
+        }
+
+        this.setState({
+            loading: true,
+            submissionMessage: ''
+        });
 
         const backEndFunction = this.props.consumptionId ? updateConsumption : createConsumption;
         backEndFunction(this.cancelToken, this.state.consumption)
@@ -240,7 +234,6 @@ class ConsumptionForm extends RequestComponent {
 
     handleSearchChange = (e, {value}) => {
         this.setState(prev => ({
-            searchLoading: true,
             currentFoodSearch: value,
             consumption: {
                 ...prev.consumption,
@@ -248,25 +241,14 @@ class ConsumptionForm extends RequestComponent {
             }
         }));
 
-        setTimeout(() => {
-            if (this.state.currentFoodSearch.length < 1) {
-                return this.resetSearch();
-            }
+        if (value.length < 1) {
+            return this.resetSearch();
+        }
 
-            foodsFetchAll(this.cancelToken, this.state.currentFoodSearch).then(foods => {
-                this.setState({
-                    searchLoading: false,
-                    foodResults: foods.map(food => ({
-                        title: food.name,
-                        id: food.id,
-                        description: healthStrings[food.healthIndex - 1]
-                    }))
-                });
-            }, 300);
-        });
+        this.props.fetchData(value);
     };
 
-    resetSearch = () => this.setState({searchLoading: false, foodResults: [], currentFoodSearch: ''});
+    resetSearch = () => this.setState({currentFoodSearch: ''});
 }
 
 ConsumptionForm.propTypes = {
@@ -274,4 +256,22 @@ ConsumptionForm.propTypes = {
     consumptionId: PropTypes.string
 };
 
-export default withRouter(ConsumptionForm);
+const mapStateToProps = (state) => {
+    return {
+        foods: state.foods.map(food => ({
+            title: food.name,
+            id: food.id,
+            description: healthStrings[food.healthIndex - 1]
+        })),
+        hasErrored: state.foodsHasErrored,
+        isLoading: state.foodsIsLoading
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchData: search => dispatch(foodsFetchAll(search))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ConsumptionForm));
