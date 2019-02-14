@@ -7,7 +7,7 @@ import FoodIcon from "../../common/FoodIcon/FoodIcon";
 
 const FoodList = props => <List relaxed selection>
     {props.foods.map(food =>
-        <List.Item key={food.url} as={Link} to={`/nutrition/library/manage/${food.id}`}>
+        <List.Item key={food.id} as={Link} to={`/nutrition/library/manage/${food.id}`}>
             <FoodIcon health_index={food.health_index}/>
             <List.Content>
                 <List.Header>{food.name}</List.Header>
