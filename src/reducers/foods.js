@@ -16,7 +16,7 @@ export function foodsIsLoading(state = false, action) {
     }
 }
 
-export function foods(state = [], action) {
+export function foods(state = {}, action) {
     switch (action.type) {
         case 'FOODS_FETCH_DATA_SUCCESS':
             return action.foods;

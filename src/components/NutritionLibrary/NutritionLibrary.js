@@ -50,8 +50,8 @@ class NutritionLibrary extends RequestComponent {
     };
 
     PageContent = () => {
-        if (!this.props.isLoading && this.props.foods.length) {
-            return <FoodList foods={this.props.foods}/>;
+        if (!this.props.isLoading && this.props.foods.results && this.props.foods.results.length) {
+            return <FoodList foods={this.props.foods.results}/>;
         } else if (this.props.isLoading) {
             return <Placeholder>
                 <Placeholder.Header>
@@ -73,7 +73,7 @@ class NutritionLibrary extends RequestComponent {
     };
 
     NewButton = () => {
-        if (this.props.isLoading || this.props.foods.length) {
+        if (this.props.isLoading || (this.props.foods.results && this.props.foods.results.length)) {
             return <Button
                 floated='right'
                 color={COLOR_NUTRITION}
