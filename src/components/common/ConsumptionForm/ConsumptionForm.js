@@ -94,7 +94,7 @@ class ConsumptionForm extends RequestComponent {
                 loading={this.props.isLoading}
                 onResultSelect={this.handleFoodChange}
                 onSearchChange={this.handleSearchChange}
-                results={this.props.foods}
+                results={this.props.foodsFormatted}
                 value={this.state.currentFoodSearch}
             />;
         }
@@ -208,7 +208,7 @@ class ConsumptionForm extends RequestComponent {
         this.setState(prevState => ({
             consumption: {
                 ...prevState.consumption,
-                food: data.result.id
+                food: data.result.url
             },
             currentFoodSearch: data.result.title
         }));
@@ -258,10 +258,12 @@ ConsumptionForm.propTypes = {
 
 const mapStateToProps = (state) => {
     return {
-        foods: state.foods.length ? state.foods.map(food => ({
+        foods: state.foods,
+        foodsFormatted: state.foods.results && state.foods.results.length ? state.foods.results.map(food => ({
             title: food.name,
             id: food.id,
-            description: healthStrings[food.health_index - 1]
+            description: healthStrings[food.health_index - 1],
+            url: food.url
         })) : [],
         hasErrored: state.foodsHasErrored,
         isLoading: state.foodsIsLoading
