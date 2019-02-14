@@ -88,7 +88,7 @@ class NutritionLibrary extends RequestComponent {
         } else {
             return null;
         }
-    }
+    };
 }
 
 const mapStateToProps = (state) => {
