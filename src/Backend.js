@@ -135,10 +135,11 @@ export function getAccount(cancelToken) {
 }
 
 export function logOut() {
-    return () => {
+    return new Promise((resolve) => {
         window.localStorage.removeItem(LOCAL_STORAGE_JWT_ACCESS);
         window.localStorage.removeItem(LOCAL_STORAGE_JWT_REFRESH);
-    };
+        resolve();
+    });
 }
 
 export function getConsumptions(cancelToken) {
