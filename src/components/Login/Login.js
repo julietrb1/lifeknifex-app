@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {Button, Divider, Form, Message} from 'semantic-ui-react';
 import {extractError} from '../../Utils';
 import RequestComponent from '../common/RequestComponent/RequestComponent';
-import {ensureLoggedIn, getFeature, logIn} from '../../Backend';
+import {getFeature, logIn} from '../../Backend';
 import {API_FEATURE_REGISTRATION_ENABLED} from '../../constants';
 
 class Login extends RequestComponent {
@@ -20,10 +20,10 @@ class Login extends RequestComponent {
     }
 
     componentDidMount() {
-        this.checkRegistrationEnabled();
-        ensureLoggedIn()
-            .then(() => this.props.history.replace('/'))
-            .catch(() => console.debug('Not logged in'));
+        // this.checkRegistrationEnabled();
+        // ensureLoggedIn()
+        //     .then(() => this.props.history.replace('/'))
+        //     .catch(() => console.debug('Not logged in'));
     }
     performLogin = () => {
         if (this.state.loggingIn) {

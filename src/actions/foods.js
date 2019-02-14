@@ -1,4 +1,5 @@
-import {API_FOODS, instance} from "../Backend";
+import {API_FOODS} from "../Backend";
+import axios from "axios";
 
 export function foodsHasErrored(bool) {
     return {
@@ -33,7 +34,7 @@ export function foodsFetchAll(search, isArchivedVisible) {
 
     return dispatch => {
         dispatch(foodsIsLoading(true));
-        instance.get(API_FOODS, {params: params})
+        axios.get(API_FOODS, {params: params})
             .then(response => {
                 dispatch(foodsIsLoading(false));
                 return response;

@@ -258,11 +258,11 @@ ConsumptionForm.propTypes = {
 
 const mapStateToProps = (state) => {
     return {
-        foods: state.foods.map(food => ({
+        foods: state.foods.length ? state.foods.map(food => ({
             title: food.name,
             id: food.id,
-            description: healthStrings[food.healthIndex - 1]
-        })),
+            description: healthStrings[food.health_index - 1]
+        })) : [],
         hasErrored: state.foodsHasErrored,
         isLoading: state.foodsIsLoading
     };

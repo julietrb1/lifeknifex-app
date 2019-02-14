@@ -6,76 +6,101 @@ const API_FEATURES = `${API}features/`;
 const API_CONSUMPTIONS = `${API}consumptions/`;
 export const API_FOODS = `${API}foods/`;
 const API_GOALS = `${API}goals/`;
-const API_TOKEN = `${API}token/`;
+export const API_TOKEN = `${API}token/`;
 
-export const instance = axios.create({baseURL: API});
-instance.interceptors.request.use(config => ensureLoggedIn(config),
-    console.error);
+axios.defaults.headers.common['Authorization'] = `Bearer ${getAccessToken()}`;
 
-function refreshLogin(refreshToken) {
-    return axios.post(`${API_TOKEN}/refresh/`)
-        .send({refresh: refreshToken})
-        .then(res => {
+// for multiple requests
+let isRefreshing = false;
+let failedQueue = [];
 
-            let accessToken = res.body.access;
-            if (res.statusCode === 200 && accessToken) {
-                window.localStorage.setItem(LOCAL_STORAGE_JWT_ACCESS, accessToken);
-                return accessToken;
-            } else {
-                throw new Error(`Failed to refresh access token - status was ${res.statusCode}`);
-            }
+const processQueue = (error, token = null) => {
+    failedQueue.forEach(prom => {
+        if (error) {
+            prom.reject(error);
+        } else {
+            prom.resolve(token);
+        }
+    });
+
+    failedQueue = [];
+};
+
+axios.interceptors.response.use(function (response) {
+    return response;
+}, function (error) {
+
+    const originalRequest = error.config;
+
+    if (error.response.status === 401 && !originalRequest._retry) {
+
+        if (isRefreshing) {
+            return new Promise(function (resolve, reject) {
+                failedQueue.push({resolve, reject});
+            }).then(accessToken => {
+                originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
+                return axios(originalRequest);
+            }).catch(err => {
+                return err;
+            });
+        }
+
+        originalRequest._retry = true;
+        isRefreshing = true;
+
+        const refreshToken = getRefreshToken();
+        return new Promise(function (resolve, reject) {
+            axios.post(`${API_TOKEN}refresh/`, {refresh: refreshToken})
+                .then(({data}) => {
+
+                    const accessToken = data.access;
+                    setAccessToken(accessToken);
+                    axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+                    originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
+                    processQueue(null, accessToken);
+                    resolve(axios(originalRequest));
+                })
+                .catch((err) => {
+                    processQueue(err, null);
+                    reject(err);
+                })
+                .then(() => {
+                    isRefreshing = false;
+                });
         });
+    }
+
+    return Promise.reject(error);
+});
+
+function getAccessToken() {
+    return window.localStorage.getItem(LOCAL_STORAGE_JWT_ACCESS);
 }
 
-export function ensureLoggedIn(config) {
-    const accessToken = window.localStorage.getItem(LOCAL_STORAGE_JWT_ACCESS);
-    const refreshToken = window.localStorage.getItem(LOCAL_STORAGE_JWT_REFRESH);
-    if (!accessToken && !refreshToken) {
-        return Promise.reject('Not logged in');
-    }
+function setAccessToken(newAccessToken) {
+    window.localStorage.setItem(LOCAL_STORAGE_JWT_ACCESS, newAccessToken);
+}
 
-    if (config) {
-        config.headers['Authorization'] = `Bearer ${accessToken}`;
-        return Promise.resolve(config);
-    } else {
-        return Promise.resolve();
-    }
+function getRefreshToken() {
+    return window.localStorage.getItem(LOCAL_STORAGE_JWT_REFRESH);
+}
 
-    // TODO: Investigate axios not being defined
-    // if (accessToken) {
-    //     axios.post(`${API_TOKEN}/verify/`)
-    //         .send({token: accessToken})
-    //         .then(res => {
-    //             if (res.statusCode === 200) {
-    //                 originalRequest['Authorization'] = accessToken;
-    //                 return Promise.resolve(originalRequest);
-    //             } else if (res.statusCode === 401 && refreshToken) {
-    //                 refreshLogin(refreshToken)
-    //                     .then(() => {
-    //                         originalRequest.headers['Authorization'] =
-    //                             `Bearer ${window.localStorage.getItem(LOCAL_STORAGE_JWT_ACCESS)}`;
-    //                         return Promise.resolve(originalRequest);
-    //                     })
-    //                     .catch(Promise.reject);
-    //             } else {
-    //                 return Promise.reject('Not logged in');
-    //             }
-    //         });
-    // } else {
-    //     refreshLogin(refreshToken)
-    //         .then(() => {
-    //             originalRequest['Authorization'] =
-    //                 `Bearer ${window.localStorage.getItem(LOCAL_STORAGE_JWT_ACCESS)}`;
-    //             return Promise.resolve(originalRequest);
-    //         })
-    //         .catch(Promise.reject);
-    // }
+function setRefreshToken(newRefreshToken) {
+    window.localStorage.setItem(LOCAL_STORAGE_JWT_REFRESH, newRefreshToken);
+}
+
+function clearAccessToken() {
+    window.localStorage.removeItem(LOCAL_STORAGE_JWT_ACCESS);
+}
+
+function clearRefreshToken() {
+    window.localStorage.removeItem(LOCAL_STORAGE_JWT_REFRESH);
 }
 
 export function getGoals() {
     return dispatch => {
         dispatch(foodsIsLoading(true));
-        instance.get(API_FOODS)
+        axios.get(API_FOODS)
             .then(response => {
                 dispatch(foodsIsLoading(false));
                 return response;
@@ -87,17 +112,17 @@ export function getGoals() {
 }
 
 export function updateGoal(cancelToken, goal) {
-    return instance.put(`API_GOALS/${goal.id}`, goal, {cancelToken: cancelToken.token})
+    return axios.put(`${API_GOALS}/${goal.id}`, goal, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
 export function getGoal(cancelToken, goalId) {
-    return instance.get(`API_GOALS/${goalId}`, {cancelToken: cancelToken.token})
+    return axios.get(`${API_GOALS}/${goalId}`, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
 export function createGoal(cancelToken, goal) {
-    return instance.post(API_GOALS, goal, {cancelToken: cancelToken.token})
+    return axios.post(API_GOALS, goal, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
@@ -113,14 +138,14 @@ export function logIn(cancelToken, username, password) {
             password: password
         }, {cancelToken: cancelToken.token})
         .then(res => {
-            window.localStorage.setItem(LOCAL_STORAGE_JWT_ACCESS, res.data.access);
-            window.localStorage.setItem(LOCAL_STORAGE_JWT_REFRESH, res.data.refresh);
+            setAccessToken(res.data.access);
+            setRefreshToken(res.data.refresh);
             return res.data;
         });
 }
 
 export function register(cancelToken, username, password) {
-    // return instance
+    // return axios
     //     .post(`${API_AUTH}register/`, {
     //         username: username,
     //         password: password
@@ -128,7 +153,7 @@ export function register(cancelToken, username, password) {
 }
 
 export function getAccount(cancelToken) {
-    return instance
+    return axios
         .get(API, {cancelToken: cancelToken.token})
         .then(res => res.data)
         .catch(() => null);
@@ -136,56 +161,72 @@ export function getAccount(cancelToken) {
 
 export function logOut() {
     return new Promise((resolve) => {
-        window.localStorage.removeItem(LOCAL_STORAGE_JWT_ACCESS);
-        window.localStorage.removeItem(LOCAL_STORAGE_JWT_REFRESH);
+        clearAccessToken();
+        clearRefreshToken();
         resolve();
     });
 }
 
 export function getConsumptions(cancelToken) {
-    return instance
+    return axios
         .get(API_CONSUMPTIONS, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
 export function getConsumption(cancelToken, consumptionId) {
-    return instance
+    return axios
         .get(`${API_CONSUMPTIONS}${consumptionId}/`, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
 export function createConsumption(cancelToken, consumption) {
-    return instance
+    return axios
         .post(API_CONSUMPTIONS, consumption, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
 export function updateConsumption(cancelToken, consumption) {
-    return instance
+    return axios
         .put(`${API_CONSUMPTIONS}${consumption.id}/`, consumption, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
 export function deleteConsumption(cancelToken, consumptionId) {
-    return instance
+    return axios
         .delete(`${API_CONSUMPTIONS}${consumptionId}/`, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
+export function getFoods(cancelToken, search, isArchivedVisible) {
+    const queryParams = new URLSearchParams();
+    if (search && search.length) {
+        queryParams.append('search', search);
+    }
+
+    if (isArchivedVisible) {
+        queryParams.append('archived', '1');
+    }
+
+    const url = `${API_FOODS}?${queryParams}`;
+    return axios
+        .get(url, {cancelToken: cancelToken.token})
+        .then(res => res.data);
+}
+
 export function getFood(cancelToken, foodId) {
-    return instance
+    return axios
         .get(`${API_FOODS}${foodId}/`, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
 export function updateFood(cancelToken, food) {
-    return instance
+    return axios
         .patch(`${API_FOODS}${food.id}/`, food, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
 export function createFood(cancelToken, food) {
-    return instance
+    return axios
         .post(API_FOODS, food, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }

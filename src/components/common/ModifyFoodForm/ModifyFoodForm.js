@@ -17,7 +17,7 @@ class ModifyFoodForm extends RequestComponent {
         this.state = {
             food: {
                 name: '',
-                healthIndex: 1
+                health_index: 1
             },
             loading: false,
             submissionError: '',
@@ -62,7 +62,7 @@ class ModifyFoodForm extends RequestComponent {
                             label={label}
                             name='healthRadios'
                             value={index + 1}
-                            checked={this.state.food.healthIndex === index + 1}
+                            checked={this.state.food.health_index === index + 1}
                             onChange={this.handleHealthChange}
                         />
                     </Form.Field>
@@ -126,7 +126,7 @@ class ModifyFoodForm extends RequestComponent {
         this.setState(prevState => ({
             food: {
                 ...prevState.food,
-                healthIndex: value
+                health_index: value
             }
         }));
     };

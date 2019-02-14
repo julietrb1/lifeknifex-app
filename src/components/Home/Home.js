@@ -4,15 +4,9 @@ import PropTypes from 'prop-types';
 import {Button, Card, Divider, Header, Icon, Image, Label} from 'semantic-ui-react';
 import * as constants from '../../constants';
 import {APP_TITLE} from '../../constants';
-import {ensureLoggedIn} from '../../Backend';
 import RequestComponent from '../common/RequestComponent/RequestComponent';
 
 class Home extends RequestComponent {
-    componentDidMount() {
-        ensureLoggedIn()
-            .catch(() => this.props.history.replace('/login'));
-    }
-
     comingSoonBadge = <Card.Meta><Label><Icon name='gem'/> Coming Soon</Label></Card.Meta>;
     alphaBadge = <Card.Meta><Label size='small'><Icon name='bug'/> Alpha</Label></Card.Meta>;
     betaBadge = <Card.Meta><Label size='small'><Icon name='bug'/> Beta</Label></Card.Meta>;
