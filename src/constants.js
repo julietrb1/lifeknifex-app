@@ -7,6 +7,8 @@ export const COLOR_SCORE = 'olive';
 export const COLOR_ACCOUNT = 'yellow';
 export const TIME_FORMAT_STRING = 'h a';
 export const API_FEATURE_REGISTRATION_ENABLED = 'registrationEnabled';
+export const LOCAL_STORAGE_JWT_ACCESS = 'jwt-access';
+export const LOCAL_STORAGE_JWT_REFRESH = 'jwt-refresh';
 
 let backendUrl = '';
 switch (document.location.hostname) {
@@ -17,8 +19,8 @@ switch (document.location.hostname) {
         backendUrl = process.env.REACT_APP_BACKEND_URL;
         break;
     default:
-        backendUrl = 'http://localhost:3000';
+        backendUrl = 'http://localhost:8000/';
         break;
 }
 
-export const API = `${backendUrl}/api/v1`;
+export const API = `${backendUrl}`;

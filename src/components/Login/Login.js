@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {Button, Divider, Form, Message} from 'semantic-ui-react';
 import {extractError} from '../../Utils';
 import RequestComponent from '../common/RequestComponent/RequestComponent';
-import {getAccount, getFeature, logIn} from '../../Backend';
+import {ensureLoggedIn, getFeature, logIn} from '../../Backend';
 import {API_FEATURE_REGISTRATION_ENABLED} from '../../constants';
 
 class Login extends RequestComponent {
@@ -21,17 +21,10 @@ class Login extends RequestComponent {
 
     componentDidMount() {
         this.checkRegistrationEnabled();
-        this.checkLoggedIn();
+        ensureLoggedIn()
+            .then(() => this.props.history.replace('/'))
+            .catch(() => console.debug('Not logged in'));
     }
-
-    checkLoggedIn() {
-        getAccount(this.cancelToken).then(account => {
-            if (account) {
-                this.props.history.replace('/');
-            }
-        });
-    }
-
     performLogin = () => {
         if (this.state.loggingIn) {
             return;
@@ -72,7 +65,7 @@ class Login extends RequestComponent {
                 <Message
                     error
                     header='Logging In Failed'
-                    list={this.state.submissionError}/>
+                    content={this.state.submissionError}/>
                 <Form.Field required>
                     <label>Username</label>
                     <Form.Input error={this.state.usernameError} name='username' onChange={this.handleChange}
