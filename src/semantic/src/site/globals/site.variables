@@ -1,0 +1,9 @@
+/*******************************
+     User Global Variables
+*******************************/
+
+@headerFont        : 'Barlow Semi Condensed', sans-serif;
+@pageFont          : 'Barlow', sans-serif;
+@importGoogleFonts : true;
+@googleProtocol    : 'https://';
+@googleFontRequest  : 'Barlow+Semi+Condensed:400,700|Barlow:400,700';
