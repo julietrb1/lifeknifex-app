@@ -8,8 +8,7 @@ import NutritionLibraryEmpty from "./NutritionLibraryEmpty/NutritionLibraryEmpty
 import FoodList from "./FoodList/FoodList";
 import RequestComponent from "../common/RequestComponent/RequestComponent";
 import {COLOR_NUTRITION} from "../../constants";
-import {connect} from "react-redux";
-import {foodsFetchAll} from "../../actions/foods";
+import {getFoods} from "../../Backend";
 
 const sections = [
     {name: 'Nutrition', href: '/nutrition'},
@@ -20,12 +19,27 @@ class NutritionLibrary extends RequestComponent {
     constructor(props) {
         super(props);
         this.state = {
-            isArchivedVisible: false
+            isArchivedVisible: false,
+            isLoading: false,
+            foods: {}
         };
     }
 
     componentDidMount() {
-        this.props.fetchData();
+        this.loadFoods();
+    }
+
+    loadFoods() {
+        this.setState({
+            loading: true
+        });
+        getFoods(this.cancelToken, null, this.state.isArchivedVisible)
+            .then(foods => {
+                this.setState({
+                    foods: foods,
+                    loading: false
+                });
+            });
     }
 
     render() {
@@ -46,13 +60,13 @@ class NutritionLibrary extends RequestComponent {
     }
 
     handleChangeArchived = (e, {checked}) => {
-        this.setState({isArchivedVisible: checked}, () => this.props.fetchData(checked));
+        this.setState({isArchivedVisible: checked}, () => this.loadFoods());
     };
 
     PageContent = () => {
-        if (!this.props.isLoading && this.props.foods.results && this.props.foods.results.length) {
-            return <FoodList foods={this.props.foods.results}/>;
-        } else if (this.props.isLoading) {
+        if (!this.state.isLoading && this.state.foods.results && this.state.foods.results.length) {
+            return <FoodList foods={this.state.foods.results}/>;
+        } else if (this.state.isLoading) {
             return <Placeholder>
                 <Placeholder.Header>
                     <Placeholder.Line/>
@@ -73,7 +87,7 @@ class NutritionLibrary extends RequestComponent {
     };
 
     NewButton = () => {
-        if (this.props.isLoading || (this.props.foods.results && this.props.foods.results.length)) {
+        if (this.state.isLoading || this.state.foods.length) {
             return <Button
                 floated='right'
                 color={COLOR_NUTRITION}
@@ -91,18 +105,4 @@ class NutritionLibrary extends RequestComponent {
     };
 }
 
-const mapStateToProps = (state) => {
-    return {
-        foods: state.foods,
-        hasErrored: state.foodsHasErrored,
-        isLoading: state.foodsIsLoading
-    };
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchData: isArchived => dispatch(foodsFetchAll(null, isArchived))
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(NutritionLibrary);
+export default NutritionLibrary;

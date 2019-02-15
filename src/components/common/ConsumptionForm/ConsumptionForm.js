@@ -5,11 +5,9 @@ import {Button, Confirm, Divider, Dropdown, Form, Input, Message, Search} from '
 import './ConsumptionForm.scss';
 import {withRouter} from 'react-router-dom';
 import {extractError, healthStrings} from '../../../Utils';
-import {createConsumption, deleteConsumption, getConsumption, updateConsumption} from '../../../Backend';
+import {createConsumption, deleteConsumption, getConsumption, getFoods, updateConsumption} from '../../../Backend';
 import RequestComponent from '../RequestComponent/RequestComponent';
 import {TIME_FORMAT_STRING} from '../../../constants';
-import {foodsFetchAll} from "../../../actions/foods";
-import {connect} from "react-redux";
 
 const generateHours = () => {
     const hours = [];
@@ -91,10 +89,10 @@ class ConsumptionForm extends RequestComponent {
         } else {
             return <Search
                 autoFocus
-                loading={this.props.isLoading}
+                loading={this.state.isLoading}
                 onResultSelect={this.handleFoodChange}
                 onSearchChange={this.handleSearchChange}
-                results={this.props.foodsFormatted}
+                results={this.state.foods}
                 value={this.state.currentFoodSearch}
             />;
         }
@@ -245,7 +243,16 @@ class ConsumptionForm extends RequestComponent {
             return this.resetSearch();
         }
 
-        this.props.fetchData(value);
+        getFoods(this.cancelToken, this.state.currentFoodSearch).then(foods => {
+            this.setState({
+                searchLoading: false,
+                foodResults: foods.results.map(food => ({
+                    title: food.name,
+                    id: food.id,
+                    description: healthStrings[food.healthIndex - 1]
+                }))
+            });
+        });
     };
 
     resetSearch = () => this.setState({currentFoodSearch: ''});
@@ -256,24 +263,4 @@ ConsumptionForm.propTypes = {
     consumptionId: PropTypes.string
 };
 
-const mapStateToProps = (state) => {
-    return {
-        foods: state.foods,
-        foodsFormatted: state.foods.results && state.foods.results.length ? state.foods.results.map(food => ({
-            title: food.name,
-            id: food.id,
-            description: healthStrings[food.health_index - 1],
-            url: food.url
-        })) : [],
-        hasErrored: state.foodsHasErrored,
-        isLoading: state.foodsIsLoading
-    };
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchData: search => dispatch(foodsFetchAll(search))
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ConsumptionForm));
+export default withRouter(ConsumptionForm);
