@@ -34,7 +34,7 @@ const ConsumptionList = (props) => {
                             <List.Item key={item.id} as={Link} to={`/nutrition/history/${item.id}`}>
                                 <ConsumptionIcon quantity={item.quantity}/>
                                 <List.Content>
-                                    <List.Header>{item.food.name}</List.Header>
+                                    <List.Header>{item.foodName}</List.Header>
                                     <List.Description>{consumptionSizes[item.quantity - 1]}&emsp;&bull;&emsp;{item.date.format(TIME_FORMAT_STRING)}</List.Description>
                                 </List.Content>
                             </List.Item>

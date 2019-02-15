@@ -9,6 +9,7 @@ import NutritionHistoryEmpty from './NutritionHistoryEmpty/NutritionHistoryEmpty
 import {Link} from 'react-router-dom';
 import {COLOR_NUTRITION} from "../../constants";
 import './Nutrition.scss';
+import axios from 'axios';
 
 const sections = [
     {name: 'Nutrition'}
@@ -26,8 +27,17 @@ class Nutrition extends RequestComponent {
     componentDidMount() {
         getConsumptions(this.cancelToken)
             .then(consumptionItems => {
+                return consumptionItems.results.map(item =>
+                    axios.get(item.food)
+                        .then(itemFood => itemFood.name)
+                        .then(foodName => ({
+                            ...item,
+                            foodName
+                        })));
+            })
+            .then(consumptionItems => {
                 this.setState({
-                    consumptionItems,
+                    consumptionItems: consumptionItems,
                     loading: false
                 });
             });
@@ -81,20 +91,20 @@ class Nutrition extends RequestComponent {
             return <div>
                 <Divider hidden/>
                 <Placeholder>
-                <Placeholder.Header>
-                    <Placeholder.Line/>
-                </Placeholder.Header>
-                <Placeholder.Paragraph>
-                    <Placeholder.Line/>
-                </Placeholder.Paragraph>
-                <Placeholder.Header>
-                    <Placeholder.Line/>
-                </Placeholder.Header>
-                <Placeholder.Paragraph>
-                    <Placeholder.Line/>
-                </Placeholder.Paragraph>
-            </Placeholder>
-                </div>;
+                    <Placeholder.Header>
+                        <Placeholder.Line/>
+                    </Placeholder.Header>
+                    <Placeholder.Paragraph>
+                        <Placeholder.Line/>
+                    </Placeholder.Paragraph>
+                    <Placeholder.Header>
+                        <Placeholder.Line/>
+                    </Placeholder.Header>
+                    <Placeholder.Paragraph>
+                        <Placeholder.Line/>
+                    </Placeholder.Paragraph>
+                </Placeholder>
+            </div>;
         } else {
             return <NutritionHistoryEmpty/>;
         }
