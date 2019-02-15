@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter as Router, Route} from "react-router-dom";
+import {Route, Router} from "react-router-dom";
 import './App.scss';
 import Nutrition from './components/Nutrition/Nutrition';
 import Goals from './components/Goals/Goals';
@@ -16,11 +16,14 @@ import ModifyFood from "./components/ModifyFood/ModifyFood";
 import {Container, Divider} from "semantic-ui-react";
 import NewFood from "./components/NewFood/NewFood";
 import ModifyConsumption from "./components/ModifyConsumption/ModifyConsumption";
+import createBrowserHistory from 'history/createBrowserHistory';
+
+export const history = createBrowserHistory();
 
 class App extends React.Component {
     render() {
         return (
-            <Router>
+            <Router history={history}>
                 <Container className='body-container'>
                     <Route exact path="/" component={Home}/>
                     <Route exact path="/nutrition" component={Nutrition}/>

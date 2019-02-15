@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {foodsFetchDataSuccess, foodsHasErrored, foodsIsLoading} from "./actions/foods";
 import {API, LOCAL_STORAGE_JWT_ACCESS, LOCAL_STORAGE_JWT_REFRESH} from "./constants";
+import {history} from './App';
 
 const API_FEATURES = `${API}features/`;
 const API_CONSUMPTIONS = `${API}consumptions/`;
@@ -32,45 +33,49 @@ axios.interceptors.response.use(function (response) {
 
     const originalRequest = error.config;
 
-    if (error.response.status === 401 && !originalRequest._retry) {
+    if (!error.response || error.response.status !== 401 || originalRequest._retry) {
+        return Promise.reject(error);
+    }
 
-        if (isRefreshing) {
-            return new Promise(function (resolve, reject) {
-                failedQueue.push({resolve, reject});
-            }).then(accessToken => {
-                originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
-                return axios(originalRequest);
-            }).catch(err => {
-                return err;
-            });
-        }
-
-        originalRequest._retry = true;
-        isRefreshing = true;
-
-        const refreshToken = getRefreshToken();
+    if (isRefreshing) {
         return new Promise(function (resolve, reject) {
-            axios.post(`${API_TOKEN}refresh/`, {refresh: refreshToken})
-                .then(({data}) => {
-
-                    const accessToken = data.access;
-                    setAccessToken(accessToken);
-                    axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-                    originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
-                    processQueue(null, accessToken);
-                    resolve(axios(originalRequest));
-                })
-                .catch((err) => {
-                    processQueue(err, null);
-                    reject(err);
-                })
-                .then(() => {
-                    isRefreshing = false;
-                });
+            failedQueue.push({resolve, reject});
+        }).then(accessToken => {
+            originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
+            return axios(originalRequest);
+        }).catch(err => {
+            return err;
         });
     }
 
-    return Promise.reject(error);
+    originalRequest._retry = true;
+    isRefreshing = true;
+
+    const refreshToken = getRefreshToken();
+    return new Promise(function (resolve, reject) {
+        if (!refreshToken) {
+            history.replace('/login');
+            return reject('No refresh token');
+        }
+        axios.post(`${API_TOKEN}refresh/`, {refresh: refreshToken})
+            .then(({data}) => {
+
+                const accessToken = data.access;
+                setAccessToken(accessToken);
+                axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+                originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
+                processQueue(null, accessToken);
+                resolve(axios(originalRequest));
+            })
+            .catch((err) => {
+                processQueue(err, null);
+                history.replace('/login');
+                return reject('No refresh token');
+            })
+            .then(() => {
+                isRefreshing = false;
+            });
+    });
 });
 
 function getAccessToken() {
@@ -204,7 +209,7 @@ export function getFoods(cancelToken, search, isArchivedVisible) {
     }
 
     if (isArchivedVisible) {
-        queryParams.append('archived', '1');
+        queryParams.append('is_archived', 'True');
     }
 
     const url = `${API_FOODS}?${queryParams}`;
