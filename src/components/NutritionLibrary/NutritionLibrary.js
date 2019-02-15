@@ -1,6 +1,6 @@
 import React from 'react';
 import HeaderBar from "../HeaderBar/HeaderBar";
-import {Button, Checkbox, Divider, Placeholder} from "semantic-ui-react";
+import {Button, Checkbox, Divider} from "semantic-ui-react";
 import BreadcrumbSet from "../common/BreadcrumbSet/BreadcrumbSet";
 import {Link} from "react-router-dom";
 import Icon from "semantic-ui-react/dist/commonjs/elements/Icon";
@@ -9,6 +9,8 @@ import FoodList from "./FoodList/FoodList";
 import RequestComponent from "../common/RequestComponent/RequestComponent";
 import {COLOR_NUTRITION} from "../../constants";
 import {getFoods} from "../../Backend";
+import axios from 'axios';
+import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
 
 const sections = [
     {name: 'Nutrition', href: '/nutrition'},
@@ -64,26 +66,46 @@ class NutritionLibrary extends RequestComponent {
     };
 
     PageContent = () => {
-        if (!this.state.isLoading && this.state.foods.results && this.state.foods.results.length) {
-            return <FoodList foods={this.state.foods.results}/>;
+        if (this.state.foods.results && this.state.foods.results.length) {
+            return <div>
+                <FoodList foods={this.state.foods.results}/>
+                <this.LoadMoreButton/>
+            </div>;
         } else if (this.state.isLoading) {
-            return <Placeholder>
-                <Placeholder.Header>
-                    <Placeholder.Line/>
-                </Placeholder.Header>
-                <Placeholder.Paragraph>
-                    <Placeholder.Line/>
-                </Placeholder.Paragraph>
-                <Placeholder.Header>
-                    <Placeholder.Line/>
-                </Placeholder.Header>
-                <Placeholder.Paragraph>
-                    <Placeholder.Line/>
-                </Placeholder.Paragraph>
-            </Placeholder>;
+            return <PlaceholderSet/>;
         } else {
             return <NutritionLibraryEmpty isArchivedVisible={this.state.isArchivedVisible}/>;
         }
+    };
+
+    LoadMoreButton = () => {
+        if (!this.state.isLoading && this.state.foods && this.state.foods.next) {
+            return <Button basic onClick={this.handleLoadMore}>Load More</Button>;
+        } else if (this.state.isLoading && this.state.foods && this.state.foods.results && this.state.foods.results.length) {
+            return <PlaceholderSet/>;
+        } else {
+            return '';
+        }
+    };
+
+    handleLoadMore = () => {
+        if (this.state.isLoading) {
+            return;
+        }
+
+        this.setState({isLoading: true});
+
+        axios.get(this.state.foods.next)
+            .then(res => this.setState(prevState => ({
+                isLoading: false,
+                foods: {
+                    ...res.data,
+                    results: [
+                        ...prevState.foods.results,
+                        ...res.data.results
+                    ]
+                }
+            })));
     };
 
     NewButton = () => {
