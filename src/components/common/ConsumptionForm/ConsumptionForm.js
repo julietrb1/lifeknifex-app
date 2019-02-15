@@ -92,7 +92,7 @@ class ConsumptionForm extends RequestComponent {
                 loading={this.state.isLoading}
                 onResultSelect={this.handleFoodChange}
                 onSearchChange={this.handleSearchChange}
-                results={this.state.foods}
+                results={this.state.foodResults}
                 value={this.state.currentFoodSearch}
             />;
         }
@@ -249,7 +249,8 @@ class ConsumptionForm extends RequestComponent {
                 foodResults: foods.results.map(food => ({
                     title: food.name,
                     id: food.id,
-                    description: healthStrings[food.healthIndex - 1]
+                    description: healthStrings[food.health_index - 1],
+                    url: food.url
                 }))
             });
         });

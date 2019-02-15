@@ -15,6 +15,18 @@ const sections = [
     {name: 'Nutrition'}
 ];
 
+function assignFoodNames(consumptionItems) {
+    return Promise.all(consumptionItems.results.map(item => new Promise(resolve => {
+        axios.get(item.food)
+            .then(res => res.data.name)
+            .then(foodName => ({
+                ...item,
+                foodName
+            }))
+            .then(resolve);
+    })));
+}
+
 class Nutrition extends RequestComponent {
     constructor(props) {
         super(props);
@@ -26,15 +38,7 @@ class Nutrition extends RequestComponent {
 
     componentDidMount() {
         getConsumptions(this.cancelToken)
-            .then(consumptionItems => {
-                return consumptionItems.results.map(item =>
-                    axios.get(item.food)
-                        .then(itemFood => itemFood.name)
-                        .then(foodName => ({
-                            ...item,
-                            foodName
-                        })));
-            })
+            .then(assignFoodNames)
             .then(consumptionItems => {
                 this.setState({
                     consumptionItems: consumptionItems,
