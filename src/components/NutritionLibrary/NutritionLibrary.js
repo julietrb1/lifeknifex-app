@@ -11,6 +11,7 @@ import {COLOR_NUTRITION} from "../../constants";
 import {getFoods} from "../../Backend";
 import axios from 'axios';
 import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
+import './NutritionLibrary.scss';
 
 const sections = [
     {name: 'Nutrition', href: '/nutrition'},
@@ -80,7 +81,9 @@ class NutritionLibrary extends RequestComponent {
 
     LoadMoreButton = () => {
         if (!this.state.isLoading && this.state.foods && this.state.foods.next) {
-            return <Button basic onClick={this.handleLoadMore}>Load More</Button>;
+            return <div className="load-more-container">
+                <Button basic onClick={this.handleLoadMore}>Load More</Button>
+            </div>;
         } else if (this.state.isLoading && this.state.foods && this.state.foods.results && this.state.foods.results.length) {
             return <PlaceholderSet/>;
         } else {
