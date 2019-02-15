@@ -5,6 +5,7 @@ import {Button, Card, Divider, Header, Icon, Image, Label} from 'semantic-ui-rea
 import * as constants from '../../constants';
 import {APP_TITLE} from '../../constants';
 import RequestComponent from '../common/RequestComponent/RequestComponent';
+import './Home.scss';
 
 class Home extends RequestComponent {
     comingSoonBadge = <Card.Meta><Label><Icon name='gem'/> Coming Soon</Label></Card.Meta>;
@@ -23,7 +24,7 @@ class Home extends RequestComponent {
             <Card.Group centered>
                 <Card color={constants.COLOR_NUTRITION}>
                     <Card.Content>
-                        <Image src='/img/home_cover_nutrition.svg'/>
+                        <Image src='/img/undraw_pizza_sharing.svg'/>
                         <Card.Header>Nutrition</Card.Header>
                         <Card.Meta>{this.betaBadge}</Card.Meta>
                         <Card.Description>
@@ -39,7 +40,7 @@ class Home extends RequestComponent {
 
                 <Card color={constants.COLOR_GOALS}>
                     <Card.Content>
-                        <Image src='/img/home_cover_goals.svg'/>
+                        <Image src='/img/undraw_i_can_fly_7egl.svg'/>
                         <Card.Header>Goals</Card.Header>
                         <Card.Description>
                             If you have an aspiration to achieve something big in life, start here. Every bit counts.
@@ -52,7 +53,7 @@ class Home extends RequestComponent {
 
                 <Card color={constants.COLOR_CAREER}>
                     <Card.Content>
-                        <Image src='/img/home_cover_career.svg'/>
+                        <Image src='/img/undraw_career_progress_ivdb.svg'/>
                         <Card.Header>Career</Card.Header>
                         <Card.Description>
                             If you don&apos;t track how well you&apos;re doing in your job, how will you see
@@ -66,7 +67,7 @@ class Home extends RequestComponent {
 
                 <Card color={constants.COLOR_MOOD}>
                     <Card.Content>
-                        <Image src='/img/home_cover_mood.svg'/>
+                        <Image src='/img/undraw_mindfulness_scgo.svg'/>
                         <Card.Header>Mood</Card.Header>
                         <Card.Description>
                             If there&apos;s one thing that counts more than emotions, it&apos;s your mood. Don&apos;t
@@ -80,7 +81,7 @@ class Home extends RequestComponent {
 
                 <Card color={constants.COLOR_SCORE}>
                     <Card.Content>
-                        <Image src='/img/home_cover_score.svg'/>
+                        <Image src='/img/undraw_checking_boxes_2ibd.svg'/>
                         <Card.Header>Score</Card.Header>
                         <Card.Description>
                             There&apos;s no reason why organisation shouldn&apos;t be fun! Keep track of your progress
@@ -94,7 +95,7 @@ class Home extends RequestComponent {
 
                 <Card color={constants.COLOR_ACCOUNT}>
                     <Card.Content>
-                        <Image src='/img/home_cover_account.svg'/>
+                        <Image src='/img/undraw_security_o890.svg'/>
                         <Card.Header>Account</Card.Header>
                         <Card.Meta>{this.alphaBadge}</Card.Meta>
                         <Card.Description>
