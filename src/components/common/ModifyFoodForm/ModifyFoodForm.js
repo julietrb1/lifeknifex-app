@@ -19,7 +19,7 @@ class ModifyFoodForm extends RequestComponent {
                 name: '',
                 health_index: 1
             },
-            loading: false,
+            isLoading: false,
             submissionError: '',
             isArchiveVisible: false,
             isUnarchiveVisible: false
@@ -29,7 +29,7 @@ class ModifyFoodForm extends RequestComponent {
     componentDidMount() {
         if (this.props.foodId) {
             this.setState({
-                loading: true
+                isLoading: true
             });
 
             getFood(this.cancelToken, this.props.foodId)
@@ -40,13 +40,14 @@ class ModifyFoodForm extends RequestComponent {
                     submissionError: extractError(err)
                 }))
                 .finally(() => this.setState({
-                    loading: false
+                    isLoading: false
                 }));
         }
     }
 
     render() {
-        return <div><Form onSubmit={this.handleSave} loading={this.state.loading} error={!!this.state.submissionError}>
+        return <div><Form onSubmit={this.handleSave} loading={this.state.isLoading}
+                          error={!!this.state.submissionError}>
             <ErrorMessage header='Problem While Saving Food' content={this.state.submissionError}/>
             <Form.Field>
                 <label>Name</label>
@@ -107,8 +108,7 @@ class ModifyFoodForm extends RequestComponent {
         this.setState(prevState => ({
             food: {
                 ...prevState.food,
-                isArchived: !prevState.food.isArchived,
-                isArchiveVisible: false
+                is_archived: !prevState.food.is_archived
             }
         }), this.handleSave);
     };
@@ -133,7 +133,7 @@ class ModifyFoodForm extends RequestComponent {
 
     handleSave = () => {
         this.setState({
-            loading: true
+            isLoading: true
         });
 
         const backendFunction = this.props.foodId ? updateFood : createFood;
@@ -143,7 +143,7 @@ class ModifyFoodForm extends RequestComponent {
             .catch(err => this.setState({
                 submissionError: extractError(err)
             })).finally(() => this.setState({
-            loading: false
+            isLoading: false
         }));
 
     };

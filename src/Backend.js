@@ -208,9 +208,7 @@ export function getFoods(cancelToken, search, isArchivedVisible) {
         queryParams.append('search', search);
     }
 
-    if (isArchivedVisible) {
-        queryParams.append('is_archived', 'True');
-    }
+    queryParams.append('is_archived', isArchivedVisible);
 
     const url = `${API_FOODS}?${queryParams}`;
     return axios
