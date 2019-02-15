@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import {Button, Confirm, Divider, Dropdown, Form, Input, Message, Search} from 'semantic-ui-react';
+import {Button, Confirm, Divider, Dropdown, Form, Input, Message, Radio, Search} from 'semantic-ui-react';
 import './ConsumptionForm.scss';
 import {withRouter} from 'react-router-dom';
 import {extractError, healthStrings} from '../../../Utils';
@@ -130,12 +130,17 @@ class ConsumptionForm extends RequestComponent {
                 </Form.Field>
                 <Form.Field>
                     <label>Quantity</label>
-                    <Dropdown
-                        selection
-                        options={quantities}
-                        onChange={this.handleQuantityChange}
-                        value={this.state.consumption.quantity}/>
                 </Form.Field>
+                {quantities.map(qty =>
+                    <Form.Field key={qty.value}>
+                        <Radio
+                            label={qty.text}
+                            name='quantity'
+                            value={qty.value}
+                            checked={this.state.consumption.quantity === qty.value}
+                            onChange={this.handleQuantityChange}
+                        />
+                    </Form.Field>)}
                 <Divider hidden/>
                 <Button.Group>
                     <Button type='button' onClick={this.props.history.goBack}>Back</Button>
