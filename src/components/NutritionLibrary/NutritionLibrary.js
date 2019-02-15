@@ -31,13 +31,13 @@ class NutritionLibrary extends RequestComponent {
 
     loadFoods() {
         this.setState({
-            loading: true
+            isLoading: true
         });
         getFoods(this.cancelToken, null, this.state.isArchivedVisible)
             .then(foods => {
                 this.setState({
                     foods: foods,
-                    loading: false
+                    isLoading: false
                 });
             });
     }
