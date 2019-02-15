@@ -62,7 +62,6 @@ axios.interceptors.response.use(function (response) {
 
                 const accessToken = data.access;
                 setAccessToken(accessToken);
-                axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
                 originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
                 processQueue(null, accessToken);
                 resolve(axios(originalRequest));
@@ -83,6 +82,7 @@ function getAccessToken() {
 }
 
 function setAccessToken(newAccessToken) {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
     window.localStorage.setItem(LOCAL_STORAGE_JWT_ACCESS, newAccessToken);
 }
 
