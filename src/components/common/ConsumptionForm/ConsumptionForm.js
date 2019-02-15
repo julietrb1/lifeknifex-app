@@ -117,7 +117,7 @@ class ConsumptionForm extends RequestComponent {
                 error={!!this.state.submissionError}
                 loading={this.state.loading}
                 onSubmit={this.handleFormSubmit}>
-                <Message error header='Problem While Logging' content={this.state.submissionError}/>
+                <Message error header='Problem While Logging' list={this.state.submissionError}/>
                 <this.SubmissionMessage/>
                 <Form.Field>
                     <label>Food</label>

@@ -12,6 +12,9 @@ export const extractError = err => {
         return [err.message];
     }
     const data = err.response.data;
+    if (data.non_field_errors && Array.isArray(data.non_field_errors)) {
+        return data.non_field_errors;
+    }
     if (data.message) {
         return [data.message];
     } else if (data.errors && typeof Array.isArray(data.errors) && data.errors.length) {
