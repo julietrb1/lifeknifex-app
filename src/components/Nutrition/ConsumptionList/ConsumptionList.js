@@ -51,6 +51,7 @@ const ConsumptionList = (props) => {
                             </Card>
                         )}
                     </Card.Group>
+                    <Divider hidden/>
                 </div>
             )
         }
