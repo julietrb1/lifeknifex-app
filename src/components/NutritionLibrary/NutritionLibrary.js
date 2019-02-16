@@ -120,7 +120,7 @@ class NutritionLibrary extends RequestComponent {
     };
 
     NewButton = () => {
-        if (this.state.isLoading || (this.state.foods.results && this.state.foods.results.length)) {
+        if (this.state.isLoading || this.state.isArchivedVisible || (this.state.foods.results && this.state.foods.results.length)) {
             return <Button
                 floated='right'
                 color={COLOR_NUTRITION}

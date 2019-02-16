@@ -10,12 +10,14 @@ const NutritionLibraryEmpty = props =>
         <h3>{props.isArchivedVisible
                 ? 'No archived foods for you!'
                 : 'You don\'t have any foods yet.'}</h3>
-        <Button animated='vertical' as={Link} to='/nutrition/library/new' color={COLOR_NUTRITION}>
-            <Button.Content visible>Let&apos;s Create One</Button.Content>
-            <Button.Content hidden>
-                <Icon name='plus'/>
-            </Button.Content>
-        </Button>
+        {props.isArchivedVisible ?
+            null :
+            <Button animated='vertical' as={Link} to='/nutrition/library/new' color={COLOR_NUTRITION}>
+                <Button.Content visible>Let&apos;s Create One</Button.Content>
+                <Button.Content hidden>
+                    <Icon name='plus'/>
+                </Button.Content>
+            </Button>}
     </Segment>;
 
 NutritionLibraryEmpty.propTypes = {
