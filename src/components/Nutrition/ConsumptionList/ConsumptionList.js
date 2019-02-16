@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from "moment";
 import PropTypes from "prop-types";
-import {Card, Divider, Header} from "semantic-ui-react";
+import {Card, Divider, Header, Label} from "semantic-ui-react";
 import {consumptionSizes} from "../../../Utils";
 import {Link} from "react-router-dom";
 import {COLOR_NUTRITION, TIME_FORMAT_STRING} from "../../../constants";
@@ -44,7 +44,9 @@ const ConsumptionList = (props) => {
                                 <Card.Content>
                                     <FoodImage icon={item.food.icon}/>
                                     <Card.Header>{item.food.name}</Card.Header>
-                                    <Card.Meta>{consumptionSizes[item.quantity - 1]}&emsp;&bull;&emsp;{item.date.format(TIME_FORMAT_STRING)}</Card.Meta>
+                                    <Card.Meta><Label
+                                        size='small'>{consumptionSizes[item.quantity - 1]}</Label>&emsp;{item.date.format(TIME_FORMAT_STRING)}
+                                    </Card.Meta>
                                 </Card.Content>
                             </Card>
                         )}
