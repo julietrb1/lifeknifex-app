@@ -32,9 +32,24 @@ class Home extends RequestComponent {
                         </Card.Description>
                     </Card.Content>
                     <Card.Content extra>
-                        <Button as={Link} to='/nutrition' color={constants.COLOR_NUTRITION}>Visit</Button>
-                        <Button as={Link} to='/nutrition/log' basic>Log</Button>
-                        <Button as={Link} to='/nutrition/library' basic>Library</Button>
+                        <Button animated='vertical' as={Link} to='/nutrition' color={constants.COLOR_NUTRITION}>
+                            <Button.Content visible>Visit</Button.Content>
+                            <Button.Content hidden>
+                                <Icon name='food'/>
+                            </Button.Content>
+                        </Button>
+                        <Button animated='vertical' as={Link} to='/nutrition/log' basic>
+                            <Button.Content visible>Log</Button.Content>
+                            <Button.Content hidden>
+                                <Icon name='plus'/>
+                            </Button.Content>
+                        </Button>
+                        <Button animated='vertical' as={Link} to='/nutrition/library' basic>
+                            <Button.Content visible>Library</Button.Content>
+                            <Button.Content hidden>
+                                <Icon name='book'/>
+                            </Button.Content>
+                        </Button>
                     </Card.Content>
                 </Card>
 
