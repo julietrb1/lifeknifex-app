@@ -8,6 +8,7 @@ import {extractError, healthStrings} from '../../../Utils';
 import {createConsumption, deleteConsumption, getConsumption, getFoods, updateConsumption} from '../../../Backend';
 import RequestComponent from '../RequestComponent/RequestComponent';
 import {TIME_FORMAT_STRING} from '../../../constants';
+import axios from 'axios';
 
 const generateHours = () => {
     const hours = [];
@@ -52,7 +53,8 @@ class ConsumptionForm extends RequestComponent {
         this.state = {
             ...generateConsumptionInfo(),
             currentFoodSearch: '',
-            submissionMessage: ''
+            submissionMessage: '',
+            isLoading: false
         };
     }
 
@@ -62,16 +64,19 @@ class ConsumptionForm extends RequestComponent {
             return;
         }
 
+        this.setState({isLoading: true});
+
         getConsumption(this.cancelToken, this.props.consumptionId)
             .then(consumption => {
-                this.setState({
-                    consumption: {
-                        ...consumption,
-                        food: consumption.food.id
-                    },
-                    currentFoodSearch: consumption.food.name
-                });
-            });
+                this.setState({consumption});
+                return consumption;
+            })
+            .then(consumption => axios.get(consumption.food))
+            .then(res => this.setState({
+                food: res.data,
+                isLoading: false,
+                currentFoodSearch: res.data.name
+            }));
     }
 
     SubmissionMessage = () => this.state.submissionMessage ?
@@ -115,7 +120,7 @@ class ConsumptionForm extends RequestComponent {
         return <div>
             <Form
                 error={!!this.state.submissionError}
-                loading={this.state.loading}
+                loading={this.state.isLoading}
                 onSubmit={this.handleFormSubmit}>
                 <Message error header='Problem While Logging' list={this.state.submissionError}/>
                 <this.SubmissionMessage/>
@@ -169,23 +174,23 @@ class ConsumptionForm extends RequestComponent {
 
     handleDelete = () => {
         this.setState({
-            loading: true,
+            isLoading: true,
             isDeleteVisible: false
         });
 
         deleteConsumption(this.cancelToken, this.props.consumptionId)
             .then(this.props.history.goBack)
             .catch(err => this.setState({submissionError: extractError(err)}))
-            .finally(() => this.setState({loading: false}));
+            .finally(() => this.setState({isLoading: false}));
     };
 
     handleFormSubmit = () => {
-        if (this.state.loading) {
+        if (this.state.isLoading) {
             return;
         }
 
         this.setState({
-            loading: true,
+            isLoading: true,
             submissionMessage: ''
         });
 
@@ -204,7 +209,7 @@ class ConsumptionForm extends RequestComponent {
                 }
             })
             .catch(err => this.setState({submissionError: extractError(err)}))
-            .finally(() => this.setState({loading: false}));
+            .finally(() => this.setState({isLoading: false}));
     };
 
     handleFoodChange = (e, data) => {
