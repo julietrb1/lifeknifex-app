@@ -5,7 +5,7 @@ import {Link} from "react-router-dom";
 import {healthStrings} from "../../../Utils";
 import {COLOR_NUTRITION} from "../../../constants";
 
-const FoodList = props => <Card.Group>
+const FoodList = props => <Card.Group centered>
     {props.foods.map(food =>
         <Card key={food.id}>
             <Card.Content>

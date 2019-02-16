@@ -4,12 +4,20 @@ import './ModifyFoodForm.scss';
 import {createFood, getFood, updateFood} from '../../../Backend';
 import {Link, withRouter} from 'react-router-dom';
 import {extractError, healthStrings} from '../../../Utils';
-import {Button, Confirm, Divider, Form, Radio} from 'semantic-ui-react';
+import {Button, Confirm, Divider, Dropdown, Form, Radio} from 'semantic-ui-react';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import RequestComponent from '../RequestComponent/RequestComponent';
 import {APP_TITLE} from '../../../constants';
 
 const URL_NUTRITION_LIBRARY = '/nutrition/library';
+
+const icons = [
+    'Avocado', 'Bacon', 'Banana', 'Beef', 'Carrot', 'Cheese', 'Chicken', 'Mushroom'
+].map(iconText => ({
+    text: iconText,
+    value: iconText.toLowerCase().replace(/ /g, '_'),
+    image: `/img/food_icons/${iconText.toLowerCase().replace(/ /g, '_')}.svg`
+}));
 
 class ModifyFoodForm extends RequestComponent {
     constructor(props) {
@@ -17,7 +25,8 @@ class ModifyFoodForm extends RequestComponent {
         this.state = {
             food: {
                 name: '',
-                health_index: 1
+                health_index: 1,
+                icon: ''
             },
             isLoading: false,
             submissionError: '',
@@ -69,6 +78,14 @@ class ModifyFoodForm extends RequestComponent {
                     </Form.Field>
                 )
             }
+            <Form.Field>
+                <label>Icon</label>
+                <Dropdown search clearable
+                          selection
+                          options={icons}
+                          onChange={this.handleIconChange}
+                          value={this.state.food.icon}/>
+            </Form.Field>
             <Divider hidden/>
             <Button.Group>
                 <Button as={Link} to={URL_NUTRITION_LIBRARY}>Cancel</Button>
@@ -118,6 +135,15 @@ class ModifyFoodForm extends RequestComponent {
             food: {
                 ...prevState.food,
                 name: value
+            }
+        }));
+    };
+
+    handleIconChange = (e, {value}) => {
+        this.setState(prevState => ({
+            food: {
+                ...prevState.food,
+                icon: value
             }
         }));
     };

@@ -70,6 +70,7 @@ class NutritionLibrary extends RequestComponent {
         if (this.state.foods.results && this.state.foods.results.length) {
             return <div>
                 <FoodList foods={this.state.foods.results}/>
+                <Divider hidden/>
                 <this.LoadMoreButton/>
             </div>;
         } else if (this.state.isLoading) {
