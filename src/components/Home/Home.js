@@ -119,7 +119,12 @@ class Home extends RequestComponent {
                         </Card.Description>
                     </Card.Content>
                     <Card.Content extra>
-                        <Button as={Link} to='/account' color={constants.COLOR_ACCOUNT}>Visit</Button>
+                        <Button animated='vertical' as={Link} to='/account' color={constants.COLOR_ACCOUNT}>
+                            <Button.Content visible>Visit</Button.Content>
+                            <Button.Content hidden>
+                                <Icon name='user'/>
+                            </Button.Content>
+                        </Button>
                     </Card.Content>
                 </Card>
             </Card.Group>
