@@ -16,12 +16,8 @@ const FoodList = props => <Card.Group>
             </Card.Content>
             <Card.Content extra>
                 <div>
-                    <Button basic color={COLOR_NUTRITION}>
-                        Log
-                    </Button>
-                    <Button basic as={Link} to={`/nutrition/library/manage/${food.id}`}>
-                        Edit
-                    </Button>
+                    <Button size='tiny' basic color={COLOR_NUTRITION}>Log</Button>
+                    <Button size='tiny' basic as={Link} to={`/nutrition/library/manage/${food.id}`}>Edit</Button>
                 </div>
             </Card.Content>
         </Card>
