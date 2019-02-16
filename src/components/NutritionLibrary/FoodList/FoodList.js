@@ -1,17 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Button, Card, Image} from "semantic-ui-react";
+import {Button, Card} from "semantic-ui-react";
 import {Link} from "react-router-dom";
 import {healthStrings} from "../../../Utils";
 import {COLOR_NUTRITION} from "../../../constants";
+import FoodImage from "../../common/FoodImage/FoodImage";
 
 const FoodList = props => <Card.Group centered>
     {props.foods.map(food =>
         <Card key={food.id}>
             <Card.Content>
-                {food.icon ?
-                    <Image floated='right' size='mini' src={`/img/food_icons/${food.icon}.svg`}/>
-                    : ''}
+                <FoodImage icon={food.icon}/>
                 <Card.Header>{food.name}</Card.Header>
                 <Card.Meta>{healthStrings[food.health_index - 1]}</Card.Meta>
             </Card.Content>

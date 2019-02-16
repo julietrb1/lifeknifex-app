@@ -1,11 +1,11 @@
 import React from 'react';
 import moment from "moment";
 import PropTypes from "prop-types";
-import {Divider, Header, List} from "semantic-ui-react";
+import {Card, Divider, Header} from "semantic-ui-react";
 import {consumptionSizes} from "../../../Utils";
-import ConsumptionIcon from "../../common/ConsumptionIcon/ConsumptionIcon";
 import {Link} from "react-router-dom";
 import {TIME_FORMAT_STRING} from "../../../constants";
+import FoodImage from "../../common/FoodImage/FoodImage";
 
 const ConsumptionList = (props) => {
     const consumptionItems = props.consumptionItems.map(item => {
@@ -29,17 +29,17 @@ const ConsumptionList = (props) => {
                     <Divider hidden/>
                     <Header sub>{moment(dateString).format('ddd D MMM gg')}</Header>
                     <Divider hidden/>
-                    <List relaxed selection>
+                    <Card.Group>
                         {consumptionItemsByDate[dateString].map(item =>
-                            <List.Item key={item.id} as={Link} to={`/nutrition/history/${item.id}`}>
-                                <ConsumptionIcon quantity={item.quantity}/>
-                                <List.Content>
-                                    <List.Header>{item.foodName}</List.Header>
-                                    <List.Description>{consumptionSizes[item.quantity - 1]}&emsp;&bull;&emsp;{item.date.format(TIME_FORMAT_STRING)}</List.Description>
-                                </List.Content>
-                            </List.Item>
+                            <Card key={item.id} as={Link} to={`/nutrition/history/${item.id}`}>
+                                <Card.Content>
+                                    <FoodImage icon={item.food.icon}/>
+                                    <Card.Header>{item.food.name}</Card.Header>
+                                    <Card.Meta>{consumptionSizes[item.quantity - 1]}&emsp;&bull;&emsp;{item.date.format(TIME_FORMAT_STRING)}</Card.Meta>
+                                </Card.Content>
+                            </Card>
                         )}
-                    </List>
+                    </Card.Group>
                 </div>
             )
         }
