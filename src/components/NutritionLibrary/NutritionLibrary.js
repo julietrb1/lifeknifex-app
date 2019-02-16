@@ -83,12 +83,19 @@ class NutritionLibrary extends RequestComponent {
     LoadMoreButton = () => {
         if (!this.state.isLoading && this.state.foods && this.state.foods.next) {
             return <div className="load-more-container">
-                <Button basic onClick={this.handleLoadMore}>Load More</Button>
+                <Button basic
+                        onClick={this.handleLoadMore}
+                        animated='vertical'>
+                    <Button.Content visible>Load More</Button.Content>
+                    <Button.Content hidden>
+                        <Icon name='arrow down'/>
+                    </Button.Content>
+                </Button>
             </div>;
         } else if (this.state.isLoading && this.state.foods && this.state.foods.results && this.state.foods.results.length) {
             return <PlaceholderSet/>;
         } else {
-            return '';
+            return <div className="load-more-container"><Button disabled basic>All Foods loaded</Button></div>;
         }
     };
 
