@@ -1,21 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {List} from "semantic-ui-react";
+import {Button, Card, Image} from "semantic-ui-react";
 import {Link} from "react-router-dom";
 import {healthStrings} from "../../../Utils";
-import FoodIcon from "../../common/FoodIcon/FoodIcon";
+import {COLOR_NUTRITION} from "../../../constants";
 
-const FoodList = props => <List relaxed selection>
+const FoodList = props => <Card.Group>
     {props.foods.map(food =>
-        <List.Item key={food.id} as={Link} to={`/nutrition/library/manage/${food.id}`}>
-            <FoodIcon healthIndex={food.health_index}/>
-            <List.Content>
-                <List.Header>{food.name}</List.Header>
-                <List.Description>{healthStrings[food.health_index - 1]}</List.Description>
-            </List.Content>
-        </List.Item>
+        <Card key={food.id}>
+            <Card.Content>
+                {food.icon ?
+                    <Image floated='right' size='mini' src={`/img/food_icons/${food.icon}.svg`}/>
+                    : ''}
+                <Card.Header>{food.name}</Card.Header>
+                <Card.Meta>{healthStrings[food.health_index - 1]}</Card.Meta>
+            </Card.Content>
+            <Card.Content extra>
+                <div>
+                    <Button basic color={COLOR_NUTRITION}>
+                        Log
+                    </Button>
+                    <Button basic as={Link} to={`/nutrition/library/manage/${food.id}`}>
+                        Edit
+                    </Button>
+                </div>
+            </Card.Content>
+        </Card>
     )}
-</List>;
+</Card.Group>;
 
 FoodList.propTypes = {
     foods: PropTypes.array.isRequired
