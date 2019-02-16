@@ -110,10 +110,10 @@ class ModifyFoodForm extends RequestComponent {
     }
 
     SetArchivedButton = () => {
-        if (this.state.food.id && !this.state.food.isArchived) {
+        if (this.state.food.id && !this.state.food.is_archived) {
             return <Button type='button' basic floated='right' color='red'
                            onClick={() => this.setState({isArchiveVisible: true})}>Archive</Button>;
-        } else if (this.state.food.id && this.state.food.isArchived) {
+        } else if (this.state.food.id && this.state.food.is_archived) {
             return <Button type='button' basic floated='right'
                            onClick={() => this.setState({isUnarchiveVisible: true})}>Unarchive</Button>;
         } else {
