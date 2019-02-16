@@ -6,7 +6,7 @@ import {healthStrings} from "../../../Utils";
 import {COLOR_NUTRITION} from "../../../constants";
 import FoodImage from "../../common/FoodImage/FoodImage";
 
-const FoodList = props => <Card.Group centered>
+const FoodList = props => <Card.Group>
     {props.foods.map(food =>
         <Card key={food.id}>
             <Card.Content>
