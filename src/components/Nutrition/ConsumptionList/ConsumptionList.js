@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import {Card, Divider, Header} from "semantic-ui-react";
 import {consumptionSizes} from "../../../Utils";
 import {Link} from "react-router-dom";
-import {TIME_FORMAT_STRING} from "../../../constants";
+import {COLOR_NUTRITION, TIME_FORMAT_STRING} from "../../../constants";
 import FoodImage from "../../common/FoodImage/FoodImage";
 
 const ConsumptionList = (props) => {
@@ -40,7 +40,7 @@ const ConsumptionList = (props) => {
                     <Divider hidden/>
                     <Card.Group>
                         {consumptionItemsByDate[dateString].map(item =>
-                            <Card key={item.id} as={Link} to={`/nutrition/history/${item.id}`}>
+                            <Card key={item.id} as={Link} to={`/nutrition/history/${item.id}`} color={COLOR_NUTRITION}>
                                 <Card.Content>
                                     <FoodImage icon={item.food.icon}/>
                                     <Card.Header>{item.food.name}</Card.Header>

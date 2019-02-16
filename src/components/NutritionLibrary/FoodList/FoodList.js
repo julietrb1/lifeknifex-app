@@ -8,7 +8,7 @@ import FoodImage from "../../common/FoodImage/FoodImage";
 
 const FoodList = props => <Card.Group>
     {props.foods.map(food =>
-        <Card key={food.id}>
+        <Card key={food.id} color={COLOR_NUTRITION}>
             <Card.Content>
                 <FoodImage icon={food.icon}/>
                 <Card.Header>{food.name}</Card.Header>
