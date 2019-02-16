@@ -5,7 +5,14 @@ import {Button, Confirm, Divider, Dropdown, Form, Input, Message, Radio, Search}
 import './ConsumptionForm.scss';
 import {withRouter} from 'react-router-dom';
 import {extractError, healthStrings} from '../../../Utils';
-import {createConsumption, deleteConsumption, getConsumption, getFoods, updateConsumption} from '../../../Backend';
+import {
+    createConsumption,
+    deleteConsumption,
+    getConsumption,
+    getFood,
+    getFoods,
+    updateConsumption
+} from '../../../Backend';
 import RequestComponent from '../RequestComponent/RequestComponent';
 import {TIME_FORMAT_STRING} from '../../../constants';
 import axios from 'axios';
@@ -60,23 +67,40 @@ class ConsumptionForm extends RequestComponent {
 
     componentDidMount() {
         this.resetSearch();
-        if (!this.props.consumptionId) {
+        if (!this.props.consumptionId && !this.props.location.search) {
             return;
         }
 
         this.setState({isLoading: true});
 
-        getConsumption(this.cancelToken, this.props.consumptionId)
-            .then(consumption => {
-                this.setState({consumption});
-                return consumption;
-            })
-            .then(consumption => axios.get(consumption.food))
-            .then(res => this.setState({
-                food: res.data,
-                isLoading: false,
-                currentFoodSearch: res.data.name
-            }));
+        if (this.props.consumptionId) {
+            getConsumption(this.cancelToken, this.props.consumptionId)
+                .then(consumption => {
+                    this.setState({consumption});
+                    return consumption;
+                })
+                .then(consumption => axios.get(consumption.food))
+                .then(res => this.setState({
+                    food: res.data,
+                    isLoading: false,
+                    currentFoodSearch: res.data.name
+                }));
+        } else {
+            const params = new URLSearchParams(this.props.location.search);
+            const foodId = params.get('food');
+            if (!foodId) {
+                return;
+            }
+            getFood(this.cancelToken, foodId)
+                .then(food => this.setState(prevState => ({
+                    currentFoodSearch: food.name,
+                    isLoading: false,
+                    consumption: {
+                        ...prevState.consumption,
+                        food: food.url
+                    }
+                })));
+        }
     }
 
     SubmissionMessage = () => this.state.submissionMessage ?
