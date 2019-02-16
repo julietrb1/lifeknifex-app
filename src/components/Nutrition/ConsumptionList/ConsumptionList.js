@@ -26,8 +26,17 @@ const ConsumptionList = (props) => {
         {
             Object.keys(consumptionItemsByDate).sort().reverse().map(dateString =>
                 <div key={dateString}>
-                    <Divider hidden/>
-                    <Header sub>{moment(dateString).format('ddd D MMM gg')}</Header>
+                    <Divider horizontal>
+                        <Header sub>{moment(dateString).calendar(null, {
+                            sameDay: '[Today]',
+                            nextDay: '[Tomorrow]',
+                            nextWeek: 'dddd',
+                            lastDay: '[Yesterday]',
+                            lastWeek: '[Last] dddd',
+                            sameElse: 'DD/MM/YYYY'
+                        })}</Header>
+                    </Divider>
+
                     <Divider hidden/>
                     <Card.Group>
                         {consumptionItemsByDate[dateString].map(item =>
