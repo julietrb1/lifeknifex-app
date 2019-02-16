@@ -255,7 +255,8 @@ class ConsumptionForm extends RequestComponent {
                     title: food.name,
                     id: food.id,
                     description: healthStrings[food.health_index - 1],
-                    url: food.url
+                    url: food.url,
+                    image: food.icon ? `/img/food_icons/${food.icon}.svg` : null
                 }))
             });
         });
