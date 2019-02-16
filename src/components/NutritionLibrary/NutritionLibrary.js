@@ -63,7 +63,7 @@ class NutritionLibrary extends RequestComponent {
     }
 
     handleChangeArchived = (e, {checked}) => {
-        this.setState({isArchivedVisible: checked}, () => this.loadFoods());
+        this.setState({isArchivedVisible: checked, foods: {}}, () => this.loadFoods());
     };
 
     PageContent = () => {
