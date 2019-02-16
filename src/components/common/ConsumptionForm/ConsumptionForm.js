@@ -130,7 +130,7 @@ class ConsumptionForm extends RequestComponent {
 
                 </Form.Field>
                 <Form.Field>
-                    <label>Hour</label>
+                    <label>When</label>
                     <this.HourField/>
                 </Form.Field>
                 <Form.Field>
