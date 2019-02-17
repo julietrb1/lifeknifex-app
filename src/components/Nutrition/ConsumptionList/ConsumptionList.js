@@ -2,7 +2,7 @@ import React from 'react';
 import moment from "moment";
 import PropTypes from "prop-types";
 import {Card, Divider, Header, Label} from "semantic-ui-react";
-import {consumptionSizes} from "../../../Utils";
+import {consumptionSizes, getRelativeMoment} from "../../../Utils";
 import {Link} from "react-router-dom";
 import {COLOR_NUTRITION, TIME_FORMAT_STRING} from "../../../constants";
 import FoodImage from "../../common/FoodImage/FoodImage";
@@ -27,14 +27,7 @@ const ConsumptionList = (props) => {
             Object.keys(consumptionItemsByDate).sort().reverse().map(dateString =>
                 <div key={dateString}>
                     <Divider horizontal>
-                        <Header sub>{moment(dateString).calendar(null, {
-                            sameDay: '[Today]',
-                            nextDay: '[Tomorrow]',
-                            nextWeek: 'dddd',
-                            lastDay: '[Yesterday]',
-                            lastWeek: '[Last] dddd',
-                            sameElse: 'DD/MM/YYYY'
-                        })}</Header>
+                        <Header sub>{getRelativeMoment(dateString)}</Header>
                     </Divider>
 
                     <Divider hidden/>

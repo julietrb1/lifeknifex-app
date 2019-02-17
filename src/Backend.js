@@ -1,12 +1,11 @@
 import axios from 'axios';
-import {foodsFetchDataSuccess, foodsHasErrored, foodsIsLoading} from "./actions/foods";
 import {API, LOCAL_STORAGE_JWT_ACCESS, LOCAL_STORAGE_JWT_REFRESH} from "./constants";
 import {history} from './App';
 
 const API_FEATURES = `${API}features/`;
 const API_CONSUMPTIONS = `${API}consumptions/`;
 export const API_FOODS = `${API}foods/`;
-const API_GOALS = `${API}goals/`;
+export const API_GOALS = `${API}goals/`;
 export const API_TOKEN = `${API}token/`;
 
 axios.defaults.headers.common['Authorization'] = `Bearer ${getAccessToken()}`;
@@ -100,20 +99,6 @@ function clearAccessToken() {
 
 function clearRefreshToken() {
     window.localStorage.removeItem(LOCAL_STORAGE_JWT_REFRESH);
-}
-
-export function getGoals() {
-    return dispatch => {
-        dispatch(foodsIsLoading(true));
-        axios.get(API_FOODS)
-            .then(response => {
-                dispatch(foodsIsLoading(false));
-                return response;
-            })
-            .then(response => response.data)
-            .then(foods => dispatch(foodsFetchDataSuccess(foods)))
-            .catch(() => dispatch(foodsHasErrored(true)));
-    };
 }
 
 export function updateGoal(cancelToken, goal) {

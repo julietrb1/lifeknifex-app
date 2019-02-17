@@ -57,7 +57,7 @@ class Home extends RequestComponent {
                     <Card.Content>
                         <Image src='/img/undraw_i_can_fly_7egl.svg'/>
                         <Card.Header>Goals</Card.Header>
-                        <Card.Meta>{this.betaBadge}</Card.Meta>
+                        <Card.Meta>{this.alphaBadge}</Card.Meta>
                         <Card.Description>
                             If you have an aspiration to achieve something big in life, start here. Every bit counts.
                         </Card.Description>

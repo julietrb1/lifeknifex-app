@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const healthStrings = ['Healthy', 'Reasonable', 'Poor', 'Unhealthy'];
 export const consumptionSizes = ['Small', 'Medium', 'Large', 'Extra Large'];
 export const consumptionIcons = ['thermometer empty', 'thermometer half', 'thermometer three quarters', 'thermometer full'];
@@ -27,3 +29,14 @@ export const extractError = err => {
         return [unknownErrorMessage];
     }
 };
+
+export function getRelativeMoment(dateString) {
+    return moment(dateString).calendar(null, {
+        sameDay: '[Today]',
+        nextDay: '[Tomorrow]',
+        nextWeek: 'dddd',
+        lastDay: '[Yesterday]',
+        lastWeek: '[Last] dddd',
+        sameElse: 'DD/MM/YYYY'
+    });
+}
