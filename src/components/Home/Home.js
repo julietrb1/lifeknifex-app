@@ -57,12 +57,18 @@ class Home extends RequestComponent {
                     <Card.Content>
                         <Image src='/img/undraw_i_can_fly_7egl.svg'/>
                         <Card.Header>Goals</Card.Header>
+                        <Card.Meta>{this.betaBadge}</Card.Meta>
                         <Card.Description>
                             If you have an aspiration to achieve something big in life, start here. Every bit counts.
                         </Card.Description>
                     </Card.Content>
                     <Card.Content extra>
-                        {this.comingSoonBadge}
+                        <Button animated='vertical' as={Link} to='/goals' color={constants.COLOR_GOALS}>
+                            <Button.Content visible>Visit</Button.Content>
+                            <Button.Content hidden>
+                                <Icon name='target'/>
+                            </Button.Content>
+                        </Button>
                     </Card.Content>
                 </Card>
 
