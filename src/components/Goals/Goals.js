@@ -11,6 +11,7 @@ import {Link} from "react-router-dom";
 import moment from 'moment-timezone';
 import {getRelativeMoment} from "../../Utils";
 import {answersFetchAll} from "../../actions/answers";
+import GoalsEmpty from "./GoalsEmpty/GoalsEmpty";
 
 const sections = [
     {name: 'Goals'}
@@ -68,7 +69,7 @@ class Goals extends React.Component {
                 {this.props.goals.results.map(GoalCard)}
             </Card.Group>;
         } else {
-            return 'None';
+            return <GoalsEmpty/>;
         }
     };
 }
