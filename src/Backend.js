@@ -6,6 +6,7 @@ const API_FEATURES = `${API}features/`;
 const API_CONSUMPTIONS = `${API}consumptions/`;
 export const API_FOODS = `${API}foods/`;
 export const API_GOALS = `${API}goals/`;
+export const API_ANSWERS = `${API}answers/`;
 export const API_TOKEN = `${API}token/`;
 
 axios.defaults.headers.common['Authorization'] = `Bearer ${getAccessToken()}`;

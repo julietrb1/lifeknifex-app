@@ -10,6 +10,7 @@ import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
 import {Link} from "react-router-dom";
 import moment from 'moment-timezone';
 import {getRelativeMoment} from "../../Utils";
+import {answersFetchAll} from "../../actions/answers";
 
 const sections = [
     {name: 'Goals'}
@@ -18,7 +19,8 @@ const sections = [
 class Goals extends React.Component {
 
     componentDidMount() {
-        this.props.fetchData();
+        this.props.fetchGoals();
+        this.props.fetchAnswers();
     }
 
     render() {
@@ -35,8 +37,8 @@ class Goals extends React.Component {
                     <Statistic.Label>Goal{this.props.goals.count && this.props.goals.count === 1 ? '' : 's'}</Statistic.Label>
                 </Statistic>
                 <Statistic>
-                    <Statistic.Value>31,200</Statistic.Value>
-                    <Statistic.Label>Answers</Statistic.Label>
+                    <Statistic.Value>{this.props.answers.count}</Statistic.Value>
+                    <Statistic.Label>Answer{this.props.answers.count && this.props.answers.count === 1 ? '' : 's'}</Statistic.Label>
                 </Statistic>
                 <Statistic>
                     <Statistic.Value>22</Statistic.Value>
@@ -143,8 +145,10 @@ const LastAnswered = props => {
 };
 
 Goals.propTypes = {
-    fetchData: PropTypes.func.isRequired,
+    fetchGoals: PropTypes.func.isRequired,
+    fetchAnswers: PropTypes.func.isRequired,
     goals: PropTypes.object,
+    answers: PropTypes.object,
     isLoading: PropTypes.bool.isRequired
 };
 
@@ -152,13 +156,15 @@ const mapStateToProps = (state) => {
     return {
         goals: state.goals,
         hasErrored: state.goalsHasErrored,
-        isLoading: state.goalsIsLoading
+        isLoading: state.goalsIsLoading,
+        answers: state.answers
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchData: () => dispatch(goalsFetchAll())
+        fetchGoals: () => dispatch(goalsFetchAll()),
+        fetchAnswers: () => dispatch(answersFetchAll())
     };
 };
 
