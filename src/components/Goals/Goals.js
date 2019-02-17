@@ -110,12 +110,22 @@ const GoalCard = (goal) =>
         </Card.Content>
         <Card.Content extra>
             <div>
-                <Button size='tiny' basic as={Link} to={`/goals/answer?goal=${goal.id}`}
-                        color={COLOR_GOALS}>Answer</Button>
-                <Button size='tiny' basic as={Link} to={`/goals/manage/${goal.id}`}>Edit</Button>
+                <AnswerButton goal={goal}/>
+                <Button size='tiny' basic as={Link} to={`/goals/manage/${goal.id}`}>Edit Goal</Button>
             </div>
         </Card.Content>
     </Card>;
+
+const AnswerButton = props => {
+    return <Button size='tiny' basic as={Link} to={`/goals/answer?goal=${props.goal.id}`}
+                   color={COLOR_GOALS}>{props.goal.last_answered && moment().isSame(props.goal.last_answered, 'day') ? 'Change' : 'Log'} Answer</Button>;
+};
+
+AnswerButton.propTypes = {
+    goal: PropTypes.shape({
+        last_answered: PropTypes.string
+    })
+};
 
 const LastAnswered = props => {
     if (!props.goal.last_answered) {
