@@ -34,11 +34,11 @@ class Goals extends React.Component {
 
             <Statistic.Group>
                 <Statistic>
-                    <Statistic.Value>{this.props.goals.count ? this.props.goals.count : 'No'}</Statistic.Value>
+                    <Statistic.Value>{this.props.goals.count ? this.props.goals.count : '--'}</Statistic.Value>
                     <Statistic.Label>Goal{this.props.goals.count && this.props.goals.count === 1 ? '' : 's'}</Statistic.Label>
                 </Statistic>
                 <Statistic>
-                    <Statistic.Value>{this.props.answers.count}</Statistic.Value>
+                    <Statistic.Value>{this.props.answers.count ? this.props.answers.count : '--'}</Statistic.Value>
                     <Statistic.Label>Answer{this.props.answers.count && this.props.answers.count === 1 ? '' : 's'}</Statistic.Label>
                 </Statistic>
                 <Statistic>
