@@ -123,7 +123,8 @@ const AnswerButton = props => {
 
 AnswerButton.propTypes = {
     goal: PropTypes.shape({
-        last_answered: PropTypes.string
+        last_answered: PropTypes.string,
+        id: PropTypes.number.isRequired
     })
 };
 
