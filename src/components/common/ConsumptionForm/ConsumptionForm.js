@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {Button, Confirm, Divider, Dropdown, Form, Input, Message, Radio, Search} from 'semantic-ui-react';
 import './ConsumptionForm.scss';
 import {withRouter} from 'react-router-dom';
+import AwesomeDebouncePromise from 'awesome-debounce-promise';
 import {extractError, healthStrings} from '../../../Utils';
 import {
     createConsumption,
@@ -264,6 +265,8 @@ class ConsumptionForm extends RequestComponent {
         }));
     };
 
+    callSearch = AwesomeDebouncePromise(search => getFoods(this.cancelToken, search), 500);
+
     handleSearchChange = (e, {value}) => {
         this.setState(prev => ({
             currentFoodSearch: value,
@@ -277,20 +280,22 @@ class ConsumptionForm extends RequestComponent {
             return this.resetSearch();
         }
 
-        getFoods(this.cancelToken, this.state.currentFoodSearch).then(foods => {
-            this.setState({
-                searchLoading: false,
-                foodResults: foods.results.map(food => ({
-                    title: food.name,
-                    id: food.id,
-                    description: healthStrings[food.health_index - 1],
-                    url: food.url,
-                    image: food.icon ? `/img/food_icons/${food.icon}.svg` : null
-                }))
-            });
-        });
+        this.performSearch();
     };
 
+    async performSearch() {
+        const foods = await this.callSearch(this.state.currentFoodSearch);
+        this.setState({
+            searchLoading: false,
+            foodResults: foods.results.map(food => ({
+                title: food.name,
+                id: food.id,
+                description: healthStrings[food.health_index - 1],
+                url: food.url,
+                image: food.icon ? `/img/food_icons/${food.icon}.svg` : null
+            }))
+        });
+    }
     resetSearch = () => this.setState({currentFoodSearch: ''});
 }
 
