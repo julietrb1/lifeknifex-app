@@ -26,10 +26,7 @@ class Goals extends React.Component {
             <BreadcrumbSet sections={sections}/>
             <HeaderBar title="Goals" icon='goals'/>
             <Divider horizontal>
-                <Header as='h4'>
-                    <Icon name='book'/>
-                    Dashboard
-                </Header>
+                <Header as='h4'>Dashboard</Header>
             </Divider>
 
             <Statistic.Group>
@@ -54,10 +51,7 @@ class Goals extends React.Component {
             <Divider hidden/>
 
             <Divider horizontal>
-                <Header as='h4'>
-                    <Icon name='book'/>
-                    Goal Library
-                </Header>
+                <Header as='h4'>Goal Library</Header>
             </Divider>
 
             <this.GoalsContent/>
