@@ -96,7 +96,7 @@ function getGoalMeta(goal) {
     }
 }
 
-const GoalCard = (goal) =>
+const GoalCard = goal =>
     <Card key={goal.id} color={COLOR_GOALS}>
         <Card.Content>
             <Card.Header>{goal.question}</Card.Header>
@@ -113,10 +113,9 @@ const GoalCard = (goal) =>
         </Card.Content>
     </Card>;
 
-const AnswerButton = props => {
-    return <Button size='tiny' basic as={Link} to={`/goals/answer?goal=${props.goal.id}`}
-                   color={COLOR_GOALS}>{props.goal.last_answered && moment().isSame(props.goal.last_answered, 'day') ? 'Change' : 'Log'} Answer</Button>;
-};
+const AnswerButton = props =>
+    <Button size='tiny' basic as={Link} to={`/goals/answer?goal=${props.goal.id}`}
+            color={COLOR_GOALS}>{props.goal.last_answered && moment().isSame(props.goal.last_answered, 'day') ? 'Change' : 'Log'} Answer</Button>;
 
 AnswerButton.propTypes = {
     goal: PropTypes.shape({
@@ -153,20 +152,16 @@ Goals.propTypes = {
     isLoading: PropTypes.bool.isRequired
 };
 
-const mapStateToProps = (state) => {
-    return {
-        goals: state.goals,
-        hasErrored: state.goalsHasErrored,
-        isLoading: state.goalsIsLoading,
-        answers: state.answers
-    };
-};
+const mapStateToProps = state => ({
+    goals: state.goals,
+    hasErrored: state.goalsHasErrored,
+    isLoading: state.goalsIsLoading,
+    answers: state.answers
+});
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchGoals: () => dispatch(goalsFetchAll()),
-        fetchAnswers: () => dispatch(answersFetchAll())
-    };
-};
+const mapDispatchToProps = dispatch => ({
+    fetchGoals: () => dispatch(goalsFetchAll()),
+    fetchAnswers: () => dispatch(answersFetchAll())
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Goals);
