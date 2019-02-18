@@ -147,12 +147,14 @@ class GoalNewEdit extends RequestComponent {
 
     handleGoalSubmit = async () => {
         this.setState({isLoading: true});
+        const goal = this.state.goal;
+        goal.question = goal.question.replace(/(\?+)$/g, '');
 
         try {
-            if (this.state.goal.id) {
-                await updateGoal(this.cancelToken, this.state.goal);
+            if (goal.id) {
+                await updateGoal(this.cancelToken, goal);
             } else {
-                await createGoal(this.cancelToken, this.state.goal);
+                await createGoal(this.cancelToken, goal);
             }
             this.props.history.goBack();
         } finally {
