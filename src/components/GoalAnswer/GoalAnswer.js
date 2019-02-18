@@ -55,15 +55,15 @@ class GoalAnswer extends Component {
             return null;
         } else if (this.props.currentGoal.style === 'yesno') {
             return <div>
-                <Form.Button>Yes</Form.Button>
-                <Form.Button>No</Form.Button>
+                <Form.Button basic positive>Yes</Form.Button>
+                <Form.Button basic negative>No</Form.Button>
             </div>;
         } else {
             return <div>
-                <Form.Button>Effectively</Form.Button>
-                <Form.Button>Adequately</Form.Button>
-                <Form.Button>Poorly</Form.Button>
-                <Form.Button>Unsuccessfully</Form.Button>
+                <Form.Button basic positive>Effectively</Form.Button>
+                <Form.Button basic>Adequately</Form.Button>
+                <Form.Button basic>Poorly</Form.Button>
+                <Form.Button basic negative>Unsuccessfully</Form.Button>
             </div>;
         }
     };
