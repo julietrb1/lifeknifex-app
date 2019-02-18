@@ -14,11 +14,6 @@ const mapStateToProps = state => ({});
 const mapDispatchToProps = state => ({});
 
 class GoalNewEdit extends RequestComponent {
-    sections = [
-        {name: 'Goals', href: '/goals'},
-        {name: this.props.match.params.goalId ? 'Edit' : 'New'}
-    ];
-
     constructor(props) {
         super(props);
         this.state = {
@@ -29,7 +24,8 @@ class GoalNewEdit extends RequestComponent {
                 style: 'yesno',
                 start_date: moment().subtract(1, 'day').format('YYYYMMDD')
             },
-            isLoading: false
+            isLoading: false,
+            actionWord: props.match.params.goalId ? 'Edit' : 'New'
         };
     }
 
@@ -48,10 +44,14 @@ class GoalNewEdit extends RequestComponent {
 
     render() {
         const testInputLabel = `day${this.state.goal.frequency !== 1 ? 's' : ''}`;
+        const sections = [
+            {name: 'Goals', href: '/goals'},
+            {name: this.state.actionWord}
+        ];
         return (
             <div>
-                <BreadcrumbSet sections={this.sections}/>
-                <HeaderBar title="Goals" icon='goals'/>
+                <BreadcrumbSet sections={sections}/>
+                <HeaderBar title={`${this.state.actionWord} Goal`} icon='goals'/>
                 <Form onSubmit={this.handleGoalSubmit} loading={this.state.isLoading}>
                     <Form.Field required>
                         <label>Question</label>
