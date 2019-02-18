@@ -12,7 +12,7 @@ class GoalAnswer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentGoal: null
+            currentGoalIndex: 0
         };
     }
 
@@ -31,7 +31,11 @@ class GoalAnswer extends Component {
                 <BreadcrumbSet sections={sections}/>
                 <HeaderBar title='Answer Goals' icon='goals'/>
                 <Form loading={this.props.isLoading}>
-                    <Header>{this.props.currentGoal ? `${this.props.currentGoal.question}?` : 'Loading Goal...'}</Header>
+                    <Header>
+                        {this.props.goals.results ?
+                            `${this.props.goals.results[this.state.currentGoalIndex].question}?` :
+                            'Loading Goal...'}
+                    </Header>
                     <this.FormContent/>
                 </Form>
             </div>
@@ -51,19 +55,19 @@ class GoalAnswer extends Component {
     };
 
     AnswerPre = () => {
-        if (!this.props.currentGoal) {
+        if (!this.props.goals.results) {
             return null;
-        } else if (this.props.currentGoal.style === 'yesno') {
+        } else if (this.props.goals.results[this.state.currentGoalIndex].style === 'yesno') {
             return <div>
-                <Form.Button basic positive>Yes</Form.Button>
-                <Form.Button basic negative>No</Form.Button>
+                <Form.Button fluid basic positive>Yes</Form.Button>
+                <Form.Button fluid basic negative>No</Form.Button>
             </div>;
         } else {
             return <div>
-                <Form.Button basic positive>Effectively</Form.Button>
-                <Form.Button basic>Adequately</Form.Button>
-                <Form.Button basic>Poorly</Form.Button>
-                <Form.Button basic negative>Unsuccessfully</Form.Button>
+                <Form.Button fluid basic positive>Effectively</Form.Button>
+                <Form.Button fluid basic>Adequately</Form.Button>
+                <Form.Button fluid basic>Poorly</Form.Button>
+                <Form.Button fluid basic negative>Unsuccessfully</Form.Button>
             </div>;
         }
     };
@@ -76,22 +80,16 @@ GoalAnswer.propTypes = {
     fetchGoals: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     isLoading: PropTypes.bool.isRequired,
-    currentGoal: PropTypes.object
+    currentGoal: PropTypes.object,
+    goals: PropTypes.object
 };
 
-const mapStateToProps = state => {
-    let currentGoal = null;
-    if (state.goals.results && state.goals.results.length) {
-        currentGoal = state.goals.results[0];
-    }
-    return {
-        hasErrored: state.answersHasErrored,
-        isLoading: state.answersIsLoading,
-        answers: state.answers,
-        goals: state.goals,
-        currentGoal
-    };
-};
+const mapStateToProps = state => ({
+    hasErrored: state.answersHasErrored,
+    isLoading: state.answersIsLoading,
+    answers: state.answers,
+    goals: state.goals,
+});
 
 const mapDispatchToProps = dispatch => ({
     fetchAnswers: () => dispatch(answersFetchAll()),
