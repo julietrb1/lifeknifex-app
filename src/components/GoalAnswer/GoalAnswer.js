@@ -16,7 +16,8 @@ class GoalAnswer extends RequestComponent {
     constructor(props) {
         super(props);
         this.state = {
-            currentGoalIndex: 0
+            currentGoal: null,
+            currentGoalIndex: -1
         };
     }
 
@@ -46,8 +47,8 @@ class GoalAnswer extends RequestComponent {
         } else {
             return <Form loading={this.props.isLoading}>
                 <Header>
-                    {this.props.goals.results ?
-                        `${this.props.goals.results[this.state.currentGoalIndex].question}?` :
+                    {this.state.currentGoal ?
+                        `${this.state.currentGoal.question}?` :
                         'Loading Goal...'}
                 </Header>
                 <this.FormContent/>
@@ -68,9 +69,9 @@ class GoalAnswer extends RequestComponent {
     };
 
     AnswerPre = () => {
-        if (!this.props.goals.results) {
+        if (!this.state.currentGoal) {
             return null;
-        } else if (this.props.goals.results[this.state.currentGoalIndex].style === 'yesno') {
+        } else if (this.state.currentGoal.style === 'yesno') {
             return <div>
                 <Form.Button fluid basic positive onClick={() => this.handleAnswer(1)}>Yes</Form.Button>
                 <Form.Button fluid basic negative onClick={() => this.handleAnswer(2)}>No</Form.Button>
@@ -86,7 +87,7 @@ class GoalAnswer extends RequestComponent {
     };
 
     handleAnswer = answerValue => {
-        const goalUrl = this.props.goals.results[this.state.currentGoalIndex].url;
+        const goalUrl = this.state.currentGoal.url;
         createAnswer(this.cancelToken, {
             goal: goalUrl,
             value: answerValue
@@ -113,7 +114,7 @@ class GoalAnswer extends RequestComponent {
         this.props.history.replace('/goals/answer?mode=done');
     };
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    componentDidUpdate(prevProps) {
         if (!prevProps.goals.results && this.props.goals.results) {
             this.goToNextGoal();
         }
