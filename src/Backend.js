@@ -102,6 +102,8 @@ function clearRefreshToken() {
     window.localStorage.removeItem(LOCAL_STORAGE_JWT_REFRESH);
 }
 
+// GOALS
+
 export function updateGoal(cancelToken, goal) {
     return axios.put(`${API_GOALS}${goal.id}/`, goal, {cancelToken: cancelToken.token})
         .then(res => res.data);
@@ -114,6 +116,13 @@ export function getGoal(cancelToken, goalId) {
 
 export function createGoal(cancelToken, goal) {
     return axios.post(API_GOALS, goal, {cancelToken: cancelToken.token})
+        .then(res => res.data);
+}
+
+// ANSWERS
+
+export function createAnswer(cancelToken, answer) {
+    return axios.post(`${API_ANSWERS}`, answer, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 

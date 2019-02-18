@@ -11,6 +11,7 @@ import DatePicker from "react-datepicker";
 
 import './GoalNewEdit.scss';
 import 'react-datepicker/dist/react-datepicker.min.css';
+import {BACKEND_DATE_FORMAT} from "../../constants";
 
 const mapStateToProps = state => ({});
 
@@ -26,7 +27,7 @@ class GoalNewEdit extends RequestComponent {
                 test: 'atleast',
                 frequency: 1,
                 style: 'yesno',
-                start_date: moment().format('YYYY-MM-DD')
+                start_date: moment().format(BACKEND_DATE_FORMAT)
             },
             isLoading: false,
             actionWord: props.match.params.goalId ? 'Edit' : 'New'
@@ -141,7 +142,7 @@ class GoalNewEdit extends RequestComponent {
     onDateChange = date => this.setState(prevState => ({
         goal: {
             ...prevState.goal,
-            date: moment(date).format('YYYY-MM-DD')
+            date: moment(date).format(BACKEND_DATE_FORMAT)
         }
     }));
 

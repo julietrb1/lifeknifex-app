@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import BreadcrumbSet from "../common/BreadcrumbSet/BreadcrumbSet";
 import HeaderBar from "../HeaderBar/HeaderBar";
@@ -7,8 +7,12 @@ import {answersFetchAll} from "../../actions/answers";
 import {Form, Header} from "semantic-ui-react";
 import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
 import {goalsFetchAll} from "../../actions/goals";
+import {createAnswer} from "../../Backend";
+import RequestComponent from "../common/RequestComponent/RequestComponent";
+import moment from "moment";
+import {BACKEND_DATE_FORMAT} from "../../constants";
 
-class GoalAnswer extends Component {
+class GoalAnswer extends RequestComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -26,21 +30,30 @@ class GoalAnswer extends Component {
             {name: 'Goals', href: '/goals'},
             {name: 'Answer'}
         ];
-        return (
-            <div>
-                <BreadcrumbSet sections={sections}/>
-                <HeaderBar title='Answer Goals' icon='goals'/>
-                <Form loading={this.props.isLoading}>
-                    <Header>
-                        {this.props.goals.results ?
-                            `${this.props.goals.results[this.state.currentGoalIndex].question}?` :
-                            'Loading Goal...'}
-                    </Header>
-                    <this.FormContent/>
-                </Form>
-            </div>
-        );
+        return <div>
+            <BreadcrumbSet sections={sections}/>
+            <HeaderBar title='Answer Goals' icon='goals'/>
+            <this.PageContent/>
+        </div>;
     }
+
+    PageContent = () => {
+        const queryParams = new URLSearchParams(this.props.location.search);
+        const mode = queryParams.get('mode');
+
+        if (mode === 'done') {
+            return 'Done';
+        } else {
+            return <Form loading={this.props.isLoading}>
+                <Header>
+                    {this.props.goals.results ?
+                        `${this.props.goals.results[this.state.currentGoalIndex].question}?` :
+                        'Loading Goal...'}
+                </Header>
+                <this.FormContent/>
+            </Form>;
+        }
+    };
 
     FormContent = () => {
         const queryParams = new URLSearchParams(this.props.location.search);
@@ -59,18 +72,52 @@ class GoalAnswer extends Component {
             return null;
         } else if (this.props.goals.results[this.state.currentGoalIndex].style === 'yesno') {
             return <div>
-                <Form.Button fluid basic positive>Yes</Form.Button>
-                <Form.Button fluid basic negative>No</Form.Button>
+                <Form.Button fluid basic positive onClick={() => this.handleAnswer(1)}>Yes</Form.Button>
+                <Form.Button fluid basic negative onClick={() => this.handleAnswer(2)}>No</Form.Button>
             </div>;
         } else {
             return <div>
-                <Form.Button fluid basic positive>Effectively</Form.Button>
-                <Form.Button fluid basic>Adequately</Form.Button>
-                <Form.Button fluid basic>Poorly</Form.Button>
-                <Form.Button fluid basic negative>Unsuccessfully</Form.Button>
+                <Form.Button fluid basic positive onClick={() => this.handleAnswer(1)}>Effectively</Form.Button>
+                <Form.Button fluid basic onClick={() => this.handleAnswer(2)}>Adequately</Form.Button>
+                <Form.Button fluid basic onClick={() => this.handleAnswer(3)}>Poorly</Form.Button>
+                <Form.Button fluid basic negative onClick={() => this.handleAnswer(4)}>Unsuccessfully</Form.Button>
             </div>;
         }
     };
+
+    handleAnswer = answerValue => {
+        const goalUrl = this.props.goals.results[this.state.currentGoalIndex].url;
+        createAnswer(this.cancelToken, {
+            goal: goalUrl,
+            value: answerValue
+        }).then(this.goToNextGoal);
+    };
+
+    goToNextGoal = () => {
+        if (!this.props.goals.results) {
+            return;
+        }
+
+        for (let i = 1; i < this.props.goals.results.length; i++) {
+            const currentGoalIndex = this.state.currentGoalIndex;
+            const newGoalIndex = currentGoalIndex + i;
+            const lastAnswered = this.props.goals.results[newGoalIndex].last_answered;
+            const today = moment().format(BACKEND_DATE_FORMAT);
+            if (lastAnswered !== today) {
+                return this.setState({
+                    currentGoalIndex: newGoalIndex
+                });
+            }
+        }
+
+        this.props.history.replace('/goals/answer?mode=done');
+    };
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (!prevProps.goals.results && this.props.goals.results) {
+            this.goToNextGoal();
+        }
+    }
 }
 
 GoalAnswer.propTypes = {

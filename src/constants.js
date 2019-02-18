@@ -9,6 +9,7 @@ export const TIME_FORMAT_STRING = 'h a';
 export const API_FEATURE_REGISTRATION_ENABLED = 'registrationEnabled';
 export const LOCAL_STORAGE_JWT_ACCESS = 'jwt-access';
 export const LOCAL_STORAGE_JWT_REFRESH = 'jwt-refresh';
+export const BACKEND_DATE_FORMAT = 'YYYY-MM-DD';
 
 let backendUrl = '';
 switch (document.location.hostname) {
