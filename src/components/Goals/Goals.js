@@ -99,7 +99,7 @@ function getGoalMeta(goal) {
 const GoalCard = goal =>
     <Card key={goal.id} color={COLOR_GOALS}>
         <Card.Content>
-            <Card.Header>{goal.question}</Card.Header>
+            <Card.Header>{goal.question}?</Card.Header>
             <Card.Meta>{getGoalMeta(goal)}</Card.Meta>
             <Card.Description>
                 <LastAnswered goal={goal}/>
