@@ -1,12 +1,13 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import GoalForm from "../common/GoalForm/GoalForm";
 import BreadcrumbSet from "../common/BreadcrumbSet/BreadcrumbSet";
 import HeaderBar from "../HeaderBar/HeaderBar";
-import {createGoal} from "../../Backend";
+import {createGoal, getGoal, updateGoal} from "../../Backend";
 import RequestComponent from "../common/RequestComponent/RequestComponent";
 import moment from "moment";
+import {Button, Divider, Form, Input, Radio} from "semantic-ui-react";
+import DatePicker from "react-datepicker";
 
 const mapStateToProps = state => ({});
 
@@ -32,35 +33,121 @@ class GoalNewEdit extends RequestComponent {
         };
     }
 
+    async componentDidMount() {
+        const goalId = this.props.match.params.goalId;
+        if (!goalId) {
+            return;
+        }
+        this.setState({isLoading: true});
+        const goal = await getGoal(this.cancelToken, goalId);
+        this.setState({
+            goal,
+            isLoading: false
+        });
+    }
+
     render() {
+        const testInputLabel = `day${this.state.goal.frequency !== 1 ? 's' : ''}`;
         return (
             <div>
                 <BreadcrumbSet sections={this.sections}/>
                 <HeaderBar title="Goals" icon='goals'/>
-                <GoalForm goal={this.props.match.params.goalId ? this.props.goal : this.state.goal}
-                          onSubmit={this.handleGoalSubmit} isLoading={this.state.isLoading}/>
+                <Form onSubmit={this.handleGoalSubmit} loading={this.state.isLoading}>
+                    <Form.Field required>
+                        <label>Question</label>
+                        <Input type='text' onChange={this.onChange('question')}
+                               placeholder='e.g. Did I get to bed on time last night'
+                               value={this.state.goal.question} label={{basic: true, content: '?'}}
+                               labelPosition='right'/>
+                    </Form.Field>
+                    <Form.Field required>
+                        <label>Test</label>
+                    </Form.Field>
+                    <Form.Field inline>
+                        <Radio label='At least every' name='goal-test' value='atleast'
+                               checked={this.state.goal.test === 'atleast'} onChange={this.onChange('test')}/>
+                        <Input type='number' value={this.state.goal.frequency}
+                               onChange={this.onChange('frequency')} label={{basic: true, content: testInputLabel}}
+                               labelPosition='right' disabled={this.state.goal.test !== 'atleast'}/>
+                    </Form.Field>
+                    <Form.Field inline>
+                        <Radio label='No more than every' name='goal-test' value='nomore'
+                               checked={this.state.goal.test === 'nomore'} onChange={this.onChange('test')}/>
+                        <Input type='number' value={this.state.goal.frequency}
+                               onChange={this.onChange('frequency')}
+                               label={{basic: true, content: testInputLabel}}
+                               labelPosition='right' disabled={this.state.goal.test !== 'nomore'}/>
+                    </Form.Field>
+                    <Form.Field>
+                        <Radio label='Never' name='goal-test' value='never' checked={this.state.goal.test === 'never'}
+                               onChange={this.onChange('test')}/>
+                    </Form.Field>
+                    <Divider hidden/>
+
+                    <Form.Field required>
+                        <label>Style</label>
+                    </Form.Field>
+                    <Form.Field>
+                        <Radio label='Yes/No' name='goal-style' value='yesno'
+                               checked={this.state.goal.style === 'yesno'}
+                               onChange={this.onChange('style')}/>
+                    </Form.Field>
+                    <Form.Field>
+                        <Radio label='Likert' name='goal-style' value='likert'
+                               checked={this.state.goal.style === 'likert'}
+                               onChange={this.onChange('style')}/>
+                    </Form.Field>
+                    <Divider hidden/>
+
+                    <Form.Field required>
+                        <label>Start Date</label>
+                    </Form.Field>
+                    <Form.Field>
+                        <DatePicker dropdownMode='select' onChange={this.onDateChange}
+                                    selected={this.state.goal.start_date} dateFormat='dd/MM/yyyy'/>
+                    </Form.Field>
+
+                    <Divider hidden/>
+                    <Button.Group>
+                        <Button type='button' onClick={this.props.history.goBack}>Back</Button>
+                        <Button.Or/>
+                        <Button positive type="submit">Save Goal</Button>
+                    </Button.Group>
+                </Form>
             </div>
         );
     }
 
-    handleGoalSubmit = async goal => {
+    onChange = field => (e, {value}) =>
+        this.setState(prevState => ({
+            goal: {
+                ...prevState.goal,
+                [field]: value ? value : e
+            }
+        }));
+
+    onDateChange = date => this.onChange('start_date')(null, {value: moment(date).format('YYYY-MM-DD')});
+
+    handleGoalSubmit = async () => {
         this.setState({isLoading: true});
-        if (!goal.id) {
+
             try {
-                await createGoal(this.cancelToken, goal);
+                if (this.state.goal.id) {
+                    await updateGoal(this.cancelToken, this.state.goal);
+                } else {
+                    await createGoal(this.cancelToken, this.state.goal);
+                }
                 this.props.history.goBack();
             } finally {
                 this.setState({isLoading: false});
             }
-
-        }
     };
 }
 
 GoalNewEdit.propTypes = {
     match: PropTypes.shape({
         params: PropTypes.shape({
-            goalId: PropTypes.number
+            goalId: PropTypes.string
         })
     }),
     goal: PropTypes.object,

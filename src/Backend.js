@@ -103,12 +103,12 @@ function clearRefreshToken() {
 }
 
 export function updateGoal(cancelToken, goal) {
-    return axios.put(`${API_GOALS}/${goal.id}`, goal, {cancelToken: cancelToken.token})
+    return axios.put(`${API_GOALS}${goal.id}/`, goal, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
 export function getGoal(cancelToken, goalId) {
-    return axios.get(`${API_GOALS}/${goalId}`, {cancelToken: cancelToken.token})
+    return axios.get(`${API_GOALS}${goalId}/`, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
