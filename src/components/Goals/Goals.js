@@ -13,6 +13,8 @@ import {getRelativeMoment} from "../../Utils";
 import {answersFetchAll} from "../../actions/answers";
 import GoalsEmpty from "./GoalsEmpty/GoalsEmpty";
 
+import './Goals.scss';
+
 const sections = [
     {name: 'Goals'}
 ];
@@ -28,38 +30,53 @@ class Goals extends React.Component {
         return <div>
             <BreadcrumbSet sections={sections}/>
             <HeaderBar title="Goals" icon='goals'/>
+
             <Divider horizontal>
                 <Header as='h4'>Dashboard</Header>
             </Divider>
-
-            <Statistic.Group>
-                <Statistic>
-                    <Statistic.Value>{this.props.goals.count ? this.props.goals.count : '--'}</Statistic.Value>
-                    <Statistic.Label>Goal{this.props.goals.count && this.props.goals.count === 1 ? '' : 's'}</Statistic.Label>
-                </Statistic>
-                <Statistic>
-                    <Statistic.Value>{this.props.answers.count ? this.props.answers.count : '--'}</Statistic.Value>
-                    <Statistic.Label>Answer{this.props.answers.count && this.props.answers.count === 1 ? '' : 's'}</Statistic.Label>
-                </Statistic>
-                <Statistic>
-                    <Statistic.Value>22</Statistic.Value>
-                    <Statistic.Label>Consecutive Days</Statistic.Label>
-                </Statistic>
-                <Statistic>
-                    <Statistic.Value>9</Statistic.Value>
-                    <Statistic.Label>Days Since Answered</Statistic.Label>
-                </Statistic>
-            </Statistic.Group>
+            <this.DashboardContent/>
 
             <Divider hidden/>
 
             <Divider horizontal>
                 <Header as='h4'>Goal Library</Header>
             </Divider>
-
+            <div className='goal-actions'>
+                <Button
+                    color={COLOR_GOALS}
+                    as={Link}
+                    to='/goals/new'
+                    animated='vertical'>
+                    <Button.Content visible>New Goal</Button.Content>
+                    <Button.Content hidden>
+                        <Icon name='plus'/>
+                    </Button.Content>
+                </Button>
+            </div>
             <this.GoalsContent/>
         </div>;
     }
+
+    DashboardContent = () => <div>
+        <Statistic.Group>
+            <Statistic>
+                <Statistic.Value>{this.props.goals.count ? this.props.goals.count : '--'}</Statistic.Value>
+                <Statistic.Label>Goal{this.props.goals.count && this.props.goals.count === 1 ? '' : 's'}</Statistic.Label>
+            </Statistic>
+            <Statistic>
+                <Statistic.Value>{this.props.answers.count ? this.props.answers.count : '--'}</Statistic.Value>
+                <Statistic.Label>Answer{this.props.answers.count && this.props.answers.count === 1 ? '' : 's'}</Statistic.Label>
+            </Statistic>
+            <Statistic>
+                <Statistic.Value>22</Statistic.Value>
+                <Statistic.Label>Consecutive Days</Statistic.Label>
+            </Statistic>
+            <Statistic>
+                <Statistic.Value>9</Statistic.Value>
+                <Statistic.Label>Days Since Answered</Statistic.Label>
+            </Statistic>
+        </Statistic.Group>
+    </div>;
 
     GoalsContent = () => {
         if (this.props.isLoading) {
@@ -95,6 +112,18 @@ function getGoalMeta(goal) {
             return 'Invalid goal target';
     }
 }
+
+const NewButton = <Button
+    floated='right'
+    color={COLOR_GOALS}
+    as={Link}
+    to='/nutrition/library/new'
+    animated='vertical'>
+    <Button.Content visible>New Food</Button.Content>
+    <Button.Content hidden>
+        <Icon name='plus'/>
+    </Button.Content>
+</Button>;
 
 const GoalCard = goal =>
     <Card key={goal.id} color={COLOR_GOALS}>
