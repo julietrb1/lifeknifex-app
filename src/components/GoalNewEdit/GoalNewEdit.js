@@ -19,13 +19,14 @@ const mapDispatchToProps = state => ({});
 class GoalNewEdit extends RequestComponent {
     constructor(props) {
         super(props);
+
         this.state = {
             goal: {
                 question: '',
                 test: 'atleast',
                 frequency: 1,
                 style: 'yesno',
-                start_date: moment().subtract(1, 'day').format('YYYYMMDD')
+                start_date: moment().format('YYYY-MM-DD')
             },
             isLoading: false,
             actionWord: props.match.params.goalId ? 'Edit' : 'New'
@@ -114,7 +115,7 @@ class GoalNewEdit extends RequestComponent {
                     <Button.Group>
                         <Button type='button' onClick={this.props.history.goBack}>Back</Button>
                         <Button.Or/>
-                        <Button positive type="submit">Save Goal</Button>
+                        <Button positive type="submit" disabled={!this.isFormValid()}>Save Goal</Button>
                     </Button.Group>
                 </Form>
             </div>
@@ -125,11 +126,24 @@ class GoalNewEdit extends RequestComponent {
         this.setState(prevState => ({
             goal: {
                 ...prevState.goal,
-                [field]: value ? value : e
+                [field]: value
             }
         }));
 
-    onDateChange = date => this.onChange('start_date')(null, {value: moment(date).format('YYYY-MM-DD')});
+    isFormValid = () => !!(
+        this.state.goal &&
+        this.state.goal.question && this.state.goal.question.length > 10 &&
+        this.state.goal.test &&
+        this.state.goal.style &&
+        this.state.goal.start_date
+    );
+
+    onDateChange = date => this.setState(prevState => ({
+        goal: {
+            ...prevState.goal,
+            date: moment(date).format('YYYY-MM-DD')
+        }
+    }));
 
     handleGoalSubmit = async () => {
         this.setState({isLoading: true});
