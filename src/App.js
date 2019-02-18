@@ -18,6 +18,7 @@ import NewFood from "./components/NewFood/NewFood";
 import ModifyConsumption from "./components/ModifyConsumption/ModifyConsumption";
 import createBrowserHistory from 'history/createBrowserHistory';
 import GoalNewEdit from "./components/GoalNewEdit/GoalNewEdit";
+import GoalAnswer from "./components/GoalAnswer/GoalAnswer";
 
 export const history = createBrowserHistory();
 
@@ -41,6 +42,7 @@ class App extends React.Component {
                     <Route exact path="/goals" component={Goals}/>
                     <Route exact path="/goals/new" component={GoalNewEdit}/>
                     <Route exact path="/goals/manage/:goalId" component={GoalNewEdit}/>
+                    <Route exact path="/goals/answer" component={GoalAnswer}/>
 
                     {/* Career */}
                     <Route exact path="/career" component={Career}/>
