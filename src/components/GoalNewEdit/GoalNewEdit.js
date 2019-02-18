@@ -9,6 +9,9 @@ import moment from "moment";
 import {Button, Divider, Form, Input, Radio} from "semantic-ui-react";
 import DatePicker from "react-datepicker";
 
+import './GoalNewEdit.scss';
+import 'react-datepicker/dist/react-datepicker.min.css';
+
 const mapStateToProps = state => ({});
 
 const mapDispatchToProps = state => ({});
@@ -66,7 +69,7 @@ class GoalNewEdit extends RequestComponent {
                     <Form.Field inline>
                         <Radio label='At least every' name='goal-test' value='atleast'
                                checked={this.state.goal.test === 'atleast'} onChange={this.onChange('test')}/>
-                        <Input type='number' value={this.state.goal.frequency}
+                        <Input type='number' value={this.state.goal.frequency} className='frequency-input'
                                onChange={this.onChange('frequency')} label={{basic: true, content: testInputLabel}}
                                labelPosition='right' disabled={this.state.goal.test !== 'atleast'}/>
                     </Form.Field>
@@ -75,7 +78,7 @@ class GoalNewEdit extends RequestComponent {
                                checked={this.state.goal.test === 'nomore'} onChange={this.onChange('test')}/>
                         <Input type='number' value={this.state.goal.frequency}
                                onChange={this.onChange('frequency')}
-                               label={{basic: true, content: testInputLabel}}
+                               label={{basic: true, content: testInputLabel}} className='frequency-input'
                                labelPosition='right' disabled={this.state.goal.test !== 'nomore'}/>
                     </Form.Field>
                     <Form.Field>
