@@ -42,16 +42,8 @@ class Goals extends React.Component {
                 <Header as='h4'>Goal Library</Header>
             </Divider>
             <div className='goal-actions'>
-                <Button
-                    color={COLOR_GOALS}
-                    as={Link}
-                    to='/goals/new'
-                    animated='vertical'>
-                    <Button.Content visible>New Goal</Button.Content>
-                    <Button.Content hidden>
-                        <Icon name='plus'/>
-                    </Button.Content>
-                </Button>
+                <NewButton/>
+                <AnsweringButton/>
             </div>
             <this.GoalsContent/>
         </div>;
@@ -91,6 +83,17 @@ class Goals extends React.Component {
     };
 }
 
+const AnsweringButton = () => <Button
+    color={COLOR_GOALS}
+    as={Link}
+    to='/goals/answer'
+    animated='vertical'>
+    <Button.Content visible>Start Answering</Button.Content>
+    <Button.Content hidden>
+        <Icon name='sticky note'/>
+    </Button.Content>
+</Button>;
+
 function getGoalMeta(goal) {
     const {test, frequency} = goal;
     switch (test) {
@@ -113,13 +116,12 @@ function getGoalMeta(goal) {
     }
 }
 
-const NewButton = <Button
-    floated='right'
-    color={COLOR_GOALS}
+const NewButton = () => <Button
+    basic
     as={Link}
-    to='/nutrition/library/new'
+    to='/goals/new'
     animated='vertical'>
-    <Button.Content visible>New Food</Button.Content>
+    <Button.Content visible>New Goal</Button.Content>
     <Button.Content hidden>
         <Icon name='plus'/>
     </Button.Content>
@@ -142,13 +144,17 @@ const GoalCard = goal =>
         </Card.Content>
     </Card>;
 
-const AnswerButton = props =>
-    <Button size='tiny' basic as={Link} to={`/goals/answer?goal=${props.goal.id}`}
-            color={COLOR_GOALS}>
-        {props.goal.last_answered && moment().isSame(props.goal.last_answered, 'day') ?
+const AnswerButton = props => {
+    const isChange = props.goal.last_answered && moment().isSame(props.goal.last_answered, 'day');
+    const queryParams = new URLSearchParams();
+    queryParams.set('goal', props.goal.id.toString());
+    const url = `/goals/answer?${queryParams}`;
+    return <Button size='tiny' basic as={Link} to={url} color={COLOR_GOALS}>
+        {isChange ?
             'Change'
             : 'Log'} Answer
     </Button>;
+};
 
 AnswerButton.propTypes = {
     goal: PropTypes.shape({

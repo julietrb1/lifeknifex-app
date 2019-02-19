@@ -4,7 +4,7 @@ import BreadcrumbSet from "../common/BreadcrumbSet/BreadcrumbSet";
 import HeaderBar from "../HeaderBar/HeaderBar";
 import {connect} from "react-redux";
 import {answersFetchAll} from "../../actions/answers";
-import {Form, Header} from "semantic-ui-react";
+import {Form, Header, Radio} from "semantic-ui-react";
 import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
 import {goalsFetchAll} from "../../actions/goals";
 import {createAnswer} from "../../Backend";
@@ -16,9 +16,13 @@ import GoalAnswerEmpty from "./GoalAnswerEmpty/GoalAnswerEmpty";
 class GoalAnswer extends RequestComponent {
     constructor(props) {
         super(props);
+        const queryParams = new URLSearchParams(this.props.location.search);
+        const goalId = queryParams.get('goal');
         this.state = {
             currentGoal: null,
-            currentGoalIndex: -1
+            currentGoalIndex: -1,
+            goalId,
+            done: false
         };
     }
 
@@ -40,10 +44,7 @@ class GoalAnswer extends RequestComponent {
     }
 
     PageContent = () => {
-        const queryParams = new URLSearchParams(this.props.location.search);
-        const mode = queryParams.get('mode');
-
-        if (mode === 'done') {
+        if (this.state.done) {
             return <GoalAnswerEmpty/>;
         } else {
             return <Form loading={this.props.isLoading}>
@@ -87,6 +88,42 @@ class GoalAnswer extends RequestComponent {
         }
     };
 
+    AnswerPost = () => {
+        if (!this.state.currentGoal) {
+            return null;
+        } else if (this.state.currentGoal.style === 'yesno') {
+            return <Form.Group inline>
+                <Form.Field
+                    control={Radio}
+                    label='Yes'
+                    value='1'/>
+                <Form.Field
+                    control={Radio}
+                    label='No'
+                    value='2'/>
+            </Form.Group>;
+        } else {
+            return <Form.Group inline>
+                <Form.Field
+                    control={Radio}
+                    label='Effectively'
+                    value='1'/>
+                <Form.Field
+                    control={Radio}
+                    label='Adequately'
+                    value='2'/>
+                <Form.Field
+                    control={Radio}
+                    label='Poorly'
+                    value='3'/>
+                <Form.Field
+                    control={Radio}
+                    label='Unsuccessfully'
+                    value='4'/>
+            </Form.Group>;
+        }
+    };
+
     handleAnswer = answerValue => {
         const goalUrl = this.state.currentGoal.url;
         createAnswer(this.cancelToken, {
@@ -96,6 +133,7 @@ class GoalAnswer extends RequestComponent {
     };
 
     goToNextGoal = () => {
+        const shouldSkipAnswered = true; // TODO: set this by inference
         if (!this.props.goals.results) {
             return;
         }
@@ -106,7 +144,7 @@ class GoalAnswer extends RequestComponent {
             const newGoal = this.props.goals.results[newGoalIndex];
             const lastAnswered = newGoal.last_answered;
             const today = moment().format(BACKEND_DATE_FORMAT);
-            if (lastAnswered !== today) {
+            if (lastAnswered !== today || !shouldSkipAnswered) {
                 return this.setState({
                     currentGoalIndex: newGoalIndex,
                     currentGoal: newGoal
@@ -114,12 +152,13 @@ class GoalAnswer extends RequestComponent {
             }
         }
 
-        this.props.history.replace('/goals/answer?mode=done');
+        this.setState({done: true});
     };
 
     componentDidUpdate(prevProps) {
         if (!prevProps.goals.results && this.props.goals.results) {
-            this.goToNextGoal();
+            const isPost = this.props.location.search.mode === 'post';
+            this.goToNextGoal(!isPost);
         }
     }
 }
