@@ -14,9 +14,10 @@ const likertAnswerSet = [
 
 const BackButton = props => {
     if (props.mode === 'post') {
-        return <Button onClick={props.history.goBack}>Back</Button>;
+        return <Button type='button' onClick={props.history.goBack}>Back</Button>;
     } else {
-        return <Button disabled={props.isStart && props.mode === 'post'} onClick={props.history.goBack}>Cancel</Button>;
+        return <Button type='button' disabled={props.isStart && props.mode === 'post'}
+                       onClick={props.history.goBack}>Cancel</Button>;
     }
 };
 
@@ -24,9 +25,9 @@ const NextButton = props => {
     if (props.mode === 'post' && !props.isEnd) {
         return <Button type="submit">Next</Button>;
     } else if (props.mode === 'post' && props.isEnd) {
-        return <Button positive type="submit">Next</Button>;
-    } else {
         return <Button positive type="submit">Finish</Button>;
+    } else {
+        return <Button disabled={!props.checkedValue} positive type="submit">Finish</Button>;
     }
 };
 
