@@ -54,14 +54,6 @@ class Goals extends React.Component {
         <Statistic.Group>
             <CommonStatistic count={this.props.goals.count} label='Goal'/>
             <CommonStatistic count={this.props.answers.count} label='Answer'/>
-            <Statistic>
-                <Statistic.Value>22</Statistic.Value>
-                <Statistic.Label>Consecutive Days</Statistic.Label>
-            </Statistic>
-            <Statistic>
-                <Statistic.Value>9</Statistic.Value>
-                <Statistic.Label>Days Since Answered</Statistic.Label>
-            </Statistic>
         </Statistic.Group>
     </div>;
 
