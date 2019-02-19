@@ -11,6 +11,7 @@ import RequestComponent from "../common/RequestComponent/RequestComponent";
 import moment from "moment";
 import {BACKEND_DATE_FORMAT} from "../../constants";
 import GoalAnswerEmpty from "./GoalAnswerEmpty/GoalAnswerEmpty";
+import AnswerPre from "./AnswerPost/AnswerPre";
 
 class GoalAnswer extends RequestComponent {
     constructor(props) {
@@ -58,30 +59,12 @@ class GoalAnswer extends RequestComponent {
     };
 
     FormContent = () => {
-        if (this.props.isLoading) {
+        if (this.props.isLoading || !this.state.currentGoal) {
             return <PlaceholderSet/>;
         } else if (this.props.match.params.goalId) {
             return <this.AnswerPost/>;
         } else {
-            return <this.AnswerPre/>;
-        }
-    };
-
-    AnswerPre = () => {
-        if (!this.state.currentGoal) {
-            return null;
-        } else if (this.state.currentGoal.style === 'yesno') {
-            return <div>
-                <Form.Button fluid basic positive onClick={() => this.handleAnswer(1)}>Yes</Form.Button>
-                <Form.Button fluid basic negative onClick={() => this.handleAnswer(2)}>No</Form.Button>
-            </div>;
-        } else {
-            return <div>
-                <Form.Button fluid basic positive onClick={() => this.handleAnswer(1)}>Effectively</Form.Button>
-                <Form.Button fluid basic onClick={() => this.handleAnswer(2)}>Adequately</Form.Button>
-                <Form.Button fluid basic onClick={() => this.handleAnswer(3)}>Poorly</Form.Button>
-                <Form.Button fluid basic negative onClick={() => this.handleAnswer(4)}>Unsuccessfully</Form.Button>
-            </div>;
+            return <AnswerPre goal={this.state.currentGoal} onAnswer={this.handleAnswer}/>;
         }
     };
 
