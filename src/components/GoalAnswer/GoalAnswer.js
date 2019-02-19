@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import BreadcrumbSet from "../common/BreadcrumbSet/BreadcrumbSet";
 import HeaderBar from "../HeaderBar/HeaderBar";
 import {connect} from "react-redux";
-import {Form, Header, Radio} from "semantic-ui-react";
+import {Form, Header} from "semantic-ui-react";
 import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
 import {goalsFetchAll} from "../../actions/goals";
 import {createAnswer} from "../../Backend";
@@ -11,7 +11,8 @@ import RequestComponent from "../common/RequestComponent/RequestComponent";
 import moment from "moment";
 import {BACKEND_DATE_FORMAT} from "../../constants";
 import GoalAnswerEmpty from "./GoalAnswerEmpty/GoalAnswerEmpty";
-import AnswerPre from "./AnswerPost/AnswerPre";
+import AnswerPre from "./AnswerPre/AnswerPre";
+import AnswerPost from "./AnswerPost/AnswerPost";
 
 class GoalAnswer extends RequestComponent {
     constructor(props) {
@@ -62,45 +63,9 @@ class GoalAnswer extends RequestComponent {
         if (this.props.isLoading || !this.state.currentGoal) {
             return <PlaceholderSet/>;
         } else if (this.props.match.params.goalId) {
-            return <this.AnswerPost/>;
+            return <AnswerPost goal={this.state.currentGoal} onAnswer={this.handleAnswer}/>;
         } else {
             return <AnswerPre goal={this.state.currentGoal} onAnswer={this.handleAnswer}/>;
-        }
-    };
-
-    AnswerPost = () => {
-        if (!this.state.currentGoal) {
-            return null;
-        } else if (this.state.currentGoal.style === 'yesno') {
-            return <Form.Group inline>
-                <Form.Field
-                    control={Radio}
-                    label='Yes'
-                    value='1'/>
-                <Form.Field
-                    control={Radio}
-                    label='No'
-                    value='2'/>
-            </Form.Group>;
-        } else {
-            return <Form.Group inline>
-                <Form.Field
-                    control={Radio}
-                    label='Effectively'
-                    value='1'/>
-                <Form.Field
-                    control={Radio}
-                    label='Adequately'
-                    value='2'/>
-                <Form.Field
-                    control={Radio}
-                    label='Poorly'
-                    value='3'/>
-                <Form.Field
-                    control={Radio}
-                    label='Unsuccessfully'
-                    value='4'/>
-            </Form.Group>;
         }
     };
 
