@@ -3,15 +3,12 @@ import PropTypes from 'prop-types';
 import {Form, Radio} from 'semantic-ui-react';
 
 const yesNoAnswerSet = [
-    {label: 'Yes', value: 1},
-    {label: 'No', value: 2},
+    {label: 'Yes', value: 1}, {label: 'No', value: 2},
 ];
 
 const likertAnswerSet = [
-    {label: 'Effectively', value: 1},
-    {label: 'Adequately', value: 2},
-    {label: 'Poorly', value: 3},
-    {label: 'Unsuccessfully', value: 4},
+    {label: 'Effectively', value: 1}, {label: 'Adequately', value: 2},
+    {label: 'Poorly', value: 3}, {label: 'Unsuccessfully', value: 4},
 ];
 
 const AnswerPost = props => {
