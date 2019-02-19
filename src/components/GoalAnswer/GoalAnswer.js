@@ -20,7 +20,8 @@ class GoalAnswer extends RequestComponent {
         this.state = {
             currentGoal: null,
             currentGoalIndex: -1,
-            done: false
+            done: false,
+            candidateValue: null
         };
     }
 
@@ -63,11 +64,14 @@ class GoalAnswer extends RequestComponent {
         if (this.props.isLoading || !this.state.currentGoal) {
             return <PlaceholderSet/>;
         } else if (this.props.match.params.goalId) {
-            return <AnswerPost goal={this.state.currentGoal} onAnswer={this.handleAnswer}/>;
+            return <AnswerPost goal={this.state.currentGoal} onAnswer={this.handleChangePostAnswer}
+                               checkedValue={this.state.candidateValue}/>;
         } else {
             return <AnswerPre goal={this.state.currentGoal} onAnswer={this.handleAnswer}/>;
         }
     };
+
+    handleChangePostAnswer = candidateValue => this.setState({candidateValue});
 
     handleAnswer = answerValue => {
         const goalUrl = this.state.currentGoal.url;
@@ -92,7 +96,8 @@ class GoalAnswer extends RequestComponent {
             if (lastAnswered !== today || !shouldSkipAnswered) {
                 return this.setState({
                     currentGoalIndex: newGoalIndex,
-                    currentGoal: newGoal
+                    currentGoal: newGoal,
+                    candidateValue: newGoal.todays_answer_value
                 });
             }
         }
@@ -100,7 +105,7 @@ class GoalAnswer extends RequestComponent {
         this.setState({done: true});
     };
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (!prevProps.goals.results && this.props.goals.results) {
             this.goToNextGoal();
         }
