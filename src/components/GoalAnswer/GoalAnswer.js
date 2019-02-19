@@ -132,7 +132,6 @@ class GoalAnswer extends RequestComponent {
     goToNextGoal = () => {
         const shouldSkipAnswered = !this.props.match.params.goalId;
         if (!this.props.goals.results) {
-            console.error(this.props.goals);
             throw new Error('No goals');
         }
 
