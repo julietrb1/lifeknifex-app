@@ -11,6 +11,7 @@ import {createAnswer} from "../../Backend";
 import RequestComponent from "../common/RequestComponent/RequestComponent";
 import moment from "moment";
 import {BACKEND_DATE_FORMAT} from "../../constants";
+import GoalAnswerEmpty from "./GoalAnswerEmpty/GoalAnswerEmpty";
 
 class GoalAnswer extends RequestComponent {
     constructor(props) {
@@ -43,7 +44,7 @@ class GoalAnswer extends RequestComponent {
         const mode = queryParams.get('mode');
 
         if (mode === 'done') {
-            return 'Done';
+            return <GoalAnswerEmpty/>;
         } else {
             return <Form loading={this.props.isLoading}>
                 <Header>
@@ -102,11 +103,13 @@ class GoalAnswer extends RequestComponent {
         for (let i = 1; i < this.props.goals.results.length; i++) {
             const currentGoalIndex = this.state.currentGoalIndex;
             const newGoalIndex = currentGoalIndex + i;
-            const lastAnswered = this.props.goals.results[newGoalIndex].last_answered;
+            const newGoal = this.props.goals.results[newGoalIndex];
+            const lastAnswered = newGoal.last_answered;
             const today = moment().format(BACKEND_DATE_FORMAT);
             if (lastAnswered !== today) {
                 return this.setState({
-                    currentGoalIndex: newGoalIndex
+                    currentGoalIndex: newGoalIndex,
+                    currentGoal: newGoal
                 });
             }
         }
