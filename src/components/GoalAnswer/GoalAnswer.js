@@ -49,7 +49,7 @@ class GoalAnswer extends RequestComponent {
         if (this.state.done) {
             return <GoalAnswerEmpty/>;
         } else {
-            return <Form loading={this.props.isLoading}>
+            return <Form loading={this.props.isLoading} onSubmit={this.handleSubmit}>
                 <Header>
                     {this.state.currentGoal ?
                         `${this.state.currentGoal.question}?` :
@@ -57,6 +57,12 @@ class GoalAnswer extends RequestComponent {
                 </Header>
                 <this.FormContent/>
             </Form>;
+        }
+    };
+
+    handleSubmit = () => {
+        if (this.props.match.params.goalId) {
+
         }
     };
 
