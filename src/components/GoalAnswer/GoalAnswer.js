@@ -95,7 +95,6 @@ class GoalAnswer extends RequestComponent {
             const today = moment().format(BACKEND_DATE_FORMAT);
             const shouldStopPre = !goalIdParam && lastAnswered !== today;
             const shouldStopPost = goalIdParam && newGoal.id === Number(goalIdParam);
-            console.log(`Should stop ${shouldStopPost}`);
             if (shouldStopPost || shouldStopPre) {
                 return this.setState({
                     currentGoalIndex: newGoalIndex,
