@@ -41,7 +41,6 @@
   "devDependencies": {
     "@types/jest": "^24.0.6",
     "@types/prop-types": "^15.5.9",
-    "@types/semantic-ui-search": "^2.2.3",
-    "semantic-ui": "^2.4.2"
+    "@types/semantic-ui-search": "^2.2.3"
   }
 }
