@@ -59,11 +59,9 @@ class GoalAnswer extends RequestComponent {
     };
 
     FormContent = () => {
-        const queryParams = new URLSearchParams(this.props.location.search);
-        const mode = queryParams.get('mode');
         if (this.props.isLoading) {
             return <PlaceholderSet/>;
-        } else if (mode === 'post') {
+        } else if (this.state.goalId) {
             return <this.AnswerPost/>;
         } else {
             return <this.AnswerPre/>;
@@ -133,7 +131,7 @@ class GoalAnswer extends RequestComponent {
     };
 
     goToNextGoal = () => {
-        const shouldSkipAnswered = true; // TODO: set this by inference
+        const shouldSkipAnswered = !this.state.goalId;
         if (!this.props.goals.results) {
             return;
         }
