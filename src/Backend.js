@@ -102,13 +102,15 @@ function clearRefreshToken() {
     window.localStorage.removeItem(LOCAL_STORAGE_JWT_REFRESH);
 }
 
+// GOALS
+
 export function updateGoal(cancelToken, goal) {
-    return axios.put(`${API_GOALS}/${goal.id}`, goal, {cancelToken: cancelToken.token})
+    return axios.put(`${API_GOALS}${goal.id}/`, goal, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
 export function getGoal(cancelToken, goalId) {
-    return axios.get(`${API_GOALS}/${goalId}`, {cancelToken: cancelToken.token})
+    return axios.get(`${API_GOALS}${goalId}/`, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
@@ -117,10 +119,25 @@ export function createGoal(cancelToken, goal) {
         .then(res => res.data);
 }
 
+// ANSWERS
+
+export function createAnswer(cancelToken, answer) {
+    return axios.post(API_ANSWERS, answer, {cancelToken: cancelToken.token})
+        .then(res => res.data);
+}
+
+export function updateAnswer(cancelToken, goal, value) {
+    return axios.patch(goal.todays_answer, {value}, {cancelToken: cancelToken.token});
+}
+
+// FEATURES
+
 export function getFeature(cancelToken, featureName) {
     return axios.get(`${API_FEATURES}${featureName}/`, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
+
+// AUTH
 
 export function logIn(cancelToken, username, password) {
     return axios

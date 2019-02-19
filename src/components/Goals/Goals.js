@@ -13,6 +13,9 @@ import {getRelativeMoment} from "../../Utils";
 import {answersFetchAll} from "../../actions/answers";
 import GoalsEmpty from "./GoalsEmpty/GoalsEmpty";
 
+import './Goals.scss';
+import CommonStatistic from "../common/CommonStatistic";
+
 const sections = [
     {name: 'Goals'}
 ];
@@ -28,38 +31,62 @@ class Goals extends React.Component {
         return <div>
             <BreadcrumbSet sections={sections}/>
             <HeaderBar title="Goals" icon='goals'/>
+
             <Divider horizontal>
                 <Header as='h4'>Dashboard</Header>
             </Divider>
-
-            <Statistic.Group>
-                <Statistic>
-                    <Statistic.Value>{this.props.goals.count ? this.props.goals.count : '--'}</Statistic.Value>
-                    <Statistic.Label>Goal{this.props.goals.count && this.props.goals.count === 1 ? '' : 's'}</Statistic.Label>
-                </Statistic>
-                <Statistic>
-                    <Statistic.Value>{this.props.answers.count ? this.props.answers.count : '--'}</Statistic.Value>
-                    <Statistic.Label>Answer{this.props.answers.count && this.props.answers.count === 1 ? '' : 's'}</Statistic.Label>
-                </Statistic>
-                <Statistic>
-                    <Statistic.Value>22</Statistic.Value>
-                    <Statistic.Label>Consecutive Days</Statistic.Label>
-                </Statistic>
-                <Statistic>
-                    <Statistic.Value>9</Statistic.Value>
-                    <Statistic.Label>Days Since Answered</Statistic.Label>
-                </Statistic>
-            </Statistic.Group>
+            <this.DashboardContent/>
 
             <Divider hidden/>
 
             <Divider horizontal>
                 <Header as='h4'>Goal Library</Header>
             </Divider>
-
+            <div className='goal-actions'>
+                <NewButton/>
+                <this.AnsweringButton/>
+            </div>
             <this.GoalsContent/>
         </div>;
     }
+
+    AnsweringButton = () => {
+        const anyAnswered = this.props.goals.results ?
+            this.props.goals.results.some(goal => goal.todays_answer) :
+            false;
+        const allAnswered = this.props.goals.results ?
+            this.props.goals.results.every(goal => goal.todays_answer) :
+            false;
+        let url, text;
+        if (allAnswered) {
+            url = '/goals/answer?mode=post';
+            text = 'Change Answers';
+        } else if (anyAnswered) {
+            url = '/goals/answer';
+            text = 'Continue Answering';
+        } else {
+            url = '/goals/answer';
+            text = 'Start Answering';
+        }
+
+        return <Button
+            color={COLOR_GOALS}
+            as={Link}
+            to={url}
+            animated='vertical'>
+            <Button.Content visible>{text}</Button.Content>
+            <Button.Content hidden>
+                <Icon name='sticky note'/>
+            </Button.Content>
+        </Button>;
+    };
+
+    DashboardContent = () => <div>
+        <Statistic.Group>
+            <CommonStatistic count={this.props.goals.count} label='Goal'/>
+            <CommonStatistic count={this.props.answers.count} label='Answer'/>
+        </Statistic.Group>
+    </div>;
 
     GoalsContent = () => {
         if (this.props.isLoading) {
@@ -96,7 +123,18 @@ function getGoalMeta(goal) {
     }
 }
 
-const GoalCard = (goal) =>
+const NewButton = () => <Button
+    basic
+    as={Link}
+    to='/goals/new'
+    animated='vertical'>
+    <Button.Content visible>New Goal</Button.Content>
+    <Button.Content hidden>
+        <Icon name='plus'/>
+    </Button.Content>
+</Button>;
+
+const GoalCard = goal =>
     <Card key={goal.id} color={COLOR_GOALS}>
         <Card.Content>
             <Card.Header>{goal.question}</Card.Header>
@@ -114,8 +152,13 @@ const GoalCard = (goal) =>
     </Card>;
 
 const AnswerButton = props => {
-    return <Button size='tiny' basic as={Link} to={`/goals/answer?goal=${props.goal.id}`}
-                   color={COLOR_GOALS}>{props.goal.last_answered && moment().isSame(props.goal.last_answered, 'day') ? 'Change' : 'Log'} Answer</Button>;
+    const isChange = props.goal.last_answered && moment().isSame(props.goal.last_answered, 'day');
+    const url = `/goals/answer/${props.goal.id}`;
+    return <Button size='tiny' basic as={Link} to={url} color={COLOR_GOALS}>
+        {isChange ?
+            'Change'
+            : 'Log'} Answer
+    </Button>;
 };
 
 AnswerButton.propTypes = {
@@ -153,20 +196,16 @@ Goals.propTypes = {
     isLoading: PropTypes.bool.isRequired
 };
 
-const mapStateToProps = (state) => {
-    return {
-        goals: state.goals,
-        hasErrored: state.goalsHasErrored,
-        isLoading: state.goalsIsLoading,
-        answers: state.answers
-    };
-};
+const mapStateToProps = state => ({
+    goals: state.goals,
+    hasErrored: state.goalsHasErrored,
+    isLoading: state.goalsIsLoading,
+    answers: state.answers
+});
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchGoals: () => dispatch(goalsFetchAll()),
-        fetchAnswers: () => dispatch(answersFetchAll())
-    };
-};
+const mapDispatchToProps = dispatch => ({
+    fetchGoals: () => dispatch(goalsFetchAll()),
+    fetchAnswers: () => dispatch(answersFetchAll())
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Goals);

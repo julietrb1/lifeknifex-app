@@ -7,7 +7,7 @@ import BreadcrumbSet from "../common/BreadcrumbSet/BreadcrumbSet";
 const sections = [
     {name: 'Nutrition', href: '/nutrition'},
     {name: 'Food Library', href: '/nutrition/library'},
-    {name: 'Modify'}
+    {name: 'Edit'}
 ];
 
 class ModifyFood extends React.Component {
@@ -23,7 +23,7 @@ class ModifyFood extends React.Component {
             <div className='modify-food'>
                 <BreadcrumbSet sections={sections}/>
                 <HeaderBar
-                    title='Modify Food'
+                    title='Edit Food'
                     icon='nutrition'/>
                 <ModifyFoodForm foodId={this.state.foodId}/>
             </div>
