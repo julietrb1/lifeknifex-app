@@ -12,6 +12,24 @@ const likertAnswerSet = [
     {label: 'Poorly', value: 3}, {label: 'Unsuccessfully', value: 4},
 ];
 
+const BackButton = props => {
+    if (props.mode === 'post') {
+        return <Button onClick={props.history.goBack}>Back</Button>;
+    } else {
+        return <Button disabled={props.isStart} onClick={props.history.goBack}>Cancel</Button>;
+    }
+};
+
+const NextButton = props => {
+    if (props.mode === 'post' && !props.isEnd) {
+        return <Button type="submit">Next</Button>;
+    } else if (props.mode === 'post' && props.isEnd) {
+        return <Button positive type="submit">Next</Button>;
+    } else {
+        return <Button positive type="submit">Finish</Button>;
+    }
+};
+
 const AnswerPost = props => {
     const answerSet = props.goal.style === 'yesno' ? yesNoAnswerSet : likertAnswerSet;
     return <div>
@@ -27,9 +45,9 @@ const AnswerPost = props => {
         </Form.Group>
         <Divider hidden/>
         <Button.Group>
-            <Button onClick={props.history.goBack}>Cancel</Button>
+            <BackButton {...props}/>
             <Button.Or/>
-            <Button positive type="submit">Save Answer</Button>
+            <NextButton {...props}/>
         </Button.Group>
     </div>;
 };
@@ -38,7 +56,10 @@ AnswerPost.propTypes = {
     goal: PropTypes.object.isRequired,
     checkedValue: PropTypes.number,
     onAnswer: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired
+    history: PropTypes.object.isRequired,
+    mode: PropTypes.oneOf(['single', 'post']).isRequired,
+    isStart: PropTypes.bool,
+    isEnd: PropTypes.bool,
 };
 
 export default withRouter(AnswerPost);
