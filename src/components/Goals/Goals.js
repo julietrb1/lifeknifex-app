@@ -141,9 +141,7 @@ const GoalCard = goal =>
 
 const AnswerButton = props => {
     const isChange = props.goal.last_answered && moment().isSame(props.goal.last_answered, 'day');
-    const queryParams = new URLSearchParams();
-    queryParams.set('goal', props.goal.id.toString());
-    const url = `/goals/answer?${queryParams}`;
+    const url = `/goals/answer/${props.goal.id}`;
     return <Button size='tiny' basic as={Link} to={url} color={COLOR_GOALS}>
         {isChange ?
             'Change'

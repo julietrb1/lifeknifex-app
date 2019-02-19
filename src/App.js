@@ -42,7 +42,7 @@ class App extends React.Component {
                     <Route exact path="/goals" component={Goals}/>
                     <Route exact path="/goals/new" component={GoalNewEdit}/>
                     <Route exact path="/goals/manage/:goalId" component={GoalNewEdit}/>
-                    <Route exact path="/goals/answer" component={GoalAnswer}/>
+                    <Route exact path="/goals/answer/:goalId?" component={GoalAnswer}/>
 
                     {/* Career */}
                     <Route exact path="/career" component={Career}/>

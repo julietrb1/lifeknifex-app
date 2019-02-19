@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import BreadcrumbSet from "../common/BreadcrumbSet/BreadcrumbSet";
 import HeaderBar from "../HeaderBar/HeaderBar";
 import {connect} from "react-redux";
-import {answersFetchAll} from "../../actions/answers";
 import {Form, Header, Radio} from "semantic-ui-react";
 import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
 import {goalsFetchAll} from "../../actions/goals";
@@ -16,20 +15,16 @@ import GoalAnswerEmpty from "./GoalAnswerEmpty/GoalAnswerEmpty";
 class GoalAnswer extends RequestComponent {
     constructor(props) {
         super(props);
-        const queryParams = new URLSearchParams(this.props.location.search);
-        const goalId = queryParams.get('goal');
         this.state = {
             currentGoal: null,
             currentGoalIndex: -1,
-            goalId,
             done: false
         };
     }
 
     componentDidMount() {
-        if (!this.props.goals.results || !this.props.answers.results) {
+        if (!this.props.goals.results) {
             this.props.fetchGoals();
-            this.props.fetchAnswers();
         } else {
             this.goToNextGoal();
         }
@@ -65,7 +60,7 @@ class GoalAnswer extends RequestComponent {
     FormContent = () => {
         if (this.props.isLoading) {
             return <PlaceholderSet/>;
-        } else if (this.state.goalId) {
+        } else if (this.props.match.params.goalId) {
             return <this.AnswerPost/>;
         } else {
             return <this.AnswerPre/>;
@@ -135,7 +130,7 @@ class GoalAnswer extends RequestComponent {
     };
 
     goToNextGoal = () => {
-        const shouldSkipAnswered = !this.state.goalId;
+        const shouldSkipAnswered = !this.props.match.params.goalId;
         if (!this.props.goals.results) {
             console.error(this.props.goals);
             throw new Error('No goals');
@@ -168,7 +163,6 @@ class GoalAnswer extends RequestComponent {
 GoalAnswer.propTypes = {
     history: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
-    fetchAnswers: PropTypes.func.isRequired,
     fetchGoals: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     isLoading: PropTypes.bool.isRequired,
@@ -177,15 +171,13 @@ GoalAnswer.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    hasErrored: state.goalsHasErrored,
-    isLoading: state.goalsIsLoading,
-    answers: state.answers,
+    hasErrored: state.goalsHasErrored || state.answersHasErrored,
+    isLoading: state.goalsIsLoading || state.answersIsLoading,
     goals: state.goals,
 });
 
 const mapDispatchToProps = dispatch => ({
-    fetchAnswers: () => dispatch(answersFetchAll()),
-    fetchGoals: () => dispatch(goalsFetchAll())
+    fetchGoals: () => dispatch(goalsFetchAll()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GoalAnswer);
