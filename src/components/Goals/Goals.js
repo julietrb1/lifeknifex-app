@@ -14,6 +14,7 @@ import {answersFetchAll} from "../../actions/answers";
 import GoalsEmpty from "./GoalsEmpty/GoalsEmpty";
 
 import './Goals.scss';
+import CommonStatistic from "../common/CommonStatistic";
 
 const sections = [
     {name: 'Goals'}
@@ -51,14 +52,8 @@ class Goals extends React.Component {
 
     DashboardContent = () => <div>
         <Statistic.Group>
-            <Statistic>
-                <Statistic.Value>{this.props.goals.count ? this.props.goals.count : '--'}</Statistic.Value>
-                <Statistic.Label>Goal{this.props.goals.count && this.props.goals.count === 1 ? '' : 's'}</Statistic.Label>
-            </Statistic>
-            <Statistic>
-                <Statistic.Value>{this.props.answers.count ? this.props.answers.count : '--'}</Statistic.Value>
-                <Statistic.Label>Answer{this.props.answers.count && this.props.answers.count === 1 ? '' : 's'}</Statistic.Label>
-            </Statistic>
+            <CommonStatistic list={this.props.goals} label='Goal'/>
+            <CommonStatistic list={this.props.answers} label='Answer'/>
             <Statistic>
                 <Statistic.Value>22</Statistic.Value>
                 <Statistic.Label>Consecutive Days</Statistic.Label>
