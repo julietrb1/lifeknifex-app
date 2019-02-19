@@ -13,6 +13,7 @@ import {BACKEND_DATE_FORMAT} from "../../constants";
 import GoalAnswerEmpty from "./GoalAnswerEmpty/GoalAnswerEmpty";
 import AnswerPre from "./AnswerPre/AnswerPre";
 import AnswerPost from "./AnswerPost/AnswerPost";
+import {firstCase} from "../../Utils";
 
 class GoalAnswer extends RequestComponent {
     constructor(props) {
@@ -56,7 +57,7 @@ class GoalAnswer extends RequestComponent {
             return <Form loading={this.props.isLoading || this.state.isLoading} onSubmit={this.handleSubmit}>
                 <Header>
                     {this.state.currentGoal ?
-                        `${this.state.currentGoal.question}?` :
+                        `Did I ${firstCase(this.state.currentGoal.question)}?` :
                         'Loading Goal...'}
                 </Header>
                 <this.FormContent/>

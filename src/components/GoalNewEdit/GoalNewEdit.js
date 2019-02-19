@@ -6,12 +6,13 @@ import HeaderBar from "../HeaderBar/HeaderBar";
 import {createGoal, getGoal, updateGoal} from "../../Backend";
 import RequestComponent from "../common/RequestComponent/RequestComponent";
 import moment from "moment";
-import {Button, Divider, Form, Input, Radio} from "semantic-ui-react";
+import {Button, Divider, Form, Input, Label, Radio} from "semantic-ui-react";
 import DatePicker from "react-datepicker";
 
 import './GoalNewEdit.scss';
 import 'react-datepicker/dist/react-datepicker.min.css';
 import {BACKEND_DATE_FORMAT} from "../../constants";
+import {firstCase} from "../../Utils";
 
 const mapStateToProps = state => ({});
 
@@ -61,9 +62,13 @@ class GoalNewEdit extends RequestComponent {
                     <Form.Field required>
                         <label>Question</label>
                         <Input type='text' onChange={this.onChange('question')}
-                               placeholder='e.g. Did I get to bed on time last night'
+                               placeholder='Get to bed on time last night'
                                value={this.state.goal.question} label={{basic: true, content: '?'}}
-                               labelPosition='right'/>
+                               labelPosition='right'>
+                            <Label>Did I</Label>
+                            <input/>
+                            <Label>?</Label>
+                        </Input>
                     </Form.Field>
                     <Form.Field required>
                         <label>Test</label>
@@ -133,7 +138,7 @@ class GoalNewEdit extends RequestComponent {
 
     isFormValid = () => !!(
         this.state.goal &&
-        this.state.goal.question && this.state.goal.question.length > 10 &&
+        this.state.goal.question && this.state.goal.question.length > 3 &&
         this.state.goal.test &&
         this.state.goal.style &&
         this.state.goal.start_date
@@ -150,6 +155,8 @@ class GoalNewEdit extends RequestComponent {
         this.setState({isLoading: true});
         const goal = this.state.goal;
         goal.question = goal.question.replace(/(\?+)$/g, '');
+        goal.question = goal.question.replace(/^((Did I)|(Have I))\s+/gi, '');
+        goal.question = firstCase(goal.question, true);
 
         try {
             if (goal.id) {

@@ -6,6 +6,10 @@ export const consumptionIcons = ['thermometer empty', 'thermometer half', 'therm
 export const foodIcons = ['angle double up', 'angle up', 'angle down', 'angle double down'];
 export const foodColors = ['teal', 'green', 'orange', 'red'];
 
+export const firstCase = (text, isUpper) => `${isUpper ?
+    text.charAt(0).toUpperCase() :
+    text.charAt(0).toLowerCase()}${text.slice(1)}`;
+
 export const extractError = err => {
     const unknownErrorMessage = 'Unknown error occurred - please contact support';
     if (!err) {

@@ -9,7 +9,7 @@ import {COLOR_GOALS} from "../../constants";
 import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
 import {Link} from "react-router-dom";
 import moment from 'moment-timezone';
-import {getRelativeMoment} from "../../Utils";
+import {firstCase, getRelativeMoment} from "../../Utils";
 import {answersFetchAll} from "../../actions/answers";
 import GoalsEmpty from "./GoalsEmpty/GoalsEmpty";
 
@@ -137,7 +137,7 @@ const NewButton = () => <Button
 const GoalCard = goal =>
     <Card key={goal.id} color={COLOR_GOALS}>
         <Card.Content>
-            <Card.Header>{goal.question}?</Card.Header>
+            <Card.Header>Did I {firstCase(goal.question)}?</Card.Header>
             <Card.Meta>{getGoalMeta(goal)}</Card.Meta>
             <Card.Description>
                 <LastAnswered goal={goal}/>
