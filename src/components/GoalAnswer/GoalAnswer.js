@@ -27,8 +27,12 @@ class GoalAnswer extends RequestComponent {
     }
 
     componentDidMount() {
-        this.props.fetchGoals();
-        this.props.fetchAnswers();
+        if (!this.props.goals.results || !this.props.answers.results) {
+            this.props.fetchGoals();
+            this.props.fetchAnswers();
+        } else {
+            this.goToNextGoal();
+        }
     }
 
     render() {
@@ -133,7 +137,8 @@ class GoalAnswer extends RequestComponent {
     goToNextGoal = () => {
         const shouldSkipAnswered = !this.state.goalId;
         if (!this.props.goals.results) {
-            return;
+            console.error(this.props.goals);
+            throw new Error('No goals');
         }
 
         for (let i = 1; i < this.props.goals.results.length; i++) {
@@ -153,10 +158,9 @@ class GoalAnswer extends RequestComponent {
         this.setState({done: true});
     };
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         if (!prevProps.goals.results && this.props.goals.results) {
-            const isPost = this.props.location.search.mode === 'post';
-            this.goToNextGoal(!isPost);
+            this.goToNextGoal();
         }
     }
 }
@@ -173,8 +177,8 @@ GoalAnswer.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    hasErrored: state.answersHasErrored,
-    isLoading: state.answersIsLoading,
+    hasErrored: state.goalsHasErrored,
+    isLoading: state.goalsIsLoading,
     answers: state.answers,
     goals: state.goals,
 });
