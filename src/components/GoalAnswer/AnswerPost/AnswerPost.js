@@ -16,7 +16,7 @@ const BackButton = props => {
     if (props.mode === 'post') {
         return <Button onClick={props.history.goBack}>Back</Button>;
     } else {
-        return <Button disabled={props.isStart} onClick={props.history.goBack}>Cancel</Button>;
+        return <Button disabled={props.isStart && props.mode === 'post'} onClick={props.history.goBack}>Cancel</Button>;
     }
 };
 
