@@ -122,14 +122,22 @@ export function createGoal(cancelToken, goal) {
 // ANSWERS
 
 export function createAnswer(cancelToken, answer) {
-    return axios.post(`${API_ANSWERS}`, answer, {cancelToken: cancelToken.token})
+    return axios.post(API_ANSWERS, answer, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
+
+export function updateAnswer(cancelToken, goal, value) {
+    return axios.patch(goal.todays_answer, {value}, {cancelToken: cancelToken.token});
+}
+
+// FEATURES
 
 export function getFeature(cancelToken, featureName) {
     return axios.get(`${API_FEATURES}${featureName}/`, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
+
+// AUTH
 
 export function logIn(cancelToken, username, password) {
     return axios

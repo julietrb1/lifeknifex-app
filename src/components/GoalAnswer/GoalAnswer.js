@@ -6,7 +6,7 @@ import {connect} from "react-redux";
 import {Form, Header} from "semantic-ui-react";
 import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
 import {goalsFetchAll} from "../../actions/goals";
-import {createAnswer} from "../../Backend";
+import {createAnswer, updateAnswer} from "../../Backend";
 import RequestComponent from "../common/RequestComponent/RequestComponent";
 import moment from "moment";
 import {BACKEND_DATE_FORMAT} from "../../constants";
@@ -62,7 +62,8 @@ class GoalAnswer extends RequestComponent {
 
     handleSubmit = () => {
         if (this.props.match.params.goalId) {
-
+            updateAnswer(this.cancelToken, this.state.currentGoal, this.state.candidateValue)
+                .then(this.props.history.goBack);
         }
     };
 
