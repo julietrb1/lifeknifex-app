@@ -5,7 +5,7 @@ import {Statistic} from "semantic-ui-react";
 const CommonStatistic = props => {
     return (
         <Statistic>
-            <Statistic.Value>{props.list.count ? props.list.count : '--'}</Statistic.Value>
+            <Statistic.Value>{props.list.count ? props.list.count.toLocaleString() : '--'}</Statistic.Value>
             <Statistic.Label>{props.label}{props.list.count && props.list.count === 1 ? '' : 's'}</Statistic.Label>
         </Statistic>
     );
