@@ -44,11 +44,27 @@ class Goals extends React.Component {
             </Divider>
             <div className='goal-actions'>
                 <NewButton/>
-                <AnsweringButton/>
+                <this.AnsweringButton/>
             </div>
             <this.GoalsContent/>
         </div>;
     }
+
+    AnsweringButton = () => {
+        const allAnswered = this.props.goals.results ?
+            this.props.goals.results.every(goal => goal.todays_answer) :
+            false;
+        return <Button
+            color={COLOR_GOALS}
+            as={Link}
+            to={`/goals/answer${allAnswered ? '?mode=post' : ''}`}
+            animated='vertical'>
+            <Button.Content visible>{allAnswered ? 'Continue' : 'Start'} Answering</Button.Content>
+            <Button.Content hidden>
+                <Icon name='sticky note'/>
+            </Button.Content>
+        </Button>;
+    };
 
     DashboardContent = () => <div>
         <Statistic.Group>
@@ -69,17 +85,6 @@ class Goals extends React.Component {
         }
     };
 }
-
-const AnsweringButton = () => <Button
-    color={COLOR_GOALS}
-    as={Link}
-    to='/goals/answer'
-    animated='vertical'>
-    <Button.Content visible>Start Answering</Button.Content>
-    <Button.Content hidden>
-        <Icon name='sticky note'/>
-    </Button.Content>
-</Button>;
 
 function getGoalMeta(goal) {
     const {test, frequency} = goal;
