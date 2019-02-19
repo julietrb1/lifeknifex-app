@@ -5,14 +5,14 @@ import {Statistic} from "semantic-ui-react";
 const CommonStatistic = props => {
     return (
         <Statistic>
-            <Statistic.Value>{props.list.count ? props.list.count.toLocaleString() : '--'}</Statistic.Value>
-            <Statistic.Label>{props.label}{props.list.count && props.list.count === 1 ? '' : 's'}</Statistic.Label>
+            <Statistic.Value>{props.count ? props.count.toLocaleString() : '--'}</Statistic.Value>
+            <Statistic.Label>{props.label}{props.count === 1 ? '' : 's'}</Statistic.Label>
         </Statistic>
     );
 };
 
 CommonStatistic.propTypes = {
-    list: PropTypes.array.isRequired,
+    count: PropTypes.number,
     label: PropTypes.string.isRequired
 };
 

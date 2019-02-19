@@ -52,8 +52,8 @@ class Goals extends React.Component {
 
     DashboardContent = () => <div>
         <Statistic.Group>
-            <CommonStatistic list={this.props.goals} label='Goal'/>
-            <CommonStatistic list={this.props.answers} label='Answer'/>
+            <CommonStatistic count={this.props.goals.count} label='Goal'/>
+            <CommonStatistic count={this.props.answers.count} label='Answer'/>
             <Statistic>
                 <Statistic.Value>22</Statistic.Value>
                 <Statistic.Label>Consecutive Days</Statistic.Label>
