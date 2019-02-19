@@ -82,18 +82,21 @@ class GoalAnswer extends RequestComponent {
     };
 
     goToNextGoal = () => {
-        const shouldSkipAnswered = !this.props.match.params.goalId;
         if (!this.props.goals.results) {
             throw new Error('No goals');
         }
 
-        for (let i = 1; i < this.props.goals.results.length; i++) {
+        const goalIdParam = this.props.match.params.goalId;
+        for (let i = 1; i < this.props.goals.results.length + 1; i++) {
             const currentGoalIndex = this.state.currentGoalIndex;
             const newGoalIndex = currentGoalIndex + i;
             const newGoal = this.props.goals.results[newGoalIndex];
             const lastAnswered = newGoal.last_answered;
             const today = moment().format(BACKEND_DATE_FORMAT);
-            if (lastAnswered !== today || !shouldSkipAnswered) {
+            const shouldStopPre = !goalIdParam && lastAnswered !== today;
+            const shouldStopPost = goalIdParam && newGoal.id === Number(goalIdParam);
+            console.log(`Should stop ${shouldStopPost}`);
+            if (shouldStopPost || shouldStopPre) {
                 return this.setState({
                     currentGoalIndex: newGoalIndex,
                     currentGoal: newGoal,
@@ -102,7 +105,11 @@ class GoalAnswer extends RequestComponent {
             }
         }
 
-        this.setState({done: true});
+        if (goalIdParam) {
+            this.props.history.replace('/goals');
+        } else {
+            this.setState({done: true});
+        }
     };
 
     componentDidUpdate(prevProps) {
