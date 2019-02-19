@@ -65,7 +65,9 @@ class GoalAnswer extends RequestComponent {
     };
 
     handleSubmit = () => {
-        if (this.props.match.params.goalId || this.state.isPostMode) {
+        const haveSingleGoal = !!this.props.match.params.goalId;
+        const goalAnswered = !!this.state.currentGoal.todays_answer;
+        if (haveSingleGoal && goalAnswered || this.state.isPostMode) {
             updateAnswer(this.cancelToken, this.state.currentGoal, this.state.candidateValue)
                 .then(() => {
                     if (this.state.isPostMode) {
@@ -74,6 +76,11 @@ class GoalAnswer extends RequestComponent {
                         this.props.history.goBack();
                     }
                 });
+        } else if (haveSingleGoal) {
+            createAnswer(this.cancelToken, {
+                goal: this.state.currentGoal.url,
+                value: this.state.candidateValue
+            }).then(this.props.history.goBack);
         }
     };
 
@@ -95,9 +102,8 @@ class GoalAnswer extends RequestComponent {
     handleChangePostAnswer = candidateValue => this.setState({candidateValue});
 
     handlePreAnswer = answerValue => {
-        const goalUrl = this.state.currentGoal.url;
         createAnswer(this.cancelToken, {
-            goal: goalUrl,
+            goal: this.state.currentGoal.url,
             value: answerValue
         }).then(this.goToNextGoal);
     };
