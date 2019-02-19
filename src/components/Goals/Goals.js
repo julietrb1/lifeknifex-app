@@ -144,7 +144,11 @@ const GoalCard = goal =>
 
 const AnswerButton = props =>
     <Button size='tiny' basic as={Link} to={`/goals/answer?goal=${props.goal.id}`}
-            color={COLOR_GOALS}>{props.goal.last_answered && moment().isSame(props.goal.last_answered, 'day') ? 'Change' : 'Log'} Answer</Button>;
+            color={COLOR_GOALS}>
+        {props.goal.last_answered && moment().isSame(props.goal.last_answered, 'day') ?
+            'Change'
+            : 'Log'} Answer
+    </Button>;
 
 AnswerButton.propTypes = {
     goal: PropTypes.shape({
