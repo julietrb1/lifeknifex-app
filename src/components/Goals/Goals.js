@@ -51,15 +51,30 @@ class Goals extends React.Component {
     }
 
     AnsweringButton = () => {
+        const anyAnswered = this.props.goals.results ?
+            this.props.goals.results.some(goal => goal.todays_answer) :
+            false;
         const allAnswered = this.props.goals.results ?
             this.props.goals.results.every(goal => goal.todays_answer) :
             false;
+        let url, text;
+        if (allAnswered) {
+            url = '/goals/answer?mode=post';
+            text = 'Change Answers';
+        } else if (anyAnswered) {
+            url = '/goals/answer';
+            text = 'Continue Answering';
+        } else {
+            url = '/goals/answer';
+            text = 'Start Answering';
+        }
+
         return <Button
             color={COLOR_GOALS}
             as={Link}
-            to={`/goals/answer${allAnswered ? '?mode=post' : ''}`}
+            to={url}
             animated='vertical'>
-            <Button.Content visible>{allAnswered ? 'Continue' : 'Start'} Answering</Button.Content>
+            <Button.Content visible>{text}</Button.Content>
             <Button.Content hidden>
                 <Icon name='sticky note'/>
             </Button.Content>
