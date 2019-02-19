@@ -49,7 +49,7 @@ class GoalAnswer extends RequestComponent {
         if (this.state.done) {
             return <GoalAnswerEmpty/>;
         } else {
-            return <Form loading={this.props.isLoading} onSubmit={this.handleSubmit}>
+            return <Form loading={this.props.isLoading || this.state.isLoading} onSubmit={this.handleSubmit}>
                 <Header>
                     {this.state.currentGoal ?
                         `${this.state.currentGoal.question}?` :
@@ -61,7 +61,7 @@ class GoalAnswer extends RequestComponent {
     };
 
     handleSubmit = () => {
-        if (this.props.match.params.goalId) {
+        if (this.props.match.params.goalId) { // TODO: Handle post mode here
             updateAnswer(this.cancelToken, this.state.currentGoal, this.state.candidateValue)
                 .then(this.props.history.goBack);
         }
@@ -74,13 +74,13 @@ class GoalAnswer extends RequestComponent {
             return <AnswerPost goal={this.state.currentGoal} onAnswer={this.handleChangePostAnswer}
                                checkedValue={this.state.candidateValue}/>;
         } else {
-            return <AnswerPre goal={this.state.currentGoal} onAnswer={this.handleAnswer}/>;
+            return <AnswerPre goal={this.state.currentGoal} onAnswer={this.handlePreAnswer}/>;
         }
     };
 
     handleChangePostAnswer = candidateValue => this.setState({candidateValue});
 
-    handleAnswer = answerValue => {
+    handlePreAnswer = answerValue => {
         const goalUrl = this.state.currentGoal.url;
         createAnswer(this.cancelToken, {
             goal: goalUrl,
@@ -94,17 +94,15 @@ class GoalAnswer extends RequestComponent {
         }
 
         const goalIdParam = this.props.match.params.goalId;
-        for (let i = 1; i < this.props.goals.results.length + 1; i++) {
-            const currentGoalIndex = this.state.currentGoalIndex;
-            const newGoalIndex = currentGoalIndex + i;
-            const newGoal = this.props.goals.results[newGoalIndex];
+        for (let i = this.state.currentGoalIndex + 1; i < this.props.goals.results.length; i++) {
+            const newGoal = this.props.goals.results[i];
             const lastAnswered = newGoal.last_answered;
             const today = moment().format(BACKEND_DATE_FORMAT);
             const shouldStopPre = !goalIdParam && lastAnswered !== today;
             const shouldStopPost = goalIdParam && newGoal.id === Number(goalIdParam);
             if (shouldStopPost || shouldStopPre) {
                 return this.setState({
-                    currentGoalIndex: newGoalIndex,
+                    currentGoalIndex: i,
                     currentGoal: newGoal,
                     candidateValue: newGoal.todays_answer_value
                 });
