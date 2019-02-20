@@ -34,7 +34,7 @@ class GoalAnswer extends RequestComponent {
         if (!this.props.goals.results) {
             this.props.fetchGoals();
         } else {
-            this.goToNextGoal();
+            this.goToGoal();
         }
     }
 
@@ -72,7 +72,7 @@ class GoalAnswer extends RequestComponent {
             updateAnswer(this.cancelToken, this.state.currentGoal, this.state.candidateValue)
                 .then(() => {
                     if (this.state.isPostMode) {
-                        this.goToNextGoal();
+                        this.goToGoal();
                     } else {
                         this.props.history.goBack();
                     }
@@ -106,10 +106,10 @@ class GoalAnswer extends RequestComponent {
         createAnswer(this.cancelToken, {
             goal: this.state.currentGoal.url,
             value: answerValue
-        }).then(this.goToNextGoal);
+        }).then(this.goToGoal);
     };
 
-    goToNextGoal = () => {
+    goToGoal = () => {
         if (!this.props.goals.results) {
             throw new Error('No goals');
         }
@@ -148,7 +148,7 @@ class GoalAnswer extends RequestComponent {
 
     componentDidUpdate(prevProps) {
         if (!prevProps.goals.results && this.props.goals.results) {
-            this.goToNextGoal();
+            this.goToGoal();
         }
     }
 }
