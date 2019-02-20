@@ -14,7 +14,7 @@ const likertAnswerSet = [
 
 const BackButton = props => {
     if (props.mode === 'post') {
-        return <Button disabled={props.isStart} type='button' onClick={props.history.goBack}>Back</Button>;
+        return <Button disabled={props.isStart} type='button' onClick={props.goBack}>Back</Button>;
     } else {
         return <Button type='button'
                        onClick={props.history.goBack}>Cancel</Button>;
@@ -61,6 +61,7 @@ AnswerPost.propTypes = {
     mode: PropTypes.oneOf(['single', 'post']).isRequired,
     isStart: PropTypes.bool,
     isEnd: PropTypes.bool,
+    goBack: PropTypes.func.isRequired
 };
 
 export default withRouter(AnswerPost);

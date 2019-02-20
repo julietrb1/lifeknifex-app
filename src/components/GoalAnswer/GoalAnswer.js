@@ -65,14 +65,14 @@ class GoalAnswer extends RequestComponent {
         }
     };
 
-    handleSubmit = () => {
+    handleSubmit = (e, {increment}) => {
         const haveSingleGoal = !!this.props.match.params.goalId;
         const goalAnswered = !!this.state.currentGoal.todays_answer;
         if ((haveSingleGoal && goalAnswered) || this.state.isPostMode) {
             updateAnswer(this.cancelToken, this.state.currentGoal, this.state.candidateValue)
                 .then(() => {
                     if (this.state.isPostMode) {
-                        this.goToGoal();
+                        this.goToGoal(increment);
                     } else {
                         this.props.history.goBack();
                     }
@@ -94,11 +94,14 @@ class GoalAnswer extends RequestComponent {
                                mode={this.state.isPostMode ? 'post' : 'single'}
                                isStart={this.state.goalIndex === 0}
                                isEnd={this.state.filteredGoals &&
-                               this.state.goalIndex === this.state.filteredGoals.length - 1}/>;
+                               this.state.goalIndex === this.state.filteredGoals.length - 1}
+                               goBack={this.handleGoBack}/>;
         } else {
             return <AnswerPre goal={this.state.currentGoal} onAnswer={this.handlePreAnswer}/>;
         }
     };
+
+    handleGoBack = () => this.handleSubmit(null, {increment: -1});
 
     handleChangePostAnswer = candidateValue => this.setState({candidateValue});
 
@@ -109,9 +112,13 @@ class GoalAnswer extends RequestComponent {
         }).then(this.goToGoal);
     };
 
-    goToGoal = () => {
+    goToGoal = (increment = 1) => {
         if (!this.props.goals.results) {
             throw new Error('No goals');
+        }
+
+        if (typeof increment !== 'number') {
+            increment = 1;
         }
 
         let filteredGoals;
@@ -129,7 +136,7 @@ class GoalAnswer extends RequestComponent {
         }
 
 
-        const newGoalIndex = this.state.goalIndex + 1;
+        const newGoalIndex = this.state.goalIndex + increment;
         if (newGoalIndex < this.props.goals.results.length) {
             const newGoal = filteredGoals[newGoalIndex];
             return this.setState({
