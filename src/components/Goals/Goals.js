@@ -98,7 +98,7 @@ class Goals extends React.Component {
         if (this.props.isLoading) {
             return <PlaceholderSet/>;
         } else if (this.props.goals.results && this.props.goals.results.length) {
-            return <Card.Group>
+            return <Card.Group stackable>
                 {this.props.goals.results.map(GoalCard)}
             </Card.Group>;
         } else {
