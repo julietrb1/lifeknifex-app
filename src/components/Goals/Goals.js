@@ -10,7 +10,6 @@ import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
 import {Link} from "react-router-dom";
 import moment from 'moment-timezone';
 import {getRelativeMoment} from "../../Utils";
-import {answersFetchAll} from "../../actions/answers";
 import GoalsEmpty from "./GoalsEmpty/GoalsEmpty";
 
 import './Goals.scss';
@@ -23,8 +22,9 @@ const sections = [
 class Goals extends React.Component {
 
     componentDidMount() {
-        this.props.fetchGoals();
-        this.props.fetchAnswers();
+        if (!this.props.goals.results) {
+            this.props.fetchGoals();
+        }
     }
 
     render() {
@@ -84,9 +84,15 @@ class Goals extends React.Component {
     DashboardContent = () => <div>
         <Statistic.Group>
             <CommonStatistic count={this.props.goals.count} label='Goal'/>
-            <CommonStatistic count={this.props.answers.count} label='Answer'/>
+            <CommonStatistic count={this.getGoalToAnswerCount()} label='To answer'/>
         </Statistic.Group>
     </div>;
+
+    getGoalToAnswerCount() {
+        return this.props.goals.results ?
+            this.props.goals.results.filter(goal => !goal.todays_answer).length
+            : null;
+    }
 
     GoalsContent = () => {
         if (this.props.isLoading) {
@@ -190,9 +196,7 @@ const LastAnswered = props => {
 
 Goals.propTypes = {
     fetchGoals: PropTypes.func.isRequired,
-    fetchAnswers: PropTypes.func.isRequired,
     goals: PropTypes.object,
-    answers: PropTypes.object,
     isLoading: PropTypes.bool.isRequired
 };
 
@@ -200,12 +204,10 @@ const mapStateToProps = state => ({
     goals: state.goals,
     hasErrored: state.goalsHasErrored,
     isLoading: state.goalsIsLoading,
-    answers: state.answers
 });
 
 const mapDispatchToProps = dispatch => ({
     fetchGoals: () => dispatch(goalsFetchAll()),
-    fetchAnswers: () => dispatch(answersFetchAll())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Goals);
