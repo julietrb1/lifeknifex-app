@@ -14,9 +14,9 @@ const likertAnswerSet = [
 
 const BackButton = props => {
     if (props.mode === 'post') {
-        return <Button type='button' onClick={props.history.goBack}>Back</Button>;
+        return <Button disabled={props.isStart} type='button' onClick={props.history.goBack}>Back</Button>;
     } else {
-        return <Button type='button' disabled={props.isStart && props.mode === 'post'}
+        return <Button type='button'
                        onClick={props.history.goBack}>Cancel</Button>;
     }
 };
