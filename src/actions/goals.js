@@ -1,4 +1,4 @@
-import {API_GOALS} from "../Backend";
+import {API_ANSWERS, API_GOALS} from "../Backend";
 import axios from "axios";
 
 export function goalsHasErrored(bool) {
@@ -29,6 +29,13 @@ export function goalUpdateAnswerSuccess(answer) {
     };
 }
 
+export function goalCreateAnswerSuccess(answer) {
+    return {
+        type: 'GOAL_CREATE_ANSWER_SUCCESS',
+        answer
+    };
+}
+
 export function goalsFetchAll(search) {
     const params = {};
     if (search && search.length) {
@@ -53,5 +60,16 @@ export function goalUpdateAnswer(goal, value) {
         axios.patch(goal.todays_answer, {value})
             .then(response => response.data)
             .then(answer => dispatch(goalUpdateAnswerSuccess(answer)));
+    };
+}
+
+export function goalCreateAnswer(goal, value) {
+    return dispatch => {
+        axios.post(API_ANSWERS, {
+            goal: goal.url,
+            value: value
+        })
+            .then(response => response.data)
+            .then(answer => dispatch(goalCreateAnswerSuccess(answer)));
     };
 }

@@ -5,8 +5,7 @@ import HeaderBar from "../HeaderBar/HeaderBar";
 import {connect} from "react-redux";
 import {Form, Header} from "semantic-ui-react";
 import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
-import {goalsFetchAll, goalUpdateAnswer} from "../../actions/goals";
-import {createAnswer} from "../../Backend";
+import {goalCreateAnswer, goalsFetchAll, goalUpdateAnswer} from "../../actions/goals";
 import RequestComponent from "../common/RequestComponent/RequestComponent";
 import moment from "moment";
 import {BACKEND_DATE_FORMAT} from "../../constants";
@@ -69,17 +68,15 @@ class GoalAnswer extends RequestComponent {
         const haveSingleGoal = !!this.props.match.params.goalId;
         const goalAnswered = !!this.state.currentGoal.todays_answer;
         if ((haveSingleGoal && goalAnswered) || this.state.isPostMode) {
-            this.props.updateGoalAnswer(this.state.currentGoal, this.state.candidateValue);
+            this.props.updateAnswer(this.state.currentGoal, this.state.candidateValue);
             if (this.state.isPostMode) {
                 this.goToGoal(increment);
             } else {
                 this.props.history.goBack();
             }
         } else if (haveSingleGoal) {
-            createAnswer(this.cancelToken, {
-                goal: this.state.currentGoal.url,
-                value: this.state.candidateValue
-            }).then(this.props.history.goBack);
+            this.props.createAnswer(this.state.currentGoal, this.state.candidateValue);
+            this.props.history.goBack();
         }
     };
 
@@ -104,10 +101,8 @@ class GoalAnswer extends RequestComponent {
     handleChangePostAnswer = candidateValue => this.setState({candidateValue});
 
     handlePreAnswer = answerValue => {
-        createAnswer(this.cancelToken, {
-            goal: this.state.currentGoal.url,
-            value: answerValue
-        }).then(this.goToGoal);
+        this.props.createAnswer(this.state.currentGoal, answerValue);
+        this.goToGoal();
     };
 
     goToGoal = (increment = 1) => {
@@ -172,7 +167,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     fetchGoals: () => dispatch(goalsFetchAll()),
-    updateGoalAnswer: (goal, value) => dispatch(goalUpdateAnswer(goal, value))
+    updateAnswer: (goal, value) => dispatch(goalUpdateAnswer(goal, value)),
+    createAnswer: (goal, value) => dispatch(goalCreateAnswer(goal, value))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GoalAnswer);

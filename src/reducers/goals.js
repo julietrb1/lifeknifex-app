@@ -19,20 +19,32 @@ export function goalsIsLoading(state = false, action) {
 }
 
 export function goals(state = {}, action) {
+    let goalIndex;
     switch (action.type) {
         case 'GOALS_FETCH_DATA_SUCCESS':
             return action.goals;
         case 'GOAL_UPDATE_ANSWER_SUCCESS':
-            const goalIndex = state.results.findIndex(goal => goal.url === action.answer.goal);
+            goalIndex = state.results.findIndex(goal => goal.url === action.answer.goal);
             if (goalIndex < 0) {
                 return state;
             }
             return update(state, {
                 results: {
                     [goalIndex]: {
-                        todays_answer_value: {
-                            $set: action.answer.value
-                        }
+                        todays_answer_value: {$set: action.answer.value}
+                    }
+                }
+            });
+        case 'GOAL_CREATE_ANSWER_SUCCESS':
+            goalIndex = state.results.findIndex(goal => goal.url === action.answer.goal);
+            if (goalIndex < 0) {
+                return state;
+            }
+            return update(state, {
+                results: {
+                    [goalIndex]: {
+                        todays_answer_value: {$set: action.answer.value},
+                        todays_answer: {$set: action.answer.url}
                     }
                 }
             });

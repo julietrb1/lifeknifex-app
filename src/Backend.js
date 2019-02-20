@@ -119,13 +119,6 @@ export function createGoal(cancelToken, goal) {
         .then(res => res.data);
 }
 
-// ANSWERS
-
-export function createAnswer(cancelToken, answer) {
-    return axios.post(API_ANSWERS, answer, {cancelToken: cancelToken.token})
-        .then(res => res.data);
-}
-
 // FEATURES
 
 export function getFeature(cancelToken, featureName) {
