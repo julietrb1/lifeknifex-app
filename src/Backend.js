@@ -104,18 +104,8 @@ function clearRefreshToken() {
 
 // GOALS
 
-export function updateGoal(cancelToken, goal) {
-    return axios.put(`${API_GOALS}${goal.id}/`, goal, {cancelToken: cancelToken.token})
-        .then(res => res.data);
-}
-
 export function getGoal(cancelToken, goalId) {
     return axios.get(`${API_GOALS}${goalId}/`, {cancelToken: cancelToken.token})
-        .then(res => res.data);
-}
-
-export function createGoal(cancelToken, goal) {
-    return axios.post(API_GOALS, goal, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 

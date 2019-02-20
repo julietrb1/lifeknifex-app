@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import BreadcrumbSet from "../common/BreadcrumbSet/BreadcrumbSet";
 import HeaderBar from "../HeaderBar/HeaderBar";
-import {createGoal, getGoal, updateGoal} from "../../Backend";
+import {getGoal} from "../../Backend";
 import RequestComponent from "../common/RequestComponent/RequestComponent";
 import moment from "moment";
 import {Button, Divider, Form, Input, Label, Radio} from "semantic-ui-react";
@@ -13,10 +13,7 @@ import './GoalNewEdit.scss';
 import 'react-datepicker/dist/react-datepicker.min.css';
 import {BACKEND_DATE_FORMAT} from "../../constants";
 import {firstCase} from "../../Utils";
-
-const mapStateToProps = state => ({});
-
-const mapDispatchToProps = state => ({});
+import {goalCreate, goalUpdate} from "../../actions/goals";
 
 class GoalNewEdit extends RequestComponent {
     constructor(props) {
@@ -151,7 +148,7 @@ class GoalNewEdit extends RequestComponent {
         }
     }));
 
-    handleGoalSubmit = async () => {
+    handleGoalSubmit = () => {
         this.setState({isLoading: true});
         const goal = this.state.goal;
         goal.question = goal.question.replace(/(\?+)$/g, '');
@@ -160,9 +157,9 @@ class GoalNewEdit extends RequestComponent {
 
         try {
             if (goal.id) {
-                await updateGoal(this.cancelToken, goal);
+                this.props.updateGoal(goal);
             } else {
-                await createGoal(this.cancelToken, goal);
+                this.props.createGoal(goal);
             }
             this.props.history.goBack();
         } finally {
@@ -180,5 +177,14 @@ GoalNewEdit.propTypes = {
     goal: PropTypes.object,
     history: PropTypes.object
 };
+
+const mapStateToProps = state => ({
+    goals: state.goals
+});
+
+const mapDispatchToProps = dispatch => ({
+    createGoal: goal => dispatch(goalCreate(goal)),
+    updateGoal: goal => dispatch(goalUpdate(goal))
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(GoalNewEdit);

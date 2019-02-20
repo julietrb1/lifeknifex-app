@@ -1,26 +1,13 @@
 import {API_ANSWERS} from "../Backend";
 import axios from "axios";
 
-export function answersHasErrored(bool) {
-    return {
-        type: 'ANSWERS_HAS_ERRORED',
-        hasErrored: bool
-    };
-}
+export const ANSWERS_HAS_ERRORED = 'ANSWERS_HAS_ERRORED';
+export const ANSWERS_IS_LOADING = 'ANSWERS_IS_LOADING';
+export const ANSWERS_FETCH_DATA_SUCCESS = 'ANSWERS_FETCH_DATA_SUCCESS';
 
-export function answersIsLoading(bool) {
-    return {
-        type: 'ANSWERS_IS_LOADING',
-        isLoading: bool
-    };
-}
-
-export function answersFetchDataSuccess(answers) {
-    return {
-        type: 'ANSWERS_FETCH_DATA_SUCCESS',
-        answers
-    };
-}
+export const answersHasErrored = hasErrored => ({type: ANSWERS_HAS_ERRORED, hasErrored});
+export const answersIsLoading = isLoading => ({type: ANSWERS_IS_LOADING, isLoading});
+export const answersFetchDataSuccess = answers => ({type: ANSWERS_FETCH_DATA_SUCCESS, answers});
 
 export function answersFetchAll(search, isArchivedVisible) {
     const params = {};
