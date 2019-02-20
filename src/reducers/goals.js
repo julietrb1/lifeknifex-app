@@ -43,13 +43,7 @@ export function goals(state = {}, action) {
                 }
             });
         case GOAL_CREATE_SUCCESS:
-            return update(state, {
-                [action.goal.url]: {$set: action.goal}
-            });
         case GOAL_UPDATE_SUCCESS:
-            return update(state, {
-                [action.goal.url]: {$set: action.goal}
-            });
         case GOAL_FETCH_ONE_SUCCESS:
             return update(state, {
                 [action.goal.url]: {$set: action.goal}

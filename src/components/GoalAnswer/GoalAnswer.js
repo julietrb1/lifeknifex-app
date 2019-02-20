@@ -20,7 +20,7 @@ class GoalAnswer extends RequestComponent {
         const queryParams = new URLSearchParams(props.location.search);
 
         this.state = {
-            currentGoal: null,
+            currentGoalUrl: null,
             goalIndex: -1,
             done: false,
             candidateValue: null,
@@ -62,8 +62,8 @@ class GoalAnswer extends RequestComponent {
             const loading = this.props.isLoading || !this.state.filteredGoals;
             return <Form loading={loading} onSubmit={this.handleSubmit}>
                 <Header>
-                    {this.state.currentGoal ?
-                        `Did I ${firstCase(this.state.currentGoal.question)}?` :
+                    {this.state.currentGoalUrl ?
+                        `Did I ${firstCase(this.props.goals[this.state.currentGoalUrl].question)}?` :
                         'Loading Goal...'}
                 </Header>
                 <this.FormContent/>
@@ -73,25 +73,25 @@ class GoalAnswer extends RequestComponent {
 
     handleSubmit = (e, {increment}) => {
         const haveSingleGoal = !!this.props.match.params.goalId;
-        const goalAnswered = !!this.state.currentGoal.todays_answer;
+        const goalAnswered = !!this.props.goals[this.state.currentGoalUrl].todays_answer;
         if ((haveSingleGoal && goalAnswered) || this.state.isPostMode) {
-            this.props.updateAnswer(this.state.currentGoal, this.state.candidateValue);
+            this.props.updateAnswer(this.props.goals[this.state.currentGoalUrl], this.state.candidateValue);
             if (this.state.isPostMode) {
                 this.goToGoal(increment);
             } else {
                 this.props.history.goBack();
             }
         } else if (haveSingleGoal) {
-            this.props.createAnswer(this.state.currentGoal, this.state.candidateValue);
+            this.props.createAnswer(this.props.goals[this.state.currentGoalUrl], this.state.candidateValue);
             this.props.history.goBack();
         }
     };
 
     FormContent = () => {
-        if (this.props.isLoading || !this.state.currentGoal) {
+        if (this.props.isLoading || !this.state.currentGoalUrl) {
             return <PlaceholderSet/>;
         } else if (this.state.isPostMode || this.props.match.params.goalId) {
-            return <AnswerPost goal={this.state.currentGoal} onAnswer={this.handleChangePostAnswer}
+            return <AnswerPost goal={this.props.goals[this.state.currentGoalUrl]} onAnswer={this.handleChangePostAnswer}
                                checkedValue={this.state.candidateValue}
                                mode={this.state.isPostMode ? 'post' : 'single'}
                                isStart={this.state.goalIndex === 0}
@@ -99,7 +99,7 @@ class GoalAnswer extends RequestComponent {
                                this.state.goalIndex === this.state.filteredGoals.length - 1}
                                goBack={this.handleGoBack}/>;
         } else {
-            return <AnswerPre goal={this.state.currentGoal} onAnswer={this.handlePreAnswer}/>;
+            return <AnswerPre goal={this.props.goals[this.state.currentGoalUrl]} onAnswer={this.handlePreAnswer}/>;
         }
     };
 
@@ -108,7 +108,7 @@ class GoalAnswer extends RequestComponent {
     handleChangePostAnswer = candidateValue => this.setState({candidateValue});
 
     handlePreAnswer = answerValue => {
-        this.props.createAnswer(this.state.currentGoal, answerValue);
+        this.props.createAnswer(this.props.goals[this.state.currentGoalUrl], answerValue);
         this.goToGoal();
     };
 
@@ -121,9 +121,29 @@ class GoalAnswer extends RequestComponent {
             increment = 1;
         }
 
-        let filteredGoals;
         const goalIdParam = this.props.match.params.goalId;
         const today = moment().format(BACKEND_DATE_FORMAT);
+        const filteredGoals = this.filterGoals(goalIdParam, today);
+        const newGoalIndex = this.state.goalIndex + increment;
+        if (newGoalIndex < Object.values(filteredGoals).length) {
+            const filteredUrl = filteredGoals[newGoalIndex].url;
+            const candidateValue = this.props.goals[filteredUrl].todays_answer_value;
+            return this.setState({
+                goalIndex: newGoalIndex,
+                currentGoalUrl: filteredUrl,
+                candidateValue
+            });
+        }
+
+        if (goalIdParam) {
+            this.props.history.replace('/goals');
+        } else {
+            this.setState({done: true});
+        }
+    };
+
+    filterGoals(goalIdParam, today) {
+        let filteredGoals;
         if (!this.state.filteredGoals) {
             filteredGoals = Object.values(this.props.goals).filter(goal => {
                 const shouldStopPre = !goalIdParam && goal.last_answered !== today;
@@ -134,24 +154,8 @@ class GoalAnswer extends RequestComponent {
         } else {
             filteredGoals = this.state.filteredGoals;
         }
-
-
-        const newGoalIndex = this.state.goalIndex + increment;
-        if (newGoalIndex < Object.values(filteredGoals).length) {
-            const newGoal = filteredGoals[newGoalIndex];
-            return this.setState({
-                goalIndex: newGoalIndex,
-                currentGoal: newGoal,
-                candidateValue: newGoal.todays_answer_value
-            });
-        }
-
-        if (goalIdParam) {
-            this.props.history.replace('/goals');
-        } else {
-            this.setState({done: true});
-        }
-    };
+        return filteredGoals;
+    }
 }
 
 GoalAnswer.propTypes = {
@@ -160,7 +164,6 @@ GoalAnswer.propTypes = {
     fetchGoals: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     isLoading: PropTypes.bool.isRequired,
-    currentGoal: PropTypes.object,
     goals: PropTypes.object
 };
 
