@@ -68,7 +68,7 @@ class GoalAnswer extends RequestComponent {
     handleSubmit = () => {
         const haveSingleGoal = !!this.props.match.params.goalId;
         const goalAnswered = !!this.state.currentGoal.todays_answer;
-        if (haveSingleGoal && goalAnswered || this.state.isPostMode) {
+        if ((haveSingleGoal && goalAnswered) || this.state.isPostMode) {
             updateAnswer(this.cancelToken, this.state.currentGoal, this.state.candidateValue)
                 .then(() => {
                     if (this.state.isPostMode) {
@@ -120,7 +120,7 @@ class GoalAnswer extends RequestComponent {
             const today = moment().format(BACKEND_DATE_FORMAT);
             filteredGoals = this.props.goals.results.filter(goal => {
                 const shouldStopPre = !goalIdParam && goal.last_answered !== today;
-                const shouldStopPost = this.state.isPostMode || goalIdParam && goal.id === Number(goalIdParam);
+                const shouldStopPost = this.state.isPostMode || (goalIdParam && goal.id === Number(goalIdParam));
                 return shouldStopPost || shouldStopPre;
             });
             this.setState({filteredGoals});
