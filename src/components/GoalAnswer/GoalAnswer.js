@@ -123,7 +123,7 @@ class GoalAnswer extends RequestComponent {
                 const shouldStopPost = this.state.isPostMode || goalIdParam && goal.id === Number(goalIdParam);
                 return shouldStopPost || shouldStopPre;
             });
-            this.setState(filteredGoals);
+            this.setState({filteredGoals});
         } else {
             filteredGoals = this.state.filteredGoals;
         }
