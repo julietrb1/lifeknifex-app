@@ -9,6 +9,7 @@ import {
     GOALS_HAS_ERRORED,
     GOALS_IS_LOADING
 } from "../actions/goals";
+import {arrayToObject} from "../Utils";
 
 export function goalsHasErrored(state = false, action) {
     switch (action.type) {
@@ -29,49 +30,29 @@ export function goalsIsLoading(state = false, action) {
 }
 
 export function goals(state = {}, action) {
-    let goalIndex;
     switch (action.type) {
         case GOALS_FETCH_DATA_SUCCESS:
-            return action.goals;
+            return arrayToObject(action.goals.results, 'url');
         case GOAL_UPDATE_ANSWER_SUCCESS:
         case GOAL_CREATE_ANSWER_SUCCESS:
-            goalIndex = state.results.findIndex(goal => goal.url === action.answer.goal);
-            if (goalIndex < 0) {
-                return state;
-            }
             return update(state, {
-                results: {
-                    [goalIndex]: {
-                        todays_answer_value: {$set: action.answer.value},
-                        todays_answer: {$set: action.answer.url},
-                        last_answered: {$set: action.answer.date}
-                    }
+                [action.answer.goal]: {
+                    todays_answer_value: {$set: action.answer.value},
+                    todays_answer: {$set: action.answer.url},
+                    last_answered: {$set: action.answer.date}
                 }
             });
         case GOAL_CREATE_SUCCESS:
             return update(state, {
-                results: {$push: [action.goal]}
+                [action.goal.url]: {$set: action.goal}
             });
         case GOAL_UPDATE_SUCCESS:
-            goalIndex = state.results.findIndex(goal => goal.id === action.goal.id);
-            if (goalIndex < 0) {
-                return state;
-            }
             return update(state, {
-                results: {
-                    [goalIndex]: {$set: action.goal}
-                }
+                [action.goal.url]: {$set: action.goal}
             });
         case GOAL_FETCH_ONE_SUCCESS:
-            if (!state.results) {
-                return {results: [action.goal]};
-            }
-            goalIndex = state.results.findIndex(goal => goal.id === action.goal.id);
-            if (goalIndex > -1) {
-                return state;
-            }
             return update(state, {
-                results: {$push: [action.goal]}
+                [action.goal.url]: {$set: action.goal}
             });
         default:
             return state;

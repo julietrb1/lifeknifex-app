@@ -44,3 +44,9 @@ export function getRelativeMoment(dateString) {
         sameElse: 'DD/MM/YYYY'
     });
 }
+
+export const arrayToObject = (array, keyField) =>
+    array.reduce((obj, item) => {
+        obj[item[keyField]] = item;
+        return obj;
+    }, {});

@@ -22,7 +22,7 @@ const sections = [
 class Goals extends React.Component {
 
     componentDidMount() {
-        if (!this.props.goals.results) {
+        if (!Object.keys(this.props.goals).length) {
             this.props.fetchGoals();
         }
     }
@@ -51,12 +51,8 @@ class Goals extends React.Component {
     }
 
     AnsweringButton = () => {
-        const anyAnswered = this.props.goals.results ?
-            this.props.goals.results.some(goal => goal.todays_answer) :
-            false;
-        const allAnswered = this.props.goals.results ?
-            this.props.goals.results.every(goal => goal.todays_answer) :
-            false;
+        const anyAnswered = Object.values(this.props.goals).some(goal => goal.todays_answer);
+        const allAnswered = Object.values(this.props.goals).every(goal => goal.todays_answer);
         let url, text;
         if (allAnswered) {
             url = '/goals/answer?mode=post';
@@ -89,17 +85,15 @@ class Goals extends React.Component {
     </div>;
 
     getGoalToAnswerCount() {
-        return this.props.goals.results ?
-            this.props.goals.results.filter(goal => !goal.todays_answer).length
-            : null;
+        return Object.values(this.props.goals).filter(goal => !goal.todays_answer).length;
     }
 
     GoalsContent = () => {
         if (this.props.isLoading) {
             return <PlaceholderSet/>;
-        } else if (this.props.goals.results && this.props.goals.results.length) {
+        } else if (Object.keys(this.props.goals).length) {
             return <Card.Group stackable>
-                {this.props.goals.results.map(GoalCard)}
+                {Object.values(this.props.goals).map(GoalCard)}
             </Card.Group>;
         } else {
             return <GoalsEmpty/>;

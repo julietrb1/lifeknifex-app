@@ -30,9 +30,16 @@ class GoalAnswer extends RequestComponent {
     }
 
     componentDidMount() {
-        if (!this.props.goals.results) {
+        if (!Object.keys(this.props.goals).length) {
             this.props.fetchGoals();
         } else {
+            this.goToGoal();
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (!Object.keys(prevProps.goals).length && Object.keys(this.props.goals).length) {
+
             this.goToGoal();
         }
     }
@@ -53,7 +60,8 @@ class GoalAnswer extends RequestComponent {
         if (this.state.done) {
             return <GoalAnswerEmpty/>;
         } else {
-            return <Form loading={this.props.isLoading || this.state.isLoading} onSubmit={this.handleSubmit}>
+            const loading = this.props.isLoading || !this.state.filteredGoals;
+            return <Form loading={loading} onSubmit={this.handleSubmit}>
                 <Header>
                     {this.state.currentGoal ?
                         `Did I ${firstCase(this.state.currentGoal.question)}?` :
@@ -106,7 +114,7 @@ class GoalAnswer extends RequestComponent {
     };
 
     goToGoal = (increment = 1) => {
-        if (!this.props.goals.results) {
+        if (!Object.keys(this.props.goals).length) {
             throw new Error('No goals');
         }
 
@@ -117,7 +125,7 @@ class GoalAnswer extends RequestComponent {
         let filteredGoals;
         const goalIdParam = this.props.match.params.goalId;
         const today = moment().format(BACKEND_DATE_FORMAT);
-        filteredGoals = this.props.goals.results.filter(goal => {
+        filteredGoals = Object.values(this.props.goals).filter(goal => {
             const shouldStopPre = !goalIdParam && goal.last_answered !== today;
             const shouldStopPost = this.state.isPostMode || (goalIdParam && goal.id === Number(goalIdParam));
             return shouldStopPost || shouldStopPre;
@@ -126,7 +134,7 @@ class GoalAnswer extends RequestComponent {
 
 
         const newGoalIndex = this.state.goalIndex + increment;
-        if (newGoalIndex < this.props.goals.results.length) {
+        if (newGoalIndex < Object.values(filteredGoals).length) {
             const newGoal = filteredGoals[newGoalIndex];
             return this.setState({
                 goalIndex: newGoalIndex,
@@ -141,12 +149,6 @@ class GoalAnswer extends RequestComponent {
             this.setState({done: true});
         }
     };
-
-    componentDidUpdate(prevProps) {
-        if (!prevProps.goals.results && this.props.goals.results) {
-            this.goToGoal();
-        }
-    }
 }
 
 GoalAnswer.propTypes = {
