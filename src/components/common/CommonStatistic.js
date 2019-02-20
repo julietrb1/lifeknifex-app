@@ -6,7 +6,7 @@ const CommonStatistic = props => {
     return (
         <Statistic>
             <Statistic.Value>{props.count ? props.count.toLocaleString() : '--'}</Statistic.Value>
-            <Statistic.Label>{props.label}{props.count === 1 ? '' : 's'}</Statistic.Label>
+            <Statistic.Label>{props.label}</Statistic.Label>
         </Statistic>
     );
 };
