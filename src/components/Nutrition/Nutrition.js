@@ -48,7 +48,7 @@ class Nutrition extends RequestComponent {
     </Button>;
 
     NewButton = () => {
-        if (this.props.consumptionsIsLoading || this.props.consumptions.results) {
+        if (this.props.isLoading || this.props.consumptions.results) {
             return <Button
                 color={COLOR_NUTRITION}
                 as={Link}
@@ -65,9 +65,9 @@ class Nutrition extends RequestComponent {
     };
 
     PageContent = () => {
-        if (!this.props.consumptionsIsLoading && this.props.consumptions.results) {
+        if (!this.props.isLoading && this.props.consumptions.results) {
             return <ConsumptionList consumptionItems={this.props.consumptions.results}/>;
-        } else if (this.props.consumptionsIsLoading) {
+        } else if (this.props.isLoading) {
             return <div>
                 <Divider hidden/>
                 <PlaceholderSet/>
