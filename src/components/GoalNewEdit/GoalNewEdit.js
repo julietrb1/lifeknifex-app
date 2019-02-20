@@ -36,23 +36,19 @@ class GoalNewEdit extends RequestComponent {
             return;
         }
 
-        const goal = this.props.goals.results ?
-            this.props.goals.results.find(goal => goal.id === goalId) :
-            null;
+        const goal = Object.values(this.props.goals).find(goal => goal.id === goalId);
         if (goal) {
             this.setState({goal});
+        } else {
+            this.props.fetchGoal(goalId);
         }
-        this.props.fetchGoal(goalId);
     }
 
     componentDidUpdate(prevProps) {
         const goalId = Number(this.props.match.params.goalId);
-        const goalExistedBefore = prevProps.goals.results &&
-            prevProps.goals.results.find(goal => goal.id === goalId);
-        const goal = this.props.goals.results.find(goal => goal.id === goalId);
-        const goalExistsNow = this.props.goals.results &&
-            goal;
-        if (!goalExistedBefore && goalExistsNow) {
+        const previousGoal = Object.values(prevProps.goals).find(goal => goal.id === goalId);
+        const goal = Object.values(this.props.goals).find(goal => goal.id === goalId);
+        if (!previousGoal && goal) {
             this.setState({goal});
         }
     }
