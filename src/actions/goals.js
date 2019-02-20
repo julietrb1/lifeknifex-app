@@ -22,6 +22,13 @@ export function goalsFetchDataSuccess(goals) {
     };
 }
 
+export function goalUpdateAnswerSuccess(answer) {
+    return {
+        type: 'GOAL_UPDATE_ANSWER_SUCCESS',
+        answer
+    };
+}
+
 export function goalsFetchAll(search) {
     const params = {};
     if (search && search.length) {
@@ -38,5 +45,13 @@ export function goalsFetchAll(search) {
             .then(response => response.data)
             .then(goals => dispatch(goalsFetchDataSuccess(goals)))
             .catch(() => dispatch(goalsHasErrored(true)));
+    };
+}
+
+export function goalUpdateAnswer(goal, value) {
+    return dispatch => {
+        axios.patch(goal.todays_answer, {value})
+            .then(response => response.data)
+            .then(answer => dispatch(goalUpdateAnswerSuccess(answer)));
     };
 }

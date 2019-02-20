@@ -5,8 +5,8 @@ import HeaderBar from "../HeaderBar/HeaderBar";
 import {connect} from "react-redux";
 import {Form, Header} from "semantic-ui-react";
 import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
-import {goalsFetchAll} from "../../actions/goals";
-import {createAnswer, updateAnswer} from "../../Backend";
+import {goalsFetchAll, goalUpdateAnswer} from "../../actions/goals";
+import {createAnswer} from "../../Backend";
 import RequestComponent from "../common/RequestComponent/RequestComponent";
 import moment from "moment";
 import {BACKEND_DATE_FORMAT} from "../../constants";
@@ -69,14 +69,12 @@ class GoalAnswer extends RequestComponent {
         const haveSingleGoal = !!this.props.match.params.goalId;
         const goalAnswered = !!this.state.currentGoal.todays_answer;
         if ((haveSingleGoal && goalAnswered) || this.state.isPostMode) {
-            updateAnswer(this.cancelToken, this.state.currentGoal, this.state.candidateValue)
-                .then(() => {
-                    if (this.state.isPostMode) {
-                        this.goToGoal(increment);
-                    } else {
-                        this.props.history.goBack();
-                    }
-                });
+            this.props.updateGoalAnswer(this.state.currentGoal, this.state.candidateValue);
+            if (this.state.isPostMode) {
+                this.goToGoal(increment);
+            } else {
+                this.props.history.goBack();
+            }
         } else if (haveSingleGoal) {
             createAnswer(this.cancelToken, {
                 goal: this.state.currentGoal.url,
@@ -123,17 +121,13 @@ class GoalAnswer extends RequestComponent {
 
         let filteredGoals;
         const goalIdParam = this.props.match.params.goalId;
-        if (!this.state.filteredGoals) {
-            const today = moment().format(BACKEND_DATE_FORMAT);
-            filteredGoals = this.props.goals.results.filter(goal => {
-                const shouldStopPre = !goalIdParam && goal.last_answered !== today;
-                const shouldStopPost = this.state.isPostMode || (goalIdParam && goal.id === Number(goalIdParam));
-                return shouldStopPost || shouldStopPre;
-            });
-            this.setState({filteredGoals});
-        } else {
-            filteredGoals = this.state.filteredGoals;
-        }
+        const today = moment().format(BACKEND_DATE_FORMAT);
+        filteredGoals = this.props.goals.results.filter(goal => {
+            const shouldStopPre = !goalIdParam && goal.last_answered !== today;
+            const shouldStopPost = this.state.isPostMode || (goalIdParam && goal.id === Number(goalIdParam));
+            return shouldStopPost || shouldStopPre;
+        });
+        this.setState({filteredGoals});
 
 
         const newGoalIndex = this.state.goalIndex + increment;
@@ -178,6 +172,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     fetchGoals: () => dispatch(goalsFetchAll()),
+    updateGoalAnswer: (goal, value) => dispatch(goalUpdateAnswer(goal, value))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GoalAnswer);
