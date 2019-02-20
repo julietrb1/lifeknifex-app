@@ -35,8 +35,8 @@ const ConsumptionList = (props) => {
                         {consumptionItemsByDate[dateString].map(item =>
                             <Card key={item.id} as={Link} to={`/nutrition/history/${item.id}`} color={COLOR_NUTRITION}>
                                 <Card.Content>
-                                    <FoodImage icon={item.food.icon}/>
-                                    <Card.Header>{item.food.name}</Card.Header>
+                                    <FoodImage icon={item.food_icon}/>
+                                    <Card.Header>{item.food_name}</Card.Header>
                                     <Card.Meta><Label
                                         size='small'>{consumptionSizes[item.quantity - 1]}</Label>&emsp;{item.date.format(TIME_FORMAT_STRING)}
                                     </Card.Meta>

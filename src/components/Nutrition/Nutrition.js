@@ -2,49 +2,25 @@ import React from 'react';
 import HeaderBar from '../HeaderBar/HeaderBar';
 import ConsumptionList from './ConsumptionList/ConsumptionList';
 import BreadcrumbSet from '../common/BreadcrumbSet/BreadcrumbSet';
-import {getConsumptions} from '../../Backend';
 import RequestComponent from '../common/RequestComponent/RequestComponent';
-import {Button, Divider, Icon, Placeholder} from 'semantic-ui-react';
+import {Button, Divider, Icon} from 'semantic-ui-react';
 import NutritionHistoryEmpty from './NutritionHistoryEmpty/NutritionHistoryEmpty';
 import {Link} from 'react-router-dom';
 import {COLOR_NUTRITION} from "../../constants";
 import './Nutrition.scss';
-import axios from 'axios';
+import {connect} from "react-redux";
+import {consumptionsFetchAll} from "../../actions/consumptions";
+import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
 
 const sections = [
     {name: 'Nutrition'}
 ];
 
-function assignFoods(consumptionItems) {
-    return Promise.all(consumptionItems.results.map(item => new Promise(resolve => {
-        axios.get(item.food)
-            .then(res => res.data)
-            .then(food => ({
-                ...item,
-                food
-            }))
-            .then(resolve);
-    })));
-}
-
 class Nutrition extends RequestComponent {
-    constructor(props) {
-        super(props);
-        this.state = {
-            consumptionItems: [],
-            loading: true
-        };
-    }
-
     componentDidMount() {
-        getConsumptions(this.cancelToken)
-            .then(assignFoods)
-            .then(consumptionItems => {
-                this.setState({
-                    consumptionItems: consumptionItems,
-                    loading: false
-                });
-            });
+        if (!this.props.consumptions.results) {
+            this.props.fetchConsumptions();
+        }
     }
 
     render() {
@@ -72,7 +48,7 @@ class Nutrition extends RequestComponent {
     </Button>;
 
     NewButton = () => {
-        if (this.state.loading || this.state.consumptionItems.length) {
+        if (this.props.consumptionsIsLoading || this.props.consumptions.results) {
             return <Button
                 color={COLOR_NUTRITION}
                 as={Link}
@@ -89,25 +65,12 @@ class Nutrition extends RequestComponent {
     };
 
     PageContent = () => {
-        if (!this.state.loading && this.state.consumptionItems.length) {
-            return <ConsumptionList consumptionItems={this.state.consumptionItems}/>;
-        } else if (this.state.loading) {
+        if (!this.props.consumptionsIsLoading && this.props.consumptions.results) {
+            return <ConsumptionList consumptionItems={this.props.consumptions.results}/>;
+        } else if (this.props.consumptionsIsLoading) {
             return <div>
                 <Divider hidden/>
-                <Placeholder>
-                    <Placeholder.Header>
-                        <Placeholder.Line/>
-                    </Placeholder.Header>
-                    <Placeholder.Paragraph>
-                        <Placeholder.Line/>
-                    </Placeholder.Paragraph>
-                    <Placeholder.Header>
-                        <Placeholder.Line/>
-                    </Placeholder.Header>
-                    <Placeholder.Paragraph>
-                        <Placeholder.Line/>
-                    </Placeholder.Paragraph>
-                </Placeholder>
+                <PlaceholderSet/>
             </div>;
         } else {
             return <NutritionHistoryEmpty/>;
@@ -115,4 +78,13 @@ class Nutrition extends RequestComponent {
     };
 }
 
-export default Nutrition;
+const mapStateToProps = state => ({
+    isLoading: state.consumptionsIsLoading,
+    consumptions: state.consumptions,
+});
+
+const mapDispatchToProps = dispatch => ({
+    fetchConsumptions: () => dispatch(consumptionsFetchAll()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Nutrition);

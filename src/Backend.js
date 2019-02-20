@@ -3,7 +3,7 @@ import {API, LOCAL_STORAGE_JWT_ACCESS, LOCAL_STORAGE_JWT_REFRESH} from "./consta
 import {history} from './App';
 
 const API_FEATURES = `${API}features/`;
-const API_CONSUMPTIONS = `${API}consumptions/`;
+export const API_CONSUMPTIONS = `${API}consumptions/`;
 export const API_FOODS = `${API}foods/`;
 export const API_GOALS = `${API}goals/`;
 export const API_ANSWERS = `${API}answers/`;
@@ -162,12 +162,6 @@ export function logOut() {
         clearRefreshToken();
         resolve();
     });
-}
-
-export function getConsumptions(cancelToken) {
-    return axios
-        .get(API_CONSUMPTIONS, {cancelToken: cancelToken.token})
-        .then(res => res.data);
 }
 
 export function getConsumption(cancelToken, consumptionId) {
