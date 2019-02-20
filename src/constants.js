@@ -25,3 +25,15 @@ switch (document.location.hostname) {
 }
 
 export const API = `${backendUrl}`;
+export const foodIcons = [
+    'Avocado', 'Bacon', 'Banana', 'Beef', 'Carrot', 'Cheese', 'Chicken', 'Chocolate', 'Cookie', 'Egg', 'Grapes',
+    'Ice cream', 'Milkshake', 'Mushroom', 'Nachos', 'Oats', 'Orange', 'Pasta', 'Peanut', 'Scone', 'Sushi', 'Toast',
+    'Wrap', 'Yogurt'
+].map(iconText => {
+    const value = iconText.toLowerCase().replace(/\s+/g, '_');
+    return ({
+        text: iconText,
+        value: value,
+        image: `/img/food_icons/${value}.svg`
+    });
+});

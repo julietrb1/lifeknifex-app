@@ -7,17 +7,9 @@ import {extractError, healthStrings} from '../../../Utils';
 import {Button, Confirm, Divider, Dropdown, Form, Radio} from 'semantic-ui-react';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import RequestComponent from '../RequestComponent/RequestComponent';
-import {APP_TITLE} from '../../../constants';
+import {APP_TITLE, foodIcons} from '../../../constants';
 
 const URL_NUTRITION_LIBRARY = '/nutrition/library';
-
-const icons = [
-    'Avocado', 'Bacon', 'Banana', 'Beef', 'Carrot', 'Cheese', 'Chicken', 'Mushroom'
-].map(iconText => ({
-    text: iconText,
-    value: iconText.toLowerCase().replace(/ /g, '_'),
-    image: `/img/food_icons/${iconText.toLowerCase().replace(/ /g, '_')}.svg`
-}));
 
 class ModifyFoodForm extends RequestComponent {
     constructor(props) {
@@ -82,7 +74,7 @@ class ModifyFoodForm extends RequestComponent {
                 <label>Icon</label>
                 <Dropdown search clearable
                           selection
-                          options={icons}
+                          options={foodIcons}
                           onChange={this.handleIconChange}
                           value={this.state.food.icon}/>
             </Form.Field>
