@@ -22,7 +22,7 @@ class GoalAnswer extends RequestComponent {
 
         this.state = {
             currentGoal: null,
-            currentGoalIndex: -1,
+            goalIndex: -1,
             done: false,
             candidateValue: null,
             isPostMode: queryParams.get('mode') === 'post',
@@ -92,9 +92,9 @@ class GoalAnswer extends RequestComponent {
             return <AnswerPost goal={this.state.currentGoal} onAnswer={this.handleChangePostAnswer}
                                checkedValue={this.state.candidateValue}
                                mode={this.state.isPostMode ? 'post' : 'single'}
-                               isStart={this.state.currentGoalIndex === 0}
+                               isStart={this.state.goalIndex === 0}
                                isEnd={this.state.filteredGoals &&
-                               this.state.currentGoalIndex === this.state.filteredGoals.length - 1}/>;
+                               this.state.goalIndex === this.state.filteredGoals.length - 1}/>;
         } else {
             return <AnswerPre goal={this.state.currentGoal} onAnswer={this.handlePreAnswer}/>;
         }
@@ -129,11 +129,11 @@ class GoalAnswer extends RequestComponent {
         }
 
 
-        const newGoalIndex = this.state.currentGoalIndex + 1;
+        const newGoalIndex = this.state.goalIndex + 1;
         if (newGoalIndex < this.props.goals.results.length) {
             const newGoal = filteredGoals[newGoalIndex];
             return this.setState({
-                currentGoalIndex: newGoalIndex,
+                goalIndex: newGoalIndex,
                 currentGoal: newGoal,
                 candidateValue: newGoal.todays_answer_value
             });
