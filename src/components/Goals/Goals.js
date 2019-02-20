@@ -79,7 +79,7 @@ class Goals extends React.Component {
 
     DashboardContent = () => <div>
         <Statistic.Group>
-            <CommonStatistic count={this.props.goals.count} label='Goals'/>
+            <CommonStatistic count={this.props.goalsResponse.count} label='Goals'/>
             <CommonStatistic count={this.getGoalToAnswerCount()} label='To answer'/>
         </Statistic.Group>
     </div>;
@@ -191,13 +191,15 @@ const LastAnswered = props => {
 Goals.propTypes = {
     fetchGoals: PropTypes.func.isRequired,
     goals: PropTypes.object,
-    isLoading: PropTypes.bool.isRequired
+    isLoading: PropTypes.bool.isRequired,
+    goalsResponse: PropTypes.object
 };
 
 const mapStateToProps = state => ({
     goals: state.goals,
     hasErrored: state.goalsHasErrored,
     isLoading: state.goalsIsLoading,
+    goalsResponse: state.goalsResponse
 });
 
 const mapDispatchToProps = dispatch => ({

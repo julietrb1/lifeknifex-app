@@ -52,3 +52,12 @@ export function goals(state = {}, action) {
             return state;
     }
 }
+
+export function goalsResponse(state = {}, action) {
+    switch (action.type) {
+        case GOALS_FETCH_DATA_SUCCESS:
+            return action.goals;
+        default:
+            return state;
+    }
+}
