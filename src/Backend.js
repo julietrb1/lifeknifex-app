@@ -126,10 +126,6 @@ export function createAnswer(cancelToken, answer) {
         .then(res => res.data);
 }
 
-export function updateAnswer(cancelToken, goal, value) {
-    return axios.patch(goal.todays_answer, {value}, {cancelToken: cancelToken.token});
-}
-
 // FEATURES
 
 export function getFeature(cancelToken, featureName) {
