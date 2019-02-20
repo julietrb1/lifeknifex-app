@@ -39,7 +39,6 @@ class GoalAnswer extends RequestComponent {
 
     componentDidUpdate(prevProps) {
         if (!Object.keys(prevProps.goals).length && Object.keys(this.props.goals).length) {
-
             this.goToGoal();
         }
     }
@@ -125,12 +124,16 @@ class GoalAnswer extends RequestComponent {
         let filteredGoals;
         const goalIdParam = this.props.match.params.goalId;
         const today = moment().format(BACKEND_DATE_FORMAT);
-        filteredGoals = Object.values(this.props.goals).filter(goal => {
-            const shouldStopPre = !goalIdParam && goal.last_answered !== today;
-            const shouldStopPost = this.state.isPostMode || (goalIdParam && goal.id === Number(goalIdParam));
-            return shouldStopPost || shouldStopPre;
-        });
-        this.setState({filteredGoals});
+        if (!this.state.filteredGoals) {
+            filteredGoals = Object.values(this.props.goals).filter(goal => {
+                const shouldStopPre = !goalIdParam && goal.last_answered !== today;
+                const shouldStopPost = this.state.isPostMode || (goalIdParam && goal.id === Number(goalIdParam));
+                return shouldStopPost || shouldStopPre;
+            });
+            this.setState({filteredGoals});
+        } else {
+            filteredGoals = this.state.filteredGoals;
+        }
 
 
         const newGoalIndex = this.state.goalIndex + increment;
