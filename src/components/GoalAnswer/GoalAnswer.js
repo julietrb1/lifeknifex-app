@@ -60,23 +60,31 @@ class GoalAnswer extends RequestComponent {
             return <GoalAnswerEmpty/>;
         } else {
             const loading = this.props.isLoading || !this.state.filteredGoals;
-            const currentGoalIndex = this.state.filteredGoals ?
-                this.state.filteredGoals.findIndex(goal => goal.url === this.state.currentGoalUrl) + 1 :
-                '--';
-
-            const filteredGoalLength = this.state.filteredGoals ?
-                this.state.filteredGoals.length :
-                '--';
             return <Form loading={loading} onSubmit={this.handleSubmit}>
                 <Header>
                     {this.state.currentGoalUrl ?
                         `Did I ${firstCase(this.props.goals[this.state.currentGoalUrl].question)}?` :
                         'Loading Goal...'}
-                    <Header.Subheader>{currentGoalIndex} / {filteredGoalLength}</Header.Subheader>
+                    <this.GoalProgressCount/>
                 </Header>
                 <this.FormContent/>
             </Form>;
         }
+    };
+
+    GoalProgressCount = () => {
+        if (this.props.match.params.goalId) {
+            return null;
+        }
+
+        const currentGoalIndex = this.state.filteredGoals ?
+            this.state.filteredGoals.findIndex(goal => goal.url === this.state.currentGoalUrl) + 1 :
+            '--';
+
+        const filteredGoalLength = this.state.filteredGoals ?
+            this.state.filteredGoals.length :
+            '--';
+        return <Header.Subheader>{currentGoalIndex} / {filteredGoalLength}</Header.Subheader>;
     };
 
     handleSubmit = (e, {increment}) => {
