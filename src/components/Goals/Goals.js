@@ -22,7 +22,7 @@ const sections = [
 class Goals extends React.Component {
 
     componentDidMount() {
-        if (!Object.keys(this.props.goals).length) {
+        if (!this.props.goalsResponse.results) {
             this.props.fetchGoals();
         }
     }
