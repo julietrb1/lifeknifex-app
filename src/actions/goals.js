@@ -8,6 +8,7 @@ export const GOAL_UPDATE_ANSWER_SUCCESS = 'GOAL_UPDATE_ANSWER_SUCCESS';
 export const GOAL_CREATE_ANSWER_SUCCESS = 'GOAL_CREATE_ANSWER_SUCCESS';
 export const GOAL_CREATE_SUCCESS = 'GOAL_CREATE_SUCCESS';
 export const GOAL_UPDATE_SUCCESS = 'GOAL_UPDATE_SUCCESS';
+export const GOAL_FETCH_ONE_SUCCESS = 'GOAL_FETCH_ONE_SUCCESS';
 
 export const goalsHasErrored = hasErrored => ({type: GOALS_HAS_ERRORED, hasErrored});
 export const goalsIsLoading = isLoading => ({type: GOALS_IS_LOADING, isLoading});
@@ -16,6 +17,7 @@ export const goalUpdateAnswerSuccess = answer => ({type: GOAL_UPDATE_ANSWER_SUCC
 export const goalCreateAnswerSuccess = answer => ({type: GOAL_CREATE_ANSWER_SUCCESS, answer});
 export const goalCreateSuccess = goal => ({type: GOAL_CREATE_SUCCESS, goal});
 export const goalUpdateSuccess = goal => ({type: GOAL_UPDATE_SUCCESS, goal});
+export const goalFetchOneSuccess = goal => ({type: GOAL_FETCH_ONE_SUCCESS, goal});
 
 export function goalsFetchAll(search) {
     const params = {};
@@ -68,5 +70,13 @@ export function goalUpdate(goal) {
         axios.patch(`${API_GOALS}${goal.id}/`, goal)
             .then(response => response.data)
             .then(goal => dispatch(goalUpdateSuccess(goal)));
+    };
+}
+
+export function goalsFetchOne(goalId) {
+    return dispatch => {
+        axios.get(`${API_GOALS}${goalId}/`)
+            .then(response => response.data)
+            .then(goal => dispatch(goalFetchOneSuccess(goal)));
     };
 }

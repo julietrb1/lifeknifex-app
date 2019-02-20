@@ -3,7 +3,6 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import BreadcrumbSet from "../common/BreadcrumbSet/BreadcrumbSet";
 import HeaderBar from "../HeaderBar/HeaderBar";
-import {getGoal} from "../../Backend";
 import RequestComponent from "../common/RequestComponent/RequestComponent";
 import moment from "moment";
 import {Button, Divider, Form, Input, Label, Radio} from "semantic-ui-react";
@@ -13,7 +12,7 @@ import './GoalNewEdit.scss';
 import 'react-datepicker/dist/react-datepicker.min.css';
 import {BACKEND_DATE_FORMAT} from "../../constants";
 import {firstCase} from "../../Utils";
-import {goalCreate, goalUpdate} from "../../actions/goals";
+import {goalCreate, goalsFetchOne, goalUpdate} from "../../actions/goals";
 
 class GoalNewEdit extends RequestComponent {
     constructor(props) {
@@ -27,22 +26,35 @@ class GoalNewEdit extends RequestComponent {
                 style: 'yesno',
                 start_date: moment().format(BACKEND_DATE_FORMAT)
             },
-            isLoading: false,
             actionWord: props.match.params.goalId ? 'Edit' : 'New'
         };
     }
 
-    async componentDidMount() {
-        const goalId = this.props.match.params.goalId;
+    componentDidMount() {
+        const goalId = Number(this.props.match.params.goalId);
         if (!goalId) {
             return;
         }
-        this.setState({isLoading: true});
-        const goal = await getGoal(this.cancelToken, goalId);
-        this.setState({
-            goal,
-            isLoading: false
-        });
+
+        const goal = this.props.goals.results ?
+            this.props.goals.results.find(goal => goal.id === goalId) :
+            null;
+        if (goal) {
+            this.setState({goal});
+        }
+        this.props.fetchGoal(goalId);
+    }
+
+    componentDidUpdate(prevProps) {
+        const goalId = Number(this.props.match.params.goalId);
+        const goalExistedBefore = prevProps.goals.results &&
+            prevProps.goals.results.find(goal => goal.id === goalId);
+        const goal = this.props.goals.results.find(goal => goal.id === goalId);
+        const goalExistsNow = this.props.goals.results &&
+            goal;
+        if (!goalExistedBefore && goalExistsNow) {
+            this.setState({goal});
+        }
     }
 
     render() {
@@ -55,7 +67,7 @@ class GoalNewEdit extends RequestComponent {
             <div>
                 <BreadcrumbSet sections={sections}/>
                 <HeaderBar title={`${this.state.actionWord} Goal`} icon='goals'/>
-                <Form onSubmit={this.handleGoalSubmit} loading={this.state.isLoading}>
+                <Form onSubmit={this.handleGoalSubmit} loading={this.props.isLoading}>
                     <Form.Field required>
                         <label>Question</label>
                         <Input type='text' onChange={this.onChange('question')}
@@ -149,7 +161,6 @@ class GoalNewEdit extends RequestComponent {
     }));
 
     handleGoalSubmit = () => {
-        this.setState({isLoading: true});
         const goal = this.state.goal;
         goal.question = goal.question.replace(/(\?+)$/g, '');
         goal.question = goal.question.replace(/^((Did I)|(Have I))\s+/gi, '');
@@ -163,7 +174,6 @@ class GoalNewEdit extends RequestComponent {
             }
             this.props.history.goBack();
         } finally {
-            this.setState({isLoading: false});
         }
     };
 }
@@ -174,7 +184,6 @@ GoalNewEdit.propTypes = {
             goalId: PropTypes.string
         })
     }),
-    goal: PropTypes.object,
     history: PropTypes.object
 };
 
@@ -184,7 +193,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     createGoal: goal => dispatch(goalCreate(goal)),
-    updateGoal: goal => dispatch(goalUpdate(goal))
+    updateGoal: goal => dispatch(goalUpdate(goal)),
+    fetchGoal: goalId => dispatch(goalsFetchOne(goalId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GoalNewEdit);

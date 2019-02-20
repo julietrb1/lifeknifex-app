@@ -2,6 +2,7 @@ import update from 'immutability-helper';
 import {
     GOAL_CREATE_ANSWER_SUCCESS,
     GOAL_CREATE_SUCCESS,
+    GOAL_FETCH_ONE_SUCCESS,
     GOAL_UPDATE_ANSWER_SUCCESS,
     GOAL_UPDATE_SUCCESS,
     GOALS_FETCH_DATA_SUCCESS,
@@ -70,6 +71,17 @@ export function goals(state = {}, action) {
                 results: {
                     [goalIndex]: {$set: action.goal}
                 }
+            });
+        case GOAL_FETCH_ONE_SUCCESS:
+            if (!state.results) {
+                return {results: [action.goal]};
+            }
+            goalIndex = state.results.findIndex(goal => goal.id === action.goal.id);
+            if (goalIndex > -1) {
+                return state;
+            }
+            return update(state, {
+                results: {$push: [action.goal]}
             });
         default:
             return state;

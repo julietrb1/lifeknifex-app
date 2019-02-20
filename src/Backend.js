@@ -102,13 +102,6 @@ function clearRefreshToken() {
     window.localStorage.removeItem(LOCAL_STORAGE_JWT_REFRESH);
 }
 
-// GOALS
-
-export function getGoal(cancelToken, goalId) {
-    return axios.get(`${API_GOALS}${goalId}/`, {cancelToken: cancelToken.token})
-        .then(res => res.data);
-}
-
 // FEATURES
 
 export function getFeature(cancelToken, featureName) {
