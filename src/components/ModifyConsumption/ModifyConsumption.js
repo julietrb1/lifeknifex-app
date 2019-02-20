@@ -6,7 +6,6 @@ import PropTypes from "prop-types";
 
 const sections = [
     {name: 'Nutrition', href: '/nutrition'},
-    {name: 'Consumption History', href: '/nutrition/history'},
     {name: 'Edit'}
 ];
 
