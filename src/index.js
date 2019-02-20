@@ -5,12 +5,14 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import configureStore from "./store/configure-store";
 import {Provider} from "react-redux";
+import {ReduxToastr} from "react-redux-toastr/src/ReduxToastr";
 
 const store = configureStore();
 
 ReactDOM.render(
     <Provider store={store}>
         <App/>
+        <ReduxToastr/>
     </Provider>
     , document.getElementById('root'));
 
