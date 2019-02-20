@@ -147,7 +147,7 @@ class GoalNewEdit extends RequestComponent {
 
     isFormValid = () => !!(
         this.state.goal &&
-        this.state.goal.question && this.state.goal.question.length > 3 &&
+        this.state.goal.question && this.state.goal.question.length >= 3 &&
         this.state.goal.test &&
         this.state.goal.style &&
         this.state.goal.start_date
