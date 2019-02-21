@@ -4,7 +4,7 @@ import {SemanticCOLORS, SemanticICONS} from "semantic-ui-react/dist/commonjs/gen
 export const healthStrings = ['Healthy', 'Reasonable', 'Poor', 'Unhealthy'];
 export const consumptionSizes = ['Small', 'Medium', 'Large', 'Extra Large'];
 export const consumptionIcons: SemanticICONS[] = ['thermometer empty', 'thermometer half', 'thermometer three quarters', 'thermometer full'];
-export const foodIcons = ['angle double up', 'angle up', 'angle down', 'angle double down'];
+export const foodIcons: SemanticICONS[] = ['angle double up', 'angle up', 'angle down', 'angle double down'];
 export const foodColors: SemanticCOLORS[] = ['teal', 'green', 'orange', 'red'];
 
 export const firstCase = (text: string, isUpper: boolean) => `${isUpper ?
