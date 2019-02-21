@@ -1,6 +1,5 @@
 import {Link} from 'react-router-dom';
 import React from 'react';
-import PropTypes from 'prop-types';
 import {Button, Card, Divider, Header, Icon, Image, Label} from 'semantic-ui-react';
 import * as constants from '../../constants';
 import {APP_TITLE} from '../../constants';
@@ -137,9 +136,5 @@ class Home extends RequestComponent {
         </div>;
     }
 }
-
-Home.propTypes = {
-    history: PropTypes.object
-};
 
 export default Home;
