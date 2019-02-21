@@ -25,7 +25,7 @@ export interface IGoal extends BackendItem {
 }
 
 export interface IGoalsStoreState {
-    [goalId: string]: IGoal;
+    [goalUrl: string]: IGoal;
 }
 
 export const goalsHasErrored: Reducer<boolean, GoalsHasErroredAction> = (state = false, action) => {
