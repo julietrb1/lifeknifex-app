@@ -1,10 +1,6 @@
 import React from 'react';
 import {Message} from "semantic-ui-react";
-
-interface IErrorMessageProps {
-    header: string;
-    content: string | string[];
-}
+import {IErrorMessageProps} from "./IErrorMessageProps";
 
 const ErrorMessage: React.FC<IErrorMessageProps> = props => {
     if (typeof props.content === 'string') {
