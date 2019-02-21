@@ -1,13 +1,9 @@
 import React from 'react';
 import {Image} from "semantic-ui-react";
-import PropTypes from 'prop-types';
+import {IFoodImageProps} from "./IFoodImageProps";
 
-const FoodImage = props => props.icon ?
+const FoodImage: React.FC<IFoodImageProps> = props => props.icon ?
     <Image floated='right' size='mini' src={`/img/food_icons/${props.icon}.svg`}/> :
     null;
-
-FoodImage.propTypes = {
-    icon: PropTypes.string
-};
 
 export default FoodImage;
