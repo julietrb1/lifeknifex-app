@@ -6,7 +6,7 @@ import {
     GoalsCreateAnswerSuccessAction,
     GoalsCreateSuccessAction,
     GoalsFetchDataAction,
-    GoalsFetchOneAction,
+    GoalsFetchOneSuccessAction,
     GoalsHasErroredAction,
     GoalsIsLoadingAction,
     GoalsUpdateAnswerSuccessAction,
@@ -53,7 +53,7 @@ type GoalsFetchActions =
     | GoalsUpdateSuccessAction
     | GoalsUpdateAnswerSuccessAction
     | GoalsCreateAnswerSuccessAction
-    | GoalsFetchOneAction;
+    | GoalsFetchOneSuccessAction;
 
 export const goals: Reducer<IGoalsStoreState, GoalsFetchActions> = (state = {}, action) => {
     switch (action.type) {

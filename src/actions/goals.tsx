@@ -13,7 +13,7 @@ export type IGoalsActions =
     | GoalsCreateAnswerSuccessAction
     | GoalsCreateSuccessAction
     | GoalsUpdateSuccessAction
-    | GoalsFetchOneAction;
+    | GoalsFetchOneSuccessAction;
 
 export enum GoalsActionTypes {
     GOALS_HAS_ERRORED = 'GOALS_HAS_ERRORED',
@@ -54,7 +54,7 @@ export interface GoalsUpdateSuccessAction extends Action<GoalsActionTypes.GOAL_U
     goal: any
 }
 
-export interface GoalsFetchOneAction extends Action<GoalsActionTypes.GOAL_FETCH_ONE_SUCCESS> {
+export interface GoalsFetchOneSuccessAction extends Action<GoalsActionTypes.GOAL_FETCH_ONE_SUCCESS> {
     goal: any
 }
 
@@ -63,15 +63,15 @@ type GoalsFetchAllActions = GoalsIsLoadingAction | GoalsFetchDataAction | GoalsH
 export function goalsFetchAll(search?: string): ThunkResult<void> {
     const params = {search};
     return (dispatch: Dispatch<GoalsFetchAllActions>) => {
-        dispatch({type: GoalsActionTypes.GOALS_IS_LOADING, isLoading: true});
+        dispatch({isLoading: true} as GoalsIsLoadingAction);
         axios.get(API_GOALS, {params: params})
             .then(response => {
                 dispatch({type: GoalsActionTypes.GOALS_IS_LOADING, isLoading: false});
                 return response;
             })
             .then(response => response.data)
-            .then(goals => dispatch({type: GoalsActionTypes.GOALS_FETCH_DATA_SUCCESS, goals}))
-            .catch(() => dispatch({type: GoalsActionTypes.GOALS_HAS_ERRORED, hasErrored: true}));
+            .then(goals => dispatch({goals} as GoalsFetchDataAction))
+            .catch(() => dispatch({hasErrored: true} as GoalsHasErroredAction));
     };
 }
 
@@ -79,7 +79,7 @@ export function goalUpdateAnswer(goal: IGoal, value: number): ThunkResult<void> 
     return (dispatch: Dispatch<GoalsUpdateAnswerSuccessAction>) => {
         axios.patch(goal.todays_answer, {value})
             .then(response => response.data)
-            .then(answer => dispatch({type: GoalsActionTypes.GOAL_UPDATE_ANSWER_SUCCESS, answer}));
+            .then(answer => dispatch({answer} as GoalsUpdateAnswerSuccessAction));
     };
 }
 
@@ -90,7 +90,7 @@ export function goalCreateAnswer(goal: any, value: number): ThunkResult<void> {
             value: value
         })
             .then(response => response.data)
-            .then(answer => dispatch({type: GoalsActionTypes.GOAL_CREATE_ANSWER_SUCCESS, answer}));
+            .then(answer => dispatch({answer} as GoalsCreateAnswerSuccessAction));
     };
 }
 
@@ -98,7 +98,7 @@ export function goalCreate(goal: IGoal): ThunkResult<void> {
     return (dispatch: Dispatch<GoalsCreateSuccessAction>) => {
         axios.post(API_GOALS, goal)
             .then(response => response.data)
-            .then(goal => dispatch({type: GoalsActionTypes.GOAL_CREATE_SUCCESS, goal}));
+            .then(goal => dispatch({goal} as GoalsCreateSuccessAction));
     };
 }
 
@@ -106,14 +106,14 @@ export function goalUpdate(goal: IGoal): ThunkResult<void> {
     return (dispatch: Dispatch<GoalsUpdateSuccessAction>) => {
         axios.patch(`${API_GOALS}${goal.id}/`, goal)
             .then(response => response.data)
-            .then(goal => dispatch({type: GoalsActionTypes.GOAL_UPDATE_SUCCESS, goal}));
+            .then(goal => dispatch({goal} as GoalsUpdateSuccessAction));
     };
 }
 
 export function goalsFetchOne(goalId: number): ThunkResult<void> {
-    return (dispatch: Dispatch<GoalsFetchOneAction>) => {
+    return (dispatch: Dispatch<GoalsFetchOneSuccessAction>) => {
         axios.get(`${API_GOALS}${goalId}/`)
             .then(response => response.data)
-            .then(goal => dispatch({type: GoalsActionTypes.GOAL_FETCH_ONE_SUCCESS, goal}));
+            .then(goal => dispatch({goal} as GoalsFetchOneSuccessAction));
     };
 }
