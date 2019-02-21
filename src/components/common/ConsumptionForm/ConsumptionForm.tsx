@@ -165,6 +165,10 @@ class ConsumptionForm extends RequestComponent<IConsumptionFormProps, IConsumpti
     };
 
     handleDelete = () => {
+        if (this.props.consumptionId === undefined) {
+            return;
+        }
+
         this.setState({
             isLoading: true,
             isDeleteVisible: false
@@ -295,7 +299,7 @@ class ConsumptionForm extends RequestComponent<IConsumptionFormProps, IConsumpti
             return this.resetSearch();
         }
 
-        this.performSearch();
+        return this.performSearch();
     };
 
     async performSearch() {
