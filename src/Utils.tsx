@@ -6,11 +6,11 @@ export const consumptionIcons = ['thermometer empty', 'thermometer half', 'therm
 export const foodIcons = ['angle double up', 'angle up', 'angle down', 'angle double down'];
 export const foodColors = ['teal', 'green', 'orange', 'red'];
 
-export const firstCase = (text, isUpper) => `${isUpper ?
+export const firstCase = (text: string, isUpper: boolean) => `${isUpper ?
     text.charAt(0).toUpperCase() :
     text.charAt(0).toLowerCase()}${text.slice(1)}`;
 
-export const extractError = err => {
+export const extractError = (err: any) => {
     const unknownErrorMessage = 'Unknown error occurred - please contact support';
     if (!err) {
         return [unknownErrorMessage];
@@ -24,7 +24,7 @@ export const extractError = err => {
     if (data.message) {
         return [data.message];
     } else if (data.errors && typeof Array.isArray(data.errors) && data.errors.length) {
-        return data.errors.map(error => error.msg);
+        return data.errors.map((error: { msg: string }) => error.msg);
     } else if (data && typeof data === 'string') {
         return [data];
     } else if (err.response && err.response.statusText) {
@@ -34,8 +34,8 @@ export const extractError = err => {
     }
 };
 
-export function getRelativeMoment(dateString) {
-    return moment(dateString).calendar(null, {
+export function getRelativeMoment(dateString: string) {
+    return moment(dateString).calendar(undefined, {
         sameDay: '[Today]',
         nextDay: '[Tomorrow]',
         nextWeek: 'dddd',
@@ -45,7 +45,7 @@ export function getRelativeMoment(dateString) {
     });
 }
 
-export const arrayToObject = (array, keyField) =>
+export const arrayToObject = (array: any[], keyField: string) =>
     array.reduce((obj, item) => {
         obj[item[keyField]] = item;
         return obj;
