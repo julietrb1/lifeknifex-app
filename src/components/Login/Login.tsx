@@ -1,25 +1,29 @@
 import React from 'react';
 import HeaderBar from '../HeaderBar/HeaderBar';
-import PropTypes from 'prop-types';
-import {Button, Divider, Form, Message} from 'semantic-ui-react';
+import {Button, Divider, Form, InputOnChangeData, Message} from 'semantic-ui-react';
 import {extractError} from '../../Utils';
 import RequestComponent from '../common/RequestComponent/RequestComponent';
-import {getFeature, logIn} from '../../Backend';
-import {API_FEATURE_REGISTRATION_ENABLED} from '../../constants';
+import {logIn} from '../../Backend';
+import {RouteComponentProps} from "react-router";
+import {ILoginState} from "./ILoginState";
 
-class Login extends RequestComponent {
-    constructor(props) {
-        super(props);
-        this.state = {
-            username: '',
-            password: '',
-            loggingIn: false,
-            submissionError: '',
-            isRegistrationEnabled: false
-        };
-    }
+interface ILoginMatchParams {
+
+}
+
+class Login extends RequestComponent<RouteComponentProps<ILoginMatchParams>, ILoginState> {
+    state = {
+        username: '',
+        password: '',
+        loggingIn: false,
+        submissionError: '',
+        isRegistrationEnabled: false,
+        usernameError: false,
+        passwordError: false
+    };
 
     componentDidMount() {
+        // TODO: Implement check for registration enabled
         // this.checkRegistrationEnabled();
         // ensureLoggedIn()
         //     .then(() => this.props.history.replace('/'))
@@ -35,7 +39,7 @@ class Login extends RequestComponent {
 
         if (!this.state.username ||
             !this.state.password) {
-            this.setState({submissionError: ['Username and password required']});
+            this.setState({submissionError: 'Username and password required'});
             return;
         }
 
@@ -53,8 +57,12 @@ class Login extends RequestComponent {
         });
     };
 
-    handleChange = (e, {value}) => {
-        this.setState({[e.target.name]: value});
+    handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>, {value}: InputOnChangeData) => {
+        this.setState({username: value});
+    };
+
+    handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>, {value}: InputOnChangeData) => {
+        this.setState({password: value});
     };
 
     render() {
@@ -68,13 +76,13 @@ class Login extends RequestComponent {
                     content={this.state.submissionError}/>
                 <Form.Field required>
                     <label>Username</label>
-                    <Form.Input error={this.state.usernameError} name='username' onChange={this.handleChange}
+                    <Form.Input error={this.state.usernameError} name='username' onChange={this.handleUsernameChange}
                                 value={this.state.username}/>
                 </Form.Field>
                 <Form.Field required>
                     <label>Password</label>
                     <Form.Input error={this.state.passwordError} name='password' type='password'
-                                onChange={this.handleChange} value={this.state.password}/>
+                                onChange={this.handlePasswordChange} value={this.state.password}/>
                 </Form.Field>
                 <Button primary type="submit">Log In</Button>
                 <this.RegistrationButton/>
@@ -92,14 +100,11 @@ class Login extends RequestComponent {
         </Button>
         : null;
 
-    checkRegistrationEnabled() {
-        getFeature(this.cancelToken, API_FEATURE_REGISTRATION_ENABLED)
-            .then(isRegistrationEnabled => this.setState({isRegistrationEnabled}));
-    }
+    // TODO: Implement check for registration enabled
+    // checkRegistrationEnabled() {
+    //     getFeature(this.cancelToken, API_FEATURE_REGISTRATION_ENABLED)
+    //         .then(isRegistrationEnabled => this.setState({isRegistrationEnabled}));
+    // }
 }
-
-Login.propTypes = {
-    history: PropTypes.object
-};
 
 export default Login;

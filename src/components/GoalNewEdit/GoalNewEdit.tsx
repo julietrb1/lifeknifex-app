@@ -35,7 +35,9 @@ interface IGoalNewEditDispatchProps {
     createGoal: (goal: IGoal) => void;
 }
 
-type Props = RouteComponentProps<IGoalNewEditMatchParams> & IGoalNewEditStateProps & IGoalNewEditDispatchProps;
+type Props = RouteComponentProps<IGoalNewEditMatchParams>
+    & IGoalNewEditStateProps
+    & IGoalNewEditDispatchProps;
 
 class GoalNewEdit extends RequestComponent<Props, IGoalNewEditState> {
     state = {
