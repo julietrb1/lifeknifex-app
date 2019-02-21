@@ -1,14 +1,14 @@
 import {Reducer} from "redux";
-import {BackendItem} from "../backend-common";
+import {IBackendItem} from "../backend-common";
 import {
     FoodsActionTypes,
     FoodsFetchDataSuccessAction,
-    FoodsHasErroredAction,
-    FoodsIsLoadingAction
+    IFoodsHasErroredAction,
+    IFoodsIsLoadingAction
 } from "../actions/foods";
 import {arrayToObject} from "../Utils";
 
-export interface IFood extends BackendItem {
+export interface IFood extends IBackendItem {
     name: string;
     quality: number;
 }
@@ -17,7 +17,7 @@ export interface IFoodsStoreState {
     [foodUrl: string]: IFood;
 }
 
-export const foodsHasErrored: Reducer<boolean, FoodsHasErroredAction> = (state = false, action) => {
+export const foodsHasErrored: Reducer<boolean, IFoodsHasErroredAction> = (state = false, action) => {
     switch (action.type) {
         case FoodsActionTypes.FOODS_HAS_ERRORED:
             return action.hasErrored;
@@ -26,7 +26,7 @@ export const foodsHasErrored: Reducer<boolean, FoodsHasErroredAction> = (state =
     }
 };
 
-export const foodsIsLoading: Reducer<boolean, FoodsIsLoadingAction> = (state = false, action) => {
+export const foodsIsLoading: Reducer<boolean, IFoodsIsLoadingAction> = (state = false, action) => {
     switch (action.type) {
         case FoodsActionTypes.FOODS_IS_LOADING:
             return action.isLoading;
@@ -46,7 +46,7 @@ export const foods: Reducer<IFoodsStoreState, FoodsFetchActions> = (state = {}, 
     }
 };
 
-export interface FoodsReduxState {
+export interface IFoodsReduxState {
     foods: any;
     foodsIsLoading: boolean;
     foodsHasErrored: boolean;

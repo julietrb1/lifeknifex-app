@@ -195,7 +195,7 @@ Goals.propTypes = {
     goalsResponse: PropTypes.object
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
     goals: state.goals,
     hasErrored: state.goalsHasErrored,
     isLoading: state.goalsIsLoading,
@@ -206,4 +206,4 @@ const mapDispatchToProps = dispatch => ({
     fetchGoals: () => dispatch(goalsFetchAll()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Goals);
+export default connect<IGoalsDispatchProps, IGoalsStateProps>(mapStateToProps, mapDispatchToProps)(Goals);

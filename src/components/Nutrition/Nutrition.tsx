@@ -88,8 +88,8 @@ const mapStateToProps = (state: any) => ({
     consumptions: state.consumptions,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<INutritionDispatchProps>) => ({
     fetchConsumptions: () => dispatch(consumptionsFetchAll()),
 });
 
-export default connect<INutritionDispatchProps, INutritionStateProps>(mapStateToProps, mapDispatchToProps)(Nutrition);
+export default connect<INutritionStateProps, INutritionDispatchProps>(mapStateToProps, mapDispatchToProps)(Nutrition);

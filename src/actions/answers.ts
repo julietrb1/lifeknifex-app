@@ -1,10 +1,9 @@
 import {API_ANSWERS} from "../Backend";
 import axios from "axios";
-import {Action, ActionCreator} from "redux";
-import {ThunkAction} from "redux-thunk";
-import {IAnswersReduxState} from "../reducers/answers";
-
-type ThunkResult<R> = ThunkAction<R, IAnswersReduxState, undefined, IAnswersActions>;
+import {Action, Dispatch} from "redux";
+import {IAnswer} from "../reducers/answers";
+import {IPaginatedResponse} from "../backend-common";
+import {ThunkResult} from "../store/configure-store";
 
 export enum AnswersActionTypes {
     ANSWERS_HAS_ERRORED = 'ANSWERS_HAS_ERRORED',
@@ -12,37 +11,33 @@ export enum AnswersActionTypes {
     ANSWERS_FETCH_DATA_SUCCESS = 'ANSWERS_FETCH_DATA_SUCCESS'
 }
 
-export interface AnswersHasErrored extends Action {
-    type: AnswersActionTypes.ANSWERS_HAS_ERRORED;
+export interface AnswersHasErroredAction extends Action<AnswersActionTypes.ANSWERS_HAS_ERRORED> {
     hasErrored: boolean;
 }
 
-export type IAnswersActions = AnswersHasErrored;
+export interface AnswersIsLoadingAction extends Action<AnswersActionTypes.ANSWERS_IS_LOADING> {
+    isLoading: boolean;
+}
 
-export const answersHasErrored: ActionCreator<Action> = (hasErrored: boolean) => ({
-    type: AnswersActionTypes.ANSWERS_HAS_ERRORED,
-    hasErrored
-});
-export const answersIsLoading: ActionCreator<Action> = (isLoading: boolean) => ({
-    type: AnswersActionTypes.ANSWERS_IS_LOADING,
-    isLoading
-});
-export const answersFetchDataSuccess: ActionCreator<Action> = (answers: any) => ({
-    type: AnswersActionTypes.ANSWERS_FETCH_DATA_SUCCESS,
-    answers
-});
+export interface AnswersFetchDataSuccessAction extends Action<AnswersActionTypes.ANSWERS_FETCH_DATA_SUCCESS> {
+    answers: IPaginatedResponse<IAnswer>;
+}
 
-export const answersFetchAll: ThunkResult<void> = (search: string, archived: boolean) => {
+export type IAnswersActions = AnswersHasErroredAction
+    | AnswersIsLoadingAction
+    | AnswersFetchDataSuccessAction;
+
+export function answersFetchAll(search: string, archived: boolean): ThunkResult<void> {
     const params = {search, archived};
-    return (dispatch: any) => {
-        dispatch(answersIsLoading(true));
+    return (dispatch: Dispatch<IAnswersActions>) => {
+        dispatch({isLoading: true} as AnswersIsLoadingAction);
         axios.get(API_ANSWERS, {params: params})
             .then(response => {
-                dispatch(answersIsLoading(false));
+                dispatch({isLoading: false} as AnswersIsLoadingAction);
                 return response;
             })
             .then(response => response.data)
-            .then(answers => dispatch(answersFetchDataSuccess(answers)))
-            .catch(() => dispatch(answersHasErrored(true)));
+            .then(answers => dispatch({answers} as AnswersFetchDataSuccessAction))
+            .catch(() => dispatch({hasErrored: true} as AnswersHasErroredAction));
     };
-};
+}

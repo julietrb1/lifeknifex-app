@@ -5,7 +5,7 @@ export interface IPaginatedResponse<T> {
     results?: T[];
 }
 
-export interface BackendItem {
+export interface IBackendItem {
     id: number;
     url: string;
 }

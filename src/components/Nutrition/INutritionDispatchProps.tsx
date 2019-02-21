@@ -1,3 +1,3 @@
 export interface INutritionDispatchProps {
-    fetchConsumptions: () => void;
+    fetchConsumptions: () => any;
 }

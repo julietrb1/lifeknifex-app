@@ -1,34 +1,41 @@
-import {ANSWERS_FETCH_DATA_SUCCESS, ANSWERS_HAS_ERRORED, ANSWERS_IS_LOADING} from "../actions/answers";
+import {AnswersActionTypes, AnswersHasErroredAction, AnswersIsLoadingAction} from "../actions/answers";
+import {IBackendItem, IPaginatedResponse} from "../backend-common";
+import {Reducer} from "redux";
 
-export function answersHasErrored(state = false, action) {
+export interface IAnswer extends IBackendItem {
+    goal: string;
+    value: number;
+    date: string;
+}
+
+// TODO: Either use this with 'answers' or remove it
+// export interface IAnswersStoreState {
+//     [answerUrl: string]: IAnswer;
+// }
+
+export const answersHasErrored: Reducer<boolean, AnswersHasErroredAction> = (state = false, action) => {
     switch (action.type) {
-        case ANSWERS_HAS_ERRORED:
+        case AnswersActionTypes.ANSWERS_HAS_ERRORED:
             return action.hasErrored;
         default:
             return state;
     }
-}
+};
 
-export function answersIsLoading(state = false, action) {
+export const answersIsLoading: Reducer<boolean, AnswersIsLoadingAction> = (state = false, action) => {
     switch (action.type) {
-        case ANSWERS_IS_LOADING:
+        case AnswersActionTypes.ANSWERS_IS_LOADING:
             return action.isLoading;
         default:
             return state;
     }
-}
+};
 
-export function answers(state = {}, action) {
+export const answers: Reducer<IPaginatedResponse<IAnswer>> = (state = {}, action) => {
     switch (action.type) {
-        case ANSWERS_FETCH_DATA_SUCCESS:
+        case AnswersActionTypes.ANSWERS_FETCH_DATA_SUCCESS:
             return action.answers;
         default:
             return state;
     }
-}
-
-export interface IAnswersReduxState {
-    answers: any;
-    isLoading: boolean;
-    hasErrored: boolean;
-}
+};

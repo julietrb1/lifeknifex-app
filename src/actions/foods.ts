@@ -6,8 +6,8 @@ import {IPaginatedResponse} from "../backend-common";
 import {IFood} from "../reducers/foods";
 
 export type IFoodsActions = FoodsFetchDataSuccessAction
-    | FoodsHasErroredAction
-    | FoodsIsLoadingAction;
+    | IFoodsHasErroredAction
+    | IFoodsIsLoadingAction;
 
 export enum FoodsActionTypes {
     FOODS_HAS_ERRORED = 'FOODS_HAS_ERRORED',
@@ -19,27 +19,27 @@ export interface FoodsFetchDataSuccessAction extends Action<FoodsActionTypes.FOO
     foods: IPaginatedResponse<IFood>;
 }
 
-export interface FoodsHasErroredAction extends Action<FoodsActionTypes.FOODS_HAS_ERRORED> {
+export interface IFoodsHasErroredAction extends Action<FoodsActionTypes.FOODS_HAS_ERRORED> {
     hasErrored: boolean
 }
 
-export interface FoodsIsLoadingAction extends Action<FoodsActionTypes.FOODS_IS_LOADING> {
+export interface IFoodsIsLoadingAction extends Action<FoodsActionTypes.FOODS_IS_LOADING> {
     isLoading: boolean
 }
 
-type FoodsFetchAllActions = FoodsIsLoadingAction | FoodsHasErroredAction | FoodsFetchDataSuccessAction;
+type FoodsFetchAllActions = IFoodsIsLoadingAction | IFoodsHasErroredAction | FoodsFetchDataSuccessAction;
 
 export function foodsFetchAll(search: string, archived: boolean): ThunkResult<void> {
     const params = {search, archived};
     return (dispatch: Dispatch<FoodsFetchAllActions>) => {
-        dispatch({isLoading: true} as FoodsIsLoadingAction);
+        dispatch({isLoading: true} as IFoodsIsLoadingAction);
         axios.get(API_FOODS, {params: params})
             .then(response => {
-                dispatch({isLoading: false} as FoodsIsLoadingAction);
+                dispatch({isLoading: false} as IFoodsIsLoadingAction);
                 return response;
             })
             .then(response => response.data)
             .then(foods => dispatch({foods} as FoodsFetchDataSuccessAction))
-            .catch(() => dispatch({hasErrored: true} as FoodsHasErroredAction));
+            .catch(() => dispatch({hasErrored: true} as IFoodsHasErroredAction));
     };
 }

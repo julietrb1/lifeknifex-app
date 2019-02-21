@@ -12,13 +12,9 @@ import {
     GoalsUpdateAnswerSuccessAction,
     GoalsUpdateSuccessAction
 } from "../actions/goals";
-import {BackendItem, IPaginatedResponse} from "../backend-common";
+import {IBackendItem, IPaginatedResponse} from "../backend-common";
 
-export interface IGoalsReduxState {
-    hasErrored: boolean;
-}
-
-export interface IGoal extends BackendItem {
+export interface IGoal extends IBackendItem {
     todays_answer_value: number;
     todays_answer: string;
     last_answered: string;
