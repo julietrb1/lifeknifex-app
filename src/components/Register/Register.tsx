@@ -1,22 +1,30 @@
 import React from 'react';
 import HeaderBar from "../HeaderBar/HeaderBar";
-import PropTypes from "prop-types";
-import {Button, Divider, Form, Message} from "semantic-ui-react";
+import {Button, Divider, Form, InputOnChangeData, Message} from "semantic-ui-react";
 import {extractError} from "../../Utils";
 import {getFeature, register} from '../../Backend';
 import RequestComponent from "../common/RequestComponent/RequestComponent";
 import {API_FEATURE_REGISTRATION_ENABLED} from '../../constants';
+import {RouteComponentProps} from "react-router";
 
-class Register extends RequestComponent {
-    constructor(props) {
-        super(props);
-        this.state = {
-            username: '',
-            password: '',
-            submitting: false,
-            submissionError: ''
-        };
-    }
+interface IRegisterState {
+    username: string;
+    password: string;
+    submitting: boolean;
+    submissionErrors: string[];
+    usernameError: boolean;
+    passwordError: boolean;
+}
+
+class Register extends RequestComponent<RouteComponentProps, IRegisterState> {
+    state = {
+        username: '',
+        password: '',
+        submitting: false,
+        submissionErrors: [''],
+        usernameError: false,
+        passwordError: false
+    };
 
     componentDidMount() {
         getFeature(this.cancelToken, API_FEATURE_REGISTRATION_ENABLED)
@@ -37,7 +45,7 @@ class Register extends RequestComponent {
 
         if (!this.state.username ||
             !this.state.password) {
-            this.setState({submissionError: ['Username and password required']});
+            this.setState({submissionErrors: ['Username and password required']});
             return;
         }
 
@@ -48,13 +56,17 @@ class Register extends RequestComponent {
             .catch(err => {
                 this.setState({
                     submitting: false,
-                    submissionError: extractError(err)
+                    submissionErrors: extractError(err)
                 });
             });
     };
 
-    handleChange = (e, {value}) => {
-        this.setState({[e.target.name]: value});
+    handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>, {value}: InputOnChangeData) => {
+        this.setState({username: value});
+    };
+
+    handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>, {value}: InputOnChangeData) => {
+        this.setState({password: value});
     };
 
     render() {
@@ -64,12 +76,12 @@ class Register extends RequestComponent {
             <Form
                 onSubmit={this.handleSubmit}
                 loading={this.state.submitting}
-                error={!!this.state.submissionError}>
+                error={!!this.state.submissionErrors.length}>
                 <Message
                     error
                     header='Registration Failed'
-                    list={this.state.submissionError}
-                    onDismiss={() => this.setState({submissionError: ''})}
+                    list={this.state.submissionErrors}
+                    onDismiss={() => this.setState({submissionErrors: []})}
                 />
                 <Form.Field required>
                     <label>Username</label>
@@ -77,7 +89,7 @@ class Register extends RequestComponent {
                         name="username"
                         error={this.state.usernameError}
                         value={this.state.username}
-                        onChange={this.handleChange}/>
+                        onChange={this.handleUsernameChange}/>
                 </Form.Field>
                 <Form.Field required>
                     <label>Password</label>
@@ -85,7 +97,7 @@ class Register extends RequestComponent {
                                 name="password"
                                 error={this.state.passwordError}
                                 value={this.state.password}
-                                onChange={this.handleChange}/>
+                                onChange={this.handlePasswordChange}/>
                 </Form.Field>
                 <Button primary type="submit">Register</Button>
                 <Button
@@ -98,9 +110,5 @@ class Register extends RequestComponent {
         </div>;
     }
 }
-
-Register.propTypes = {
-    history: PropTypes.object
-};
 
 export default Register;

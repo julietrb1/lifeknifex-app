@@ -125,6 +125,8 @@ export function logIn(cancelToken: CancelTokenSource, username: string, password
 }
 
 export function register(cancelToken: CancelTokenSource, username: string, password: string) {
+    // TODO: Implement this properly
+    return new Promise((resolve) => resolve());
     // return axios
     //     .post(`${API_AUTH}register/`, {
     //         username: username,
