@@ -1,13 +1,16 @@
 import React from 'react';
 import moment from "moment";
-import PropTypes from "prop-types";
 import {Card, Divider, Header, Label} from "semantic-ui-react";
 import {consumptionSizes, getRelativeMoment} from "../../../Utils";
 import {Link} from "react-router-dom";
 import {COLOR_NUTRITION, TIME_FORMAT_STRING} from "../../../constants";
 import FoodImage from "../../common/FoodImage/FoodImage";
 
-const ConsumptionList = (props) => {
+interface IConsumptionListProps {
+    consumptionItems: any[];
+}
+
+const ConsumptionList: React.FC<IConsumptionListProps> = (props) => {
     const consumptionItems = props.consumptionItems.map(item => {
         item.date = moment(item.date).local();
         return item;
@@ -32,7 +35,7 @@ const ConsumptionList = (props) => {
 
                     <Divider hidden/>
                     <Card.Group>
-                        {consumptionItemsByDate[dateString].map(item =>
+                        {consumptionItemsByDate[dateString].map((item: any) => // TODO: Add consumption type
                             <Card key={item.id} as={Link} to={`/nutrition/history/${item.id}`} color={COLOR_NUTRITION}>
                                 <Card.Content>
                                     <FoodImage icon={item.food_icon}/>
@@ -49,10 +52,6 @@ const ConsumptionList = (props) => {
             )
         }
     </div>;
-};
-
-ConsumptionList.propTypes = {
-    consumptionItems: PropTypes.array
 };
 
 export default ConsumptionList;
