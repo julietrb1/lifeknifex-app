@@ -191,7 +191,7 @@ export function getFood(cancelToken: CancelTokenSource, foodId: number) {
         .then(res => res.data);
 }
 
-export function updateFood(cancelToken: CancelTokenSource, food: { id: any; }) {
+export function updateFood(cancelToken: CancelTokenSource, food: any) {
     return axios
         .patch(`${API_FOODS}${food.id}/`, food, {cancelToken: cancelToken.token})
         .then(res => res.data);

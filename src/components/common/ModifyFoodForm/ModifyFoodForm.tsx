@@ -1,31 +1,51 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import './ModifyFoodForm.scss';
 import {createFood, getFood, updateFood} from '../../../Backend';
-import {Link, withRouter} from 'react-router-dom';
+import {Link, RouteComponentProps, withRouter} from 'react-router-dom';
 import {extractError, healthStrings} from '../../../Utils';
-import {Button, Confirm, Divider, Dropdown, Form, Radio} from 'semantic-ui-react';
+import {
+    Button,
+    CheckboxProps,
+    Confirm,
+    Divider,
+    Dropdown,
+    DropdownProps,
+    Form,
+    InputOnChangeData,
+    Radio
+} from 'semantic-ui-react';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import RequestComponent from '../RequestComponent/RequestComponent';
 import {APP_TITLE, foodIcons} from '../../../constants';
 
 const URL_NUTRITION_LIBRARY = '/nutrition/library';
 
-class ModifyFoodForm extends RequestComponent {
-    constructor(props) {
-        super(props);
-        this.state = {
-            food: {
-                name: '',
-                health_index: 1,
-                icon: ''
-            },
-            isLoading: false,
-            submissionError: '',
-            isArchiveVisible: false,
-            isUnarchiveVisible: false
-        };
-    }
+interface IModifyFoodFormProps extends RouteComponentProps {
+    foodId: number;
+}
+
+interface IModifyFoodFormState {
+    isLoading: boolean;
+    food: any;
+    submissionError: string;
+    isArchiveVisible: boolean;
+    isUnarchiveVisible: boolean;
+}
+
+class ModifyFoodForm extends RequestComponent<IModifyFoodFormProps, IModifyFoodFormState> {
+    state = {
+        food: {
+            id: undefined,
+            is_archived: undefined,
+            name: '',
+            health_index: 1,
+            icon: ''
+        },
+        isLoading: false,
+        submissionError: '',
+        isArchiveVisible: false,
+        isUnarchiveVisible: false
+    };
 
     componentDidMount() {
         if (this.props.foodId) {
@@ -122,7 +142,7 @@ class ModifyFoodForm extends RequestComponent {
         }), this.handleSave);
     };
 
-    handleNameChange = (e, {value}) => {
+    handleNameChange = (event: React.ChangeEvent<HTMLInputElement>, {value}: InputOnChangeData) => {
         this.setState(prevState => ({
             food: {
                 ...prevState.food,
@@ -131,7 +151,7 @@ class ModifyFoodForm extends RequestComponent {
         }));
     };
 
-    handleIconChange = (e, {value}) => {
+    handleIconChange = (event: React.SyntheticEvent<HTMLElement>, {value}: DropdownProps) => {
         this.setState(prevState => ({
             food: {
                 ...prevState.food,
@@ -140,7 +160,7 @@ class ModifyFoodForm extends RequestComponent {
         }));
     };
 
-    handleHealthChange = (e, {value}) => {
+    handleHealthChange = (event: React.FormEvent<HTMLInputElement>, {value}: CheckboxProps) => {
         this.setState(prevState => ({
             food: {
                 ...prevState.food,
@@ -166,10 +186,5 @@ class ModifyFoodForm extends RequestComponent {
 
     };
 }
-
-ModifyFoodForm.propTypes = {
-    foodId: PropTypes.string,
-    history: PropTypes.object.isRequired
-};
 
 export default withRouter(ModifyFoodForm);
