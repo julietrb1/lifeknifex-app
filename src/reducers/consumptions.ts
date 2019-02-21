@@ -1,9 +1,9 @@
 import {IBackendItem, IPaginatedResponse} from "../backend-common";
 import {
-    ConsumptionsActionTypes,
-    ConsumptionsFetchDataSuccessAction,
-    ConsumptionsHasErroredAction,
-    ConsumptionsIsLoadingAction
+    ConsumptionActionTypes,
+    IConsumptionFetchDataSuccessAction,
+    IConsumptionHasErroredAction,
+    IConsumptionIsLoadingAction
 } from "../actions/consumptions";
 import {Reducer} from "redux";
 
@@ -15,33 +15,33 @@ export interface IConsumption extends IBackendItem {
     food_icon: string;
 }
 
-export interface IConsumptionsSlice {
+export interface IConsumptionSlice {
     consumptionsHasErrored: boolean;
     consumptionsIsLoading: boolean;
     consumptions: IPaginatedResponse<IConsumption>;
 }
 
-export const consumptionsHasErrored: Reducer<boolean, ConsumptionsHasErroredAction> = (state = false, action) => {
+export const consumptionsHasErrored: Reducer<boolean, IConsumptionHasErroredAction> = (state = false, action) => {
     switch (action.type) {
-        case ConsumptionsActionTypes.CONSUMPTIONS_HAS_ERRORED:
+        case ConsumptionActionTypes.CONSUMPTION_HAS_ERRORED:
             return action.hasErrored;
         default:
             return state;
     }
 };
 
-export const consumptionsIsLoading: Reducer<boolean, ConsumptionsIsLoadingAction> = (state = false, action) => {
+export const consumptionsIsLoading: Reducer<boolean, IConsumptionIsLoadingAction> = (state = false, action) => {
     switch (action.type) {
-        case ConsumptionsActionTypes.CONSUMPTIONS_IS_LOADING:
+        case ConsumptionActionTypes.CONSUMPTION_IS_LOADING:
             return action.isLoading;
         default:
             return state;
     }
 };
 
-export const consumptions: Reducer<IPaginatedResponse<IConsumption>, ConsumptionsFetchDataSuccessAction> = (state = {}, action) => {
+export const consumptions: Reducer<IPaginatedResponse<IConsumption>, IConsumptionFetchDataSuccessAction> = (state = {}, action) => {
     switch (action.type) {
-        case ConsumptionsActionTypes.CONSUMPTIONS_FETCH_DATA_SUCCESS:
+        case ConsumptionActionTypes.CONSUMPTION_FETCH_DATA_SUCCESS:
             return action.consumptions;
         default:
             return state;

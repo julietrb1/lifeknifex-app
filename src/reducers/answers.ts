@@ -1,4 +1,4 @@
-import {AnswersActionTypes, AnswersHasErroredAction, AnswersIsLoadingAction} from "../actions/answers";
+import {AnswerActionTypes, AnswersHasErroredAction, AnswersIsLoadingAction} from "../actions/answers";
 import {IBackendItem, IPaginatedResponse} from "../backend-common";
 import {Reducer} from "redux";
 
@@ -15,7 +15,7 @@ export interface IAnswer extends IBackendItem {
 
 export const answersHasErrored: Reducer<boolean, AnswersHasErroredAction> = (state = false, action) => {
     switch (action.type) {
-        case AnswersActionTypes.ANSWERS_HAS_ERRORED:
+        case AnswerActionTypes.ANSWER_HAS_ERRORED:
             return action.hasErrored;
         default:
             return state;
@@ -24,7 +24,7 @@ export const answersHasErrored: Reducer<boolean, AnswersHasErroredAction> = (sta
 
 export const answersIsLoading: Reducer<boolean, AnswersIsLoadingAction> = (state = false, action) => {
     switch (action.type) {
-        case AnswersActionTypes.ANSWERS_IS_LOADING:
+        case AnswerActionTypes.ANSWER_IS_LOADING:
             return action.isLoading;
         default:
             return state;
@@ -33,14 +33,14 @@ export const answersIsLoading: Reducer<boolean, AnswersIsLoadingAction> = (state
 
 export const answers: Reducer<IPaginatedResponse<IAnswer>> = (state = {}, action) => {
     switch (action.type) {
-        case AnswersActionTypes.ANSWERS_FETCH_DATA_SUCCESS:
+        case AnswerActionTypes.ANSWER_FETCH_DATA_SUCCESS:
             return action.answers;
         default:
             return state;
     }
 };
 
-export interface IAnswersSlice {
+export interface IAnswerSlice {
     answers: IPaginatedResponse<IAnswer>;
     answersIsLoading: boolean;
     answersHasErrored: boolean;

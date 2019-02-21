@@ -1,6 +1,6 @@
 import {API_ANSWERS, API_GOALS} from "../Backend";
 import axios from "axios";
-import {IGoal, IGoalsSlice} from "../reducers/goals";
+import {IGoal, IGoalSlice} from "../reducers/goals";
 import {Action, ActionCreator, Dispatch} from "redux";
 import {ThunkResult} from "../store/configure-store";
 import {IPaginatedResponse} from "../backend-common";
@@ -18,10 +18,10 @@ export type IGoalsActions =
     | GoalUpdateSuccessAction
     | GoalFetchOneSuccessAction;
 
-export enum GoalsActionTypes {
-    GOALS_HAS_ERRORED = 'GOALS_HAS_ERRORED',
-    GOALS_IS_LOADING = 'GOALS_IS_LOADING',
-    GOALS_FETCH_DATA_SUCCESS = 'GOALS_FETCH_DATA_SUCCESS',
+export enum GoalActionTypes {
+    GOAL_HAS_ERRORED = 'GOAL_HAS_ERRORED',
+    GOAL_IS_LOADING = 'GOAL_IS_LOADING',
+    GOAL_FETCH_DATA_SUCCESS = 'GOAL_FETCH_DATA_SUCCESS',
     GOAL_UPDATE_ANSWER_SUCCESS = 'GOAL_UPDATE_ANSWER_SUCCESS',
     GOAL_CREATE_ANSWER_SUCCESS = 'GOAL_CREATE_ANSWER_SUCCESS',
     GOAL_CREATE_SUCCESS = 'GOAL_CREATE_SUCCESS',
@@ -29,82 +29,82 @@ export enum GoalsActionTypes {
     GOAL_FETCH_ONE_SUCCESS = 'GOAL_FETCH_ONE_SUCCESS',
 }
 
-export interface GoalsHasErroredAction extends Action<GoalsActionTypes.GOALS_HAS_ERRORED> {
+export interface GoalsHasErroredAction extends Action<GoalActionTypes.GOAL_HAS_ERRORED> {
     hasErrored: boolean
 }
 
-export const goalsHasErrored: ActionCreator<ThunkAction<void, IGoalsSlice, any, Action>> = (hasErrored: boolean) => (dispatch: Dispatch<GoalsHasErroredAction>) => dispatch({
-    type: GoalsActionTypes.GOALS_HAS_ERRORED,
+export const goalsHasErrored: ActionCreator<ThunkAction<void, IGoalSlice, any, Action>> = (hasErrored: boolean) => (dispatch: Dispatch<GoalsHasErroredAction>) => dispatch({
+    type: GoalActionTypes.GOAL_HAS_ERRORED,
     hasErrored
 });
 
-export interface GoalsIsLoadingAction extends Action<GoalsActionTypes.GOALS_IS_LOADING> {
+export interface GoalsIsLoadingAction extends Action<GoalActionTypes.GOAL_IS_LOADING> {
     isLoading: boolean
 }
 
-export const goalsIsLoading: ActionCreator<ThunkAction<void, IGoalsSlice, any, GoalsIsLoadingAction>> = (isLoading: boolean) =>
+export const goalsIsLoading: ActionCreator<ThunkAction<void, IGoalSlice, any, GoalsIsLoadingAction>> = (isLoading: boolean) =>
     (dispatch: Dispatch<GoalsIsLoadingAction>) => dispatch({
-        type: GoalsActionTypes.GOALS_IS_LOADING,
+        type: GoalActionTypes.GOAL_IS_LOADING,
         isLoading
     });
 
-export interface GoalsFetchDataSuccessAction extends Action<GoalsActionTypes.GOALS_FETCH_DATA_SUCCESS> {
+export interface GoalsFetchDataSuccessAction extends Action<GoalActionTypes.GOAL_FETCH_DATA_SUCCESS> {
     goals: IPaginatedResponse<IGoal>
 }
 
-export const goalsFetchDataSuccess: ActionCreator<ThunkAction<void, IGoalsSlice, any, GoalsFetchDataSuccessAction>> = (goals: IPaginatedResponse<IGoal>) =>
+export const goalsFetchDataSuccess: ActionCreator<ThunkAction<void, IGoalSlice, any, GoalsFetchDataSuccessAction>> = (goals: IPaginatedResponse<IGoal>) =>
     (dispatch: Dispatch<GoalsFetchDataSuccessAction>) => dispatch({
-        type: GoalsActionTypes.GOALS_FETCH_DATA_SUCCESS,
+        type: GoalActionTypes.GOAL_FETCH_DATA_SUCCESS,
         goals
     });
 
-export interface GoalUpdateAnswerSuccessAction extends Action<GoalsActionTypes.GOAL_UPDATE_ANSWER_SUCCESS> {
+export interface GoalUpdateAnswerSuccessAction extends Action<GoalActionTypes.GOAL_UPDATE_ANSWER_SUCCESS> {
     answer: any
 }
 
-export const goalUpdateAnswerSuccess: ActionCreator<ThunkAction<void, IGoalsSlice, any, GoalUpdateAnswerSuccessAction>> = (answer: IAnswer) =>
+export const goalUpdateAnswerSuccess: ActionCreator<ThunkAction<void, IGoalSlice, any, GoalUpdateAnswerSuccessAction>> = (answer: IAnswer) =>
     (dispatch: Dispatch<GoalUpdateAnswerSuccessAction>) => dispatch({
-        type: GoalsActionTypes.GOAL_UPDATE_ANSWER_SUCCESS,
+        type: GoalActionTypes.GOAL_UPDATE_ANSWER_SUCCESS,
         answer
     });
 
-export interface GoalCreateAnswerSuccessAction extends Action<GoalsActionTypes.GOAL_CREATE_ANSWER_SUCCESS> {
+export interface GoalCreateAnswerSuccessAction extends Action<GoalActionTypes.GOAL_CREATE_ANSWER_SUCCESS> {
     answer: any
 }
 
-export const goalCreateAnswerSuccess: ActionCreator<ThunkAction<void, IGoalsSlice, any, GoalCreateAnswerSuccessAction>> = (answer: IAnswer) =>
+export const goalCreateAnswerSuccess: ActionCreator<ThunkAction<void, IGoalSlice, any, GoalCreateAnswerSuccessAction>> = (answer: IAnswer) =>
     (dispatch: Dispatch<GoalCreateAnswerSuccessAction>) => dispatch({
-        type: GoalsActionTypes.GOAL_CREATE_ANSWER_SUCCESS,
+        type: GoalActionTypes.GOAL_CREATE_ANSWER_SUCCESS,
         answer
     });
 
-export interface GoalCreateSuccessAction extends Action<GoalsActionTypes.GOAL_CREATE_SUCCESS> {
+export interface GoalCreateSuccessAction extends Action<GoalActionTypes.GOAL_CREATE_SUCCESS> {
     goal: IGoal
 }
 
-export const goalCreateSuccess: ActionCreator<ThunkAction<void, IGoalsSlice, any, GoalCreateSuccessAction>> = (goal: IGoal) =>
+export const goalCreateSuccess: ActionCreator<ThunkAction<void, IGoalSlice, any, GoalCreateSuccessAction>> = (goal: IGoal) =>
     (dispatch: Dispatch<GoalCreateSuccessAction>) => dispatch({
-        type: GoalsActionTypes.GOAL_CREATE_SUCCESS,
+        type: GoalActionTypes.GOAL_CREATE_SUCCESS,
         goal
     });
 
-export interface GoalUpdateSuccessAction extends Action<GoalsActionTypes.GOAL_UPDATE_SUCCESS> {
+export interface GoalUpdateSuccessAction extends Action<GoalActionTypes.GOAL_UPDATE_SUCCESS> {
     goal: IGoal
 }
 
-export const goalUpdateSuccess: ActionCreator<ThunkAction<void, IGoalsSlice, any, GoalUpdateSuccessAction>> = (goal: IGoal) =>
+export const goalUpdateSuccess: ActionCreator<ThunkAction<void, IGoalSlice, any, GoalUpdateSuccessAction>> = (goal: IGoal) =>
     (dispatch: Dispatch<GoalUpdateSuccessAction>) => dispatch({
-        type: GoalsActionTypes.GOAL_UPDATE_SUCCESS,
+        type: GoalActionTypes.GOAL_UPDATE_SUCCESS,
         goal
     });
 
-export interface GoalFetchOneSuccessAction extends Action<GoalsActionTypes.GOAL_FETCH_ONE_SUCCESS> {
+export interface GoalFetchOneSuccessAction extends Action<GoalActionTypes.GOAL_FETCH_ONE_SUCCESS> {
     goal: IGoal
 }
 
-export const goalFetchOneSuccess: ActionCreator<ThunkAction<void, IGoalsSlice, any, GoalFetchOneSuccessAction>> = (goal: IGoal) =>
+export const goalFetchOneSuccess: ActionCreator<ThunkAction<void, IGoalSlice, any, GoalFetchOneSuccessAction>> = (goal: IGoal) =>
     (dispatch: Dispatch<GoalFetchOneSuccessAction>) => dispatch({
-        type: GoalsActionTypes.GOAL_FETCH_ONE_SUCCESS,
+        type: GoalActionTypes.GOAL_FETCH_ONE_SUCCESS,
         goal
     });
 

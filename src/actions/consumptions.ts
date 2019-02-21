@@ -1,47 +1,63 @@
 import {API_CONSUMPTIONS} from "../Backend";
 import axios from "axios";
-import {Action, Dispatch} from "redux";
+import {Action, ActionCreator, Dispatch} from "redux";
 import {IPaginatedResponse} from "../backend-common";
 import {ThunkResult} from "../store/configure-store";
-import {IConsumption} from "../reducers/consumptions";
+import {IConsumption, IConsumptionSlice} from "../reducers/consumptions";
+import {ThunkAction} from "redux-thunk";
 
-export type IConsumptionsActions =
-    ConsumptionsHasErroredAction
-    | ConsumptionsIsLoadingAction
-    | ConsumptionsFetchDataSuccessAction;
+export type IConsumptionActions =
+    IConsumptionHasErroredAction
+    | IConsumptionIsLoadingAction
+    | IConsumptionFetchDataSuccessAction;
 
-export enum ConsumptionsActionTypes {
-    CONSUMPTIONS_HAS_ERRORED = 'CONSUMPTIONS_HAS_ERRORED',
-    CONSUMPTIONS_IS_LOADING = 'CONSUMPTIONS_IS_LOADING',
-    CONSUMPTIONS_FETCH_DATA_SUCCESS = 'CONSUMPTIONS_FETCH_DATA_SUCCESS'
+export enum ConsumptionActionTypes {
+    CONSUMPTION_HAS_ERRORED = 'CONSUMPTION_HAS_ERRORED',
+    CONSUMPTION_IS_LOADING = 'CONSUMPTION_IS_LOADING',
+    CONSUMPTION_FETCH_DATA_SUCCESS = 'CONSUMPTION_FETCH_DATA_SUCCESS'
 }
 
-export interface ConsumptionsHasErroredAction extends Action<ConsumptionsActionTypes.CONSUMPTIONS_HAS_ERRORED> {
+export interface IConsumptionHasErroredAction extends Action<ConsumptionActionTypes.CONSUMPTION_HAS_ERRORED> {
     hasErrored: boolean
 }
 
-export interface ConsumptionsIsLoadingAction extends Action<ConsumptionsActionTypes.CONSUMPTIONS_IS_LOADING> {
+export const consumptionHasErrored: ActionCreator<ThunkAction<void, IConsumptionSlice, any, IConsumptionHasErroredAction>> = (hasErrored: boolean) => (dispatch: Dispatch<IConsumptionHasErroredAction>) => dispatch({
+    type: ConsumptionActionTypes.CONSUMPTION_HAS_ERRORED,
+    hasErrored
+});
+
+export interface IConsumptionIsLoadingAction extends Action<ConsumptionActionTypes.CONSUMPTION_IS_LOADING> {
     isLoading: boolean
 }
 
-export interface ConsumptionsFetchDataSuccessAction extends Action<ConsumptionsActionTypes.CONSUMPTIONS_FETCH_DATA_SUCCESS> {
+export const consumptionIsLoading: ActionCreator<ThunkAction<void, IConsumptionSlice, any, IConsumptionIsLoadingAction>> = (isLoading: boolean) => (dispatch: Dispatch<IConsumptionIsLoadingAction>) => dispatch({
+    type: ConsumptionActionTypes.CONSUMPTION_IS_LOADING,
+    isLoading
+});
+
+export interface IConsumptionFetchDataSuccessAction extends Action<ConsumptionActionTypes.CONSUMPTION_FETCH_DATA_SUCCESS> {
     consumptions: IPaginatedResponse<IConsumption>
 }
 
-type ConsumptionsFetchAllTypes = ConsumptionsHasErroredAction
-    | ConsumptionsIsLoadingAction
-    | ConsumptionsFetchDataSuccessAction;
+export const consumptionFetchDataSuccess: ActionCreator<ThunkAction<void, IConsumptionSlice, any, IConsumptionFetchDataSuccessAction>> = (consumptions: IPaginatedResponse<IConsumption>) => (dispatch: Dispatch<IConsumptionFetchDataSuccessAction>) => dispatch({
+    type: ConsumptionActionTypes.CONSUMPTION_FETCH_DATA_SUCCESS,
+    consumptions
+});
 
-export function consumptionsFetchAll(): ThunkResult<void> {
-    return (dispatch: Dispatch<ConsumptionsFetchAllTypes>) => {
-        dispatch({isLoading: true} as ConsumptionsIsLoadingAction);
+type ConsumptionFetchAllTypes = IConsumptionHasErroredAction
+    | IConsumptionIsLoadingAction
+    | IConsumptionFetchDataSuccessAction;
+
+export function consumptionFetchAll(): ThunkResult<void> {
+    return (dispatch: Dispatch<any>) => {
+        dispatch(consumptionIsLoading(true));
         axios.get(API_CONSUMPTIONS)
             .then(response => {
-                dispatch({isLoading: false} as ConsumptionsIsLoadingAction);
+                dispatch(consumptionIsLoading(false));
                 return response;
             })
             .then(response => response.data)
-            .then(consumptions => dispatch({consumptions} as ConsumptionsFetchDataSuccessAction))
-            .catch(() => dispatch({hasErrored: true} as ConsumptionsHasErroredAction));
+            .then(consumptions => dispatch(consumptionFetchDataSuccess(consumptions)))
+            .catch(() => dispatch(consumptionHasErrored(true)));
     };
 }

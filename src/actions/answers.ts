@@ -5,21 +5,21 @@ import {IAnswer} from "../reducers/answers";
 import {IPaginatedResponse} from "../backend-common";
 import {ThunkResult} from "../store/configure-store";
 
-export enum AnswersActionTypes {
-    ANSWERS_HAS_ERRORED = 'ANSWERS_HAS_ERRORED',
-    ANSWERS_IS_LOADING = 'ANSWERS_IS_LOADING',
-    ANSWERS_FETCH_DATA_SUCCESS = 'ANSWERS_FETCH_DATA_SUCCESS'
+export enum AnswerActionTypes {
+    ANSWER_HAS_ERRORED = 'ANSWER_HAS_ERRORED',
+    ANSWER_IS_LOADING = 'ANSWER_IS_LOADING',
+    ANSWER_FETCH_DATA_SUCCESS = 'ANSWER_FETCH_DATA_SUCCESS'
 }
 
-export interface AnswersHasErroredAction extends Action<AnswersActionTypes.ANSWERS_HAS_ERRORED> {
+export interface AnswersHasErroredAction extends Action<AnswerActionTypes.ANSWER_HAS_ERRORED> {
     hasErrored: boolean;
 }
 
-export interface AnswersIsLoadingAction extends Action<AnswersActionTypes.ANSWERS_IS_LOADING> {
+export interface AnswersIsLoadingAction extends Action<AnswerActionTypes.ANSWER_IS_LOADING> {
     isLoading: boolean;
 }
 
-export interface AnswersFetchDataSuccessAction extends Action<AnswersActionTypes.ANSWERS_FETCH_DATA_SUCCESS> {
+export interface AnswersFetchDataSuccessAction extends Action<AnswerActionTypes.ANSWER_FETCH_DATA_SUCCESS> {
     answers: IPaginatedResponse<IAnswer>;
 }
 

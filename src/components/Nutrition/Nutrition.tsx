@@ -9,7 +9,7 @@ import {Link} from 'react-router-dom';
 import {COLOR_NUTRITION} from "../../constants";
 import './Nutrition.scss';
 import {connect} from "react-redux";
-import {consumptionsFetchAll} from "../../actions/consumptions";
+import {consumptionFetchAll} from "../../actions/consumptions";
 import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
 import {Dispatch} from "redux";
 import {INutritionStateProps} from "./INutritionStateProps";
@@ -89,7 +89,7 @@ const mapStateToProps = (state: any) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
-    fetchConsumptions: () => dispatch(consumptionsFetchAll()),
+    fetchConsumptions: () => dispatch(consumptionFetchAll()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Nutrition);
