@@ -1,6 +1,6 @@
 import React from 'react';
 import HeaderBar from "../HeaderBar/HeaderBar";
-import {Button, Checkbox, CheckboxProps, Divider} from "semantic-ui-react";
+import {Button, Checkbox, Divider} from "semantic-ui-react";
 import BreadcrumbSet from "../common/BreadcrumbSet/BreadcrumbSet";
 import {Link} from "react-router-dom";
 import Icon from "semantic-ui-react/dist/commonjs/elements/Icon";
@@ -68,8 +68,9 @@ class NutritionLibrary extends RequestComponent<{}, INutritionLibraryState> {
         </div>;
     }
 
-    handleChangeArchived = (event: React.FormEvent<HTMLInputElement>, {value}: CheckboxProps) => {
-        this.setState({isArchivedVisible: !!value, foods: {}}, () => this.loadFoods());
+    handleChangeArchived = () => {
+        this.setState(prevState => ({isArchivedVisible: !prevState.isArchivedVisible, foods: {}}),
+            () => this.loadFoods());
     };
 
     PageContent = () => {
