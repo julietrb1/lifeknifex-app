@@ -2,8 +2,9 @@ import {applyMiddleware, createStore} from 'redux';
 import thunk, {ThunkAction} from 'redux-thunk';
 import rootReducer, {RootState} from '../reducers';
 import {IGoalsActions} from "../actions/goals";
+import {IFoodsActions} from "../actions/foods";
 
-export type RootActions = IGoalsActions;
+export type RootActions = IGoalsActions | IFoodsActions; // TODO: Properly configure RootState and RootActions
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootActions>;
 
 export default function configureStore(initialState: any) {
