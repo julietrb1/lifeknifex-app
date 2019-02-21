@@ -2,10 +2,10 @@ import {RouteComponentProps} from "react-router";
 
 export interface IAnswerPostProps extends RouteComponentProps {
     goal: any;
-    checkedValue: number;
+    checkedValue: number | null;
     onAnswer: (answer: number) => any;
-    isStart: boolean;
-    isEnd: boolean;
+    isStart: boolean | null;
+    isEnd: boolean | null;
     mode: 'post' | 'single';
     goBack: () => any;
 }

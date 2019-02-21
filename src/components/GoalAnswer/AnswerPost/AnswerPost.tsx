@@ -12,16 +12,16 @@ const likertAnswerSet = [
     {label: 'Poorly', value: 3}, {label: 'Unsuccessfully', value: 4},
 ];
 
-const BackButton = (isStart: boolean, goBack: any, history: any, mode: string) => {
+const BackButton = (isStart: boolean | null, goBack: any, history: any, mode: string) => {
     if (mode === 'post') {
-        return <Button disabled={isStart} type='button' onClick={goBack}>Back</Button>;
+        return <Button disabled={isStart || false} type='button' onClick={goBack}>Back</Button>;
     } else {
         return <Button type='button'
                        onClick={history.goBack}>Cancel</Button>;
     }
 };
 
-const NextButton = (mode: string, isEnd: boolean, checkedValue: number) => {
+const NextButton = (mode: string, isEnd: boolean | null, checkedValue: number | null) => {
     if (mode === 'post' && !isEnd) {
         return <Button type="submit">Next</Button>;
     } else if (mode === 'post' && isEnd) {

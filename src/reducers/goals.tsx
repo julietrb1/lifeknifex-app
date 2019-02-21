@@ -1,40 +1,66 @@
 import update from 'immutability-helper';
-import {
-    GOAL_CREATE_ANSWER_SUCCESS,
-    GOAL_CREATE_SUCCESS,
-    GOAL_FETCH_ONE_SUCCESS,
-    GOAL_UPDATE_ANSWER_SUCCESS,
-    GOAL_UPDATE_SUCCESS,
-    GOALS_FETCH_DATA_SUCCESS,
-    GOALS_HAS_ERRORED,
-    GOALS_IS_LOADING
-} from "../actions/goals";
 import {arrayToObject} from "../Utils";
+import {Reducer} from "redux";
+import {
+    GoalsActionTypes,
+    GoalsCreateAnswerSuccessAction,
+    GoalsCreateSuccessAction,
+    GoalsFetchDataAction,
+    GoalsFetchOneAction,
+    GoalsHasErroredAction,
+    GoalsIsLoadingAction,
+    GoalsUpdateAnswerSuccessAction,
+    GoalsUpdateSuccessAction
+} from "../actions/goals";
+import {IPaginatedResponse} from "../backend-common";
 
-export function goalsHasErrored(state = false, action) {
+export interface IGoalsReduxState {
+    hasErrored: boolean;
+}
+
+export interface IGoal {
+    id: number;
+    todays_answer_value: number;
+    todays_answer: string;
+    last_answered: string;
+}
+
+export interface IGoalsStoreState {
+    [goalId: string]: IGoal;
+}
+
+export const goalsHasErrored: Reducer<boolean, GoalsHasErroredAction> = (state = false, action) => {
     switch (action.type) {
-        case GOALS_HAS_ERRORED:
+        case GoalsActionTypes.GOALS_HAS_ERRORED:
             return action.hasErrored;
         default:
             return state;
     }
-}
+};
 
-export function goalsIsLoading(state = false, action) {
+export const goalsIsLoading: Reducer<boolean, GoalsIsLoadingAction> = (state = false, action) => {
     switch (action.type) {
-        case GOALS_IS_LOADING:
+        case GoalsActionTypes.GOALS_IS_LOADING:
             return action.isLoading;
         default:
             return state;
     }
-}
+};
 
-export function goals(state = {}, action) {
+type GoalsFetchActions =
+    GoalsCreateSuccessAction
+    | GoalsFetchDataAction
+    | GoalsUpdateSuccessAction
+    | GoalsUpdateAnswerSuccessAction
+    | GoalsCreateAnswerSuccessAction
+    | GoalsFetchOneAction;
+
+export const goals: Reducer<IGoalsStoreState, GoalsFetchActions> = (state = {}, action) => {
     switch (action.type) {
-        case GOALS_FETCH_DATA_SUCCESS:
+        case GoalsActionTypes.GOALS_FETCH_DATA_SUCCESS:
             return arrayToObject(action.goals.results, 'url');
-        case GOAL_UPDATE_ANSWER_SUCCESS:
-        case GOAL_CREATE_ANSWER_SUCCESS:
+        case GoalsActionTypes.GOAL_UPDATE_ANSWER_SUCCESS:
+        case GoalsActionTypes.GOAL_CREATE_ANSWER_SUCCESS:
             return update(state, {
                 [action.answer.goal]: {
                     todays_answer_value: {$set: action.answer.value},
@@ -42,22 +68,25 @@ export function goals(state = {}, action) {
                     last_answered: {$set: action.answer.date}
                 }
             });
-        case GOAL_CREATE_SUCCESS:
-        case GOAL_UPDATE_SUCCESS:
-        case GOAL_FETCH_ONE_SUCCESS:
+        case GoalsActionTypes.GOAL_CREATE_SUCCESS:
+        case GoalsActionTypes.GOAL_UPDATE_SUCCESS:
+        case GoalsActionTypes.GOAL_FETCH_ONE_SUCCESS:
             return update(state, {
                 [action.goal.url]: {$set: action.goal}
             });
         default:
             return state;
     }
+};
+
+export interface IGoalsResponseStoreState extends IPaginatedResponse<IGoal> {
 }
 
-export function goalsResponse(state = {}, action) {
+export const goalsResponse: Reducer<IGoalsResponseStoreState, GoalsFetchDataAction> = (state = {}, action) => {
     switch (action.type) {
-        case GOALS_FETCH_DATA_SUCCESS:
+        case GoalsActionTypes.GOALS_FETCH_DATA_SUCCESS:
             return action.goals;
         default:
             return state;
     }
-}
+};

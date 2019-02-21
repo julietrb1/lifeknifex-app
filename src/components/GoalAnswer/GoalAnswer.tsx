@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import BreadcrumbSet from "../common/BreadcrumbSet/BreadcrumbSet";
 import HeaderBar from "../HeaderBar/HeaderBar";
 import {connect} from "react-redux";
@@ -13,21 +12,46 @@ import GoalAnswerEmpty from "./GoalAnswerEmpty/GoalAnswerEmpty";
 import AnswerPre from "./AnswerPre/AnswerPre";
 import AnswerPost from "./AnswerPost/AnswerPost";
 import {firstCase} from "../../Utils";
+import {RouteComponentProps} from "react-router";
+import {Dispatch} from "redux";
 
-class GoalAnswer extends RequestComponent {
-    constructor(props) {
-        super(props);
-        const queryParams = new URLSearchParams(props.location.search);
+interface IGoalAnswerDispatchProps {
+    fetchGoals: () => any;
+    updateAnswer: (goal: any, value: number) => any;
+    createAnswer: (goal: any, value: number) => any;
+}
 
-        this.state = {
-            currentGoalUrl: null,
-            goalIndex: -1,
-            done: false,
-            candidateValue: null,
-            isPostMode: queryParams.get('mode') === 'post',
-            filteredGoals: null
-        };
-    }
+interface IGoalAnswerStateProps {
+    goals: { [url: string]: any };
+    hasErrored: boolean;
+    isLoading: boolean;
+
+}
+
+interface IGoalAnswerMatchParams {
+    goalId: string;
+}
+
+type Props = IGoalAnswerStateProps & IGoalAnswerDispatchProps & RouteComponentProps<IGoalAnswerMatchParams>;
+
+interface IGoalAnswerState {
+    currentGoalUrl: string | null;
+    goalIndex: number;
+    done: boolean;
+    candidateValue: number | null;
+    isPostMode: boolean;
+    filteredGoals: { [url: string]: any } | null;
+}
+
+class GoalAnswer extends RequestComponent<Props, IGoalAnswerState> {
+    state = {
+        currentGoalUrl: null,
+        goalIndex: -1,
+        done: false,
+        candidateValue: null,
+        isPostMode: new URLSearchParams(this.props.location.search).get('mode') === 'post',
+        filteredGoals: null
+    };
 
     componentDidMount() {
         if (!Object.keys(this.props.goals).length) {
@@ -37,7 +61,7 @@ class GoalAnswer extends RequestComponent {
         }
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps: Readonly<Props>): void {
         if (!Object.keys(prevProps.goals).length && Object.keys(this.props.goals).length) {
             this.goToGoal();
         }
@@ -56,6 +80,7 @@ class GoalAnswer extends RequestComponent {
     }
 
     PageContent = () => {
+        const currentGoalUrl: string = String(this.state.currentGoalUrl);
         if (this.state.done) {
             return <GoalAnswerEmpty/>;
         } else {
@@ -63,7 +88,7 @@ class GoalAnswer extends RequestComponent {
             return <Form loading={loading} onSubmit={this.handleSubmit}>
                 <Header>
                     {this.state.currentGoalUrl ?
-                        `Did I ${firstCase(this.props.goals[this.state.currentGoalUrl].question)}?` :
+                        `Did I ${firstCase(this.props.goals[currentGoalUrl].question)}?` :
                         'Loading Goal...'}
                     <this.GoalProgressCount/>
                 </Header>
@@ -77,31 +102,18 @@ class GoalAnswer extends RequestComponent {
             return null;
         }
 
-        const currentGoalIndex = this.state.filteredGoals ?
-            this.state.filteredGoals.findIndex(goal => goal.url === this.state.currentGoalUrl) + 1 :
+        const currentGoalIndex = (this.state.filteredGoals || []).findIndex((goal: any) => goal.url === this.state.currentGoalUrl) + 1 ||
             '--';
 
-        const filteredGoalLength = this.state.filteredGoals ?
-            this.state.filteredGoals.length :
-            '--';
+        const filteredGoalLength = (this.state.filteredGoals || []).length || '--';
         return <Header.Subheader>{currentGoalIndex} / {filteredGoalLength}</Header.Subheader>;
     };
 
-    handleSubmit = (e, {increment}) => {
-        const haveSingleGoal = !!this.props.match.params.goalId;
-        const goalAnswered = !!this.props.goals[this.state.currentGoalUrl].todays_answer;
-        if ((haveSingleGoal && goalAnswered) || this.state.isPostMode) {
-            this.props.updateAnswer(this.props.goals[this.state.currentGoalUrl], this.state.candidateValue);
-            if (this.state.isPostMode) {
-                this.goToGoal(increment);
-            } else {
-                this.props.history.goBack();
-            }
-        } else if (haveSingleGoal) {
-            this.props.createAnswer(this.props.goals[this.state.currentGoalUrl], this.state.candidateValue);
-            this.props.history.goBack();
-        }
+    handleSubmit = () => {
+        this.handleFormAction();
     };
+
+    handleGoBack = () => this.handleFormAction(-1);
 
     FormContent = () => {
         if (this.props.isLoading || !this.state.currentGoalUrl) {
@@ -119,29 +131,23 @@ class GoalAnswer extends RequestComponent {
         }
     };
 
-    handleGoBack = () => this.handleSubmit(null, {increment: -1});
+    handleChangePostAnswer = (candidateValue: number) => this.setState({candidateValue});
 
-    handleChangePostAnswer = candidateValue => this.setState({candidateValue});
-
-    handlePreAnswer = answerValue => {
+    handlePreAnswer = (answerValue: number) => {
         this.props.createAnswer(this.props.goals[this.state.currentGoalUrl], answerValue);
         this.goToGoal();
     };
 
-    goToGoal = (increment = 1) => {
+    goToGoal = (increment: number = 1) => {
         if (!Object.keys(this.props.goals).length) {
             throw new Error('No goals');
-        }
-
-        if (typeof increment !== 'number') {
-            increment = 1;
         }
 
         const goalIdParam = this.props.match.params.goalId;
         const today = moment().format(BACKEND_DATE_FORMAT);
         const filteredGoals = this.filterGoals(goalIdParam, today);
         const newGoalIndex = this.state.goalIndex + increment;
-        if (newGoalIndex < Object.values(filteredGoals).length) {
+        if (newGoalIndex < Object.values(filteredGoals || []).length) {
             const filteredUrl = filteredGoals[newGoalIndex].url;
             const candidateValue = this.props.goals[filteredUrl].todays_answer_value;
             return this.setState({
@@ -158,7 +164,7 @@ class GoalAnswer extends RequestComponent {
         }
     };
 
-    filterGoals(goalIdParam, today) {
+    filterGoals(goalIdParam: number, today: string) {
         let filteredGoals;
         if (!this.state.filteredGoals) {
             filteredGoals = Object.values(this.props.goals).filter(goal => {
@@ -172,27 +178,34 @@ class GoalAnswer extends RequestComponent {
         }
         return filteredGoals;
     }
+
+    private handleFormAction(increment: number = 1) {
+        const haveSingleGoal = !!this.props.match.params.goalId;
+        const goalAnswered = !!this.props.goals[this.state.currentGoalUrl].todays_answer;
+        if ((haveSingleGoal && goalAnswered) || this.state.isPostMode) {
+            this.props.updateAnswer(this.props.goals[this.state.currentGoalUrl], this.state.candidateValue);
+            if (this.state.isPostMode) {
+                this.goToGoal(increment);
+            } else {
+                this.props.history.goBack();
+            }
+        } else if (haveSingleGoal) {
+            this.props.createAnswer(this.props.goals[this.state.currentGoalUrl], this.state.candidateValue);
+            this.props.history.goBack();
+        }
+    }
 }
 
-GoalAnswer.propTypes = {
-    history: PropTypes.object.isRequired,
-    match: PropTypes.object.isRequired,
-    fetchGoals: PropTypes.func.isRequired,
-    location: PropTypes.object.isRequired,
-    isLoading: PropTypes.bool.isRequired,
-    goals: PropTypes.object
-};
-
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
     hasErrored: state.goalsHasErrored || state.answersHasErrored,
     isLoading: state.goalsIsLoading || state.answersIsLoading,
     goals: state.goals,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
     fetchGoals: () => dispatch(goalsFetchAll()),
-    updateAnswer: (goal, value) => dispatch(goalUpdateAnswer(goal, value)),
-    createAnswer: (goal, value) => dispatch(goalCreateAnswer(goal, value))
+    updateAnswer: (goal: any, value: number) => dispatch(goalUpdateAnswer(goal, value)),
+    createAnswer: (goal: any, value: number) => dispatch(goalCreateAnswer(goal, value))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GoalAnswer);

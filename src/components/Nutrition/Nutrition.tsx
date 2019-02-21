@@ -12,6 +12,8 @@ import {connect} from "react-redux";
 import {consumptionsFetchAll} from "../../actions/consumptions";
 import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
 import {Dispatch} from "redux";
+import {INutritionStateProps} from "./INutritionStateProps";
+import {INutritionDispatchProps} from "./INutritionDispatchProps";
 
 const sections = [
     {name: 'Nutrition'}
@@ -89,14 +91,5 @@ const mapStateToProps = (state: any) => ({
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
     fetchConsumptions: () => dispatch(consumptionsFetchAll()),
 });
-
-interface INutritionStateProps {
-    isLoading: boolean;
-    consumptions: { results: any[] };
-}
-
-interface INutritionDispatchProps {
-    fetchConsumptions: () => void;
-}
 
 export default connect<INutritionDispatchProps, INutritionStateProps>(mapStateToProps, mapDispatchToProps)(Nutrition);

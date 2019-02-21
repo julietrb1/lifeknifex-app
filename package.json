@@ -41,6 +41,7 @@
     "@types/react": "^16.8.4",
     "@types/react-dom": "^16.8.2",
     "@types/react-redux": "^7.0.1",
+    "@types/react-redux-toastr": "^7.4.1",
     "@types/react-router-dom": "^4.3.1",
     "@types/semantic-ui-search": "^2.2.3"
   }

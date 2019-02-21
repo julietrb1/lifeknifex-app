@@ -7,7 +7,7 @@ export const consumptionIcons: SemanticICONS[] = ['thermometer empty', 'thermome
 export const foodIcons: SemanticICONS[] = ['angle double up', 'angle up', 'angle down', 'angle double down'];
 export const foodColors: SemanticCOLORS[] = ['teal', 'green', 'orange', 'red'];
 
-export const firstCase = (text: string, isUpper: boolean) => `${isUpper ?
+export const firstCase = (text: string, isUpper: boolean = false) => `${isUpper ?
     text.charAt(0).toUpperCase() :
     text.charAt(0).toLowerCase()}${text.slice(1)}`;
 

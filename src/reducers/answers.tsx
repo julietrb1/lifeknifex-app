@@ -26,3 +26,9 @@ export function answers(state = {}, action) {
             return state;
     }
 }
+
+export interface IAnswersReduxState {
+    answers: any;
+    isLoading: boolean;
+    hasErrored: boolean;
+}
