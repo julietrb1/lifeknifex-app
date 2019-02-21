@@ -1,20 +1,22 @@
 import {API_ANSWERS, API_GOALS} from "../Backend";
 import axios from "axios";
-import {IGoal} from "../reducers/goals";
-import {Action, Dispatch} from "redux";
+import {IGoal, IGoalsSlice} from "../reducers/goals";
+import {Action, ActionCreator, Dispatch} from "redux";
 import {ThunkResult} from "../store/configure-store";
 import {IPaginatedResponse} from "../backend-common";
+import {ThunkAction} from 'redux-thunk';
+import {IAnswer} from "../reducers/answers";
 
 
 export type IGoalsActions =
     GoalsHasErroredAction
     | GoalsIsLoadingAction
-    | GoalsFetchDataAction
-    | GoalsUpdateAnswerSuccessAction
-    | GoalsCreateAnswerSuccessAction
-    | GoalsCreateSuccessAction
-    | GoalsUpdateSuccessAction
-    | GoalsFetchOneSuccessAction;
+    | GoalsFetchDataSuccessAction
+    | GoalUpdateAnswerSuccessAction
+    | GoalCreateAnswerSuccessAction
+    | GoalCreateSuccessAction
+    | GoalUpdateSuccessAction
+    | GoalFetchOneSuccessAction;
 
 export enum GoalsActionTypes {
     GOALS_HAS_ERRORED = 'GOALS_HAS_ERRORED',
@@ -31,90 +33,137 @@ export interface GoalsHasErroredAction extends Action<GoalsActionTypes.GOALS_HAS
     hasErrored: boolean
 }
 
+export const goalsHasErrored: ActionCreator<ThunkAction<void, IGoalsSlice, any, Action>> = (hasErrored: boolean) => (dispatch: Dispatch<GoalsHasErroredAction>) => dispatch({
+    type: GoalsActionTypes.GOALS_HAS_ERRORED,
+    hasErrored
+});
+
 export interface GoalsIsLoadingAction extends Action<GoalsActionTypes.GOALS_IS_LOADING> {
     isLoading: boolean
 }
 
-export interface GoalsFetchDataAction extends Action<GoalsActionTypes.GOALS_FETCH_DATA_SUCCESS> {
+export const goalsIsLoading: ActionCreator<ThunkAction<void, IGoalsSlice, any, GoalsIsLoadingAction>> = (isLoading: boolean) =>
+    (dispatch: Dispatch<GoalsIsLoadingAction>) => dispatch({
+        type: GoalsActionTypes.GOALS_IS_LOADING,
+        isLoading
+    });
+
+export interface GoalsFetchDataSuccessAction extends Action<GoalsActionTypes.GOALS_FETCH_DATA_SUCCESS> {
     goals: IPaginatedResponse<IGoal>
 }
 
-export interface GoalsUpdateAnswerSuccessAction extends Action<GoalsActionTypes.GOAL_UPDATE_ANSWER_SUCCESS> {
+export const goalsFetchDataSuccess: ActionCreator<ThunkAction<void, IGoalsSlice, any, GoalsFetchDataSuccessAction>> = (goals: IPaginatedResponse<IGoal>) =>
+    (dispatch: Dispatch<GoalsFetchDataSuccessAction>) => dispatch({
+        type: GoalsActionTypes.GOALS_FETCH_DATA_SUCCESS,
+        goals
+    });
+
+export interface GoalUpdateAnswerSuccessAction extends Action<GoalsActionTypes.GOAL_UPDATE_ANSWER_SUCCESS> {
     answer: any
 }
 
-export interface GoalsCreateAnswerSuccessAction extends Action<GoalsActionTypes.GOAL_CREATE_ANSWER_SUCCESS> {
+export const goalUpdateAnswerSuccess: ActionCreator<ThunkAction<void, IGoalsSlice, any, GoalUpdateAnswerSuccessAction>> = (answer: IAnswer) =>
+    (dispatch: Dispatch<GoalUpdateAnswerSuccessAction>) => dispatch({
+        type: GoalsActionTypes.GOAL_UPDATE_ANSWER_SUCCESS,
+        answer
+    });
+
+export interface GoalCreateAnswerSuccessAction extends Action<GoalsActionTypes.GOAL_CREATE_ANSWER_SUCCESS> {
     answer: any
 }
 
-export interface GoalsCreateSuccessAction extends Action<GoalsActionTypes.GOAL_CREATE_SUCCESS> {
+export const goalCreateAnswerSuccess: ActionCreator<ThunkAction<void, IGoalsSlice, any, GoalCreateAnswerSuccessAction>> = (answer: IAnswer) =>
+    (dispatch: Dispatch<GoalCreateAnswerSuccessAction>) => dispatch({
+        type: GoalsActionTypes.GOAL_CREATE_ANSWER_SUCCESS,
+        answer
+    });
+
+export interface GoalCreateSuccessAction extends Action<GoalsActionTypes.GOAL_CREATE_SUCCESS> {
     goal: IGoal
 }
 
-export interface GoalsUpdateSuccessAction extends Action<GoalsActionTypes.GOAL_UPDATE_SUCCESS> {
+export const goalCreateSuccess: ActionCreator<ThunkAction<void, IGoalsSlice, any, GoalCreateSuccessAction>> = (goal: IGoal) =>
+    (dispatch: Dispatch<GoalCreateSuccessAction>) => dispatch({
+        type: GoalsActionTypes.GOAL_CREATE_SUCCESS,
+        goal
+    });
+
+export interface GoalUpdateSuccessAction extends Action<GoalsActionTypes.GOAL_UPDATE_SUCCESS> {
     goal: IGoal
 }
 
-export interface GoalsFetchOneSuccessAction extends Action<GoalsActionTypes.GOAL_FETCH_ONE_SUCCESS> {
+export const goalUpdateSuccess: ActionCreator<ThunkAction<void, IGoalsSlice, any, GoalUpdateSuccessAction>> = (goal: IGoal) =>
+    (dispatch: Dispatch<GoalUpdateSuccessAction>) => dispatch({
+        type: GoalsActionTypes.GOAL_UPDATE_SUCCESS,
+        goal
+    });
+
+export interface GoalFetchOneSuccessAction extends Action<GoalsActionTypes.GOAL_FETCH_ONE_SUCCESS> {
     goal: IGoal
 }
 
-type GoalsFetchAllActions = GoalsIsLoadingAction | GoalsFetchDataAction | GoalsHasErroredAction;
+export const goalFetchOneSuccess: ActionCreator<ThunkAction<void, IGoalsSlice, any, GoalFetchOneSuccessAction>> = (goal: IGoal) =>
+    (dispatch: Dispatch<GoalFetchOneSuccessAction>) => dispatch({
+        type: GoalsActionTypes.GOAL_FETCH_ONE_SUCCESS,
+        goal
+    });
+
+type GoalsFetchAllActions = GoalsIsLoadingAction | GoalsFetchDataSuccessAction | GoalsHasErroredAction;
 
 export function goalsFetchAll(search?: string): ThunkResult<void> {
     const params = {search};
-    return (dispatch: Dispatch<GoalsFetchAllActions>) => {
-        dispatch({isLoading: true} as GoalsIsLoadingAction);
+    return (dispatch: Dispatch<any>) => {
+        dispatch(goalsIsLoading(true));
         axios.get(API_GOALS, {params: params})
             .then(response => {
-                dispatch({type: GoalsActionTypes.GOALS_IS_LOADING, isLoading: false});
+                dispatch(goalsIsLoading(false));
                 return response;
             })
             .then(response => response.data)
-            .then(goals => dispatch({goals} as GoalsFetchDataAction))
-            .catch(() => dispatch({hasErrored: true} as GoalsHasErroredAction));
+            .then(goals => dispatch(goalsFetchDataSuccess(goals)))
+            .catch(() => dispatch(goalsHasErrored((true))));
     };
 }
 
 export function goalUpdateAnswer(goal: IGoal, value: number): ThunkResult<void> {
-    return (dispatch: Dispatch<GoalsUpdateAnswerSuccessAction>) => {
+    return (dispatch: Dispatch<any>) => {
         axios.patch(String(goal.todays_answer), {value})
             .then(response => response.data)
-            .then(answer => dispatch({answer} as GoalsUpdateAnswerSuccessAction));
+            .then(answer => dispatch(goalUpdateAnswerSuccess(answer)));
     };
 }
 
 export function goalCreateAnswer(goal: any, value: number): ThunkResult<void> {
-    return (dispatch: Dispatch<GoalsCreateAnswerSuccessAction>) => {
+    return (dispatch: Dispatch<any>) => {
         axios.post(API_ANSWERS, {
             goal: goal.url,
             value: value
         })
             .then(response => response.data)
-            .then(answer => dispatch({answer} as GoalsCreateAnswerSuccessAction));
+            .then(answer => dispatch(goalCreateAnswerSuccess(answer)));
     };
 }
 
 export function goalCreate(goal: IGoal): ThunkResult<void> {
-    return (dispatch: Dispatch<GoalsCreateSuccessAction>) => {
+    return (dispatch: Dispatch<any>) => {
         axios.post(API_GOALS, goal)
             .then(response => response.data)
-            .then(goal => dispatch({goal} as GoalsCreateSuccessAction));
+            .then(goal => dispatch(goalCreateSuccess(goal)));
     };
 }
 
 export function goalUpdate(goal: IGoal): ThunkResult<void> {
-    return (dispatch: Dispatch<GoalsUpdateSuccessAction>) => {
+    return (dispatch: Dispatch<any>) => {
         axios.patch(`${API_GOALS}${goal.id}/`, goal)
             .then(response => response.data)
-            .then(goal => dispatch({goal} as GoalsUpdateSuccessAction));
+            .then(goal => dispatch(goalUpdateSuccess(goal)));
     };
 }
 
 export function goalsFetchOne(goalId: number): ThunkResult<void> {
-    return (dispatch: Dispatch<GoalsFetchOneSuccessAction>) => {
+    return (dispatch: Dispatch<any>) => {
         axios.get(`${API_GOALS}${goalId}/`)
             .then(response => response.data)
-            .then(goal => dispatch({goal} as GoalsFetchOneSuccessAction));
+            .then(goal => dispatch(goalFetchOneSuccess(goal)));
     };
 }

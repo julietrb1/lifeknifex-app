@@ -4,7 +4,7 @@ import BreadcrumbSet from "../common/BreadcrumbSet/BreadcrumbSet";
 import HeaderBar from "../HeaderBar/HeaderBar";
 import RequestComponent from "../common/RequestComponent/RequestComponent";
 import moment from "moment";
-import {Button, CheckboxProps, Divider, Form, Input, Label, Radio} from "semantic-ui-react";
+import {Button, Divider, Form, Input, Label, Radio} from "semantic-ui-react";
 import DatePicker from "react-datepicker";
 
 import './GoalNewEdit.scss';
@@ -15,6 +15,7 @@ import {goalCreate, goalsFetchOne, goalUpdate} from "../../actions/goals";
 import {RouteComponentProps} from "react-router";
 import {Dispatch} from "redux";
 import {IGoal, IGoalsStoreState} from "../../reducers/goals";
+import update from 'immutability-helper';
 
 interface IGoalNewEditMatchParams {
     goalId: string;
@@ -87,7 +88,7 @@ class GoalNewEdit extends RequestComponent<Props, IGoalNewEditState> {
                 <Form onSubmit={this.handleGoalSubmit} loading={this.props.isLoading}>
                     <Form.Field required>
                         <label>Question</label>
-                        <Input type='text' onChange={() => this.onChange('question')}
+                        <Input type='text' onChange={this.onChange('question')}
                                placeholder='Get to bed on time last night'
                                value={this.state.goal.question} label={{basic: true, content: '?'}}
                                labelPosition='right'>
@@ -103,7 +104,7 @@ class GoalNewEdit extends RequestComponent<Props, IGoalNewEditState> {
                         <Radio label='At least every' name='goal-test' value='atleast'
                                checked={this.state.goal.test === 'atleast'} onChange={this.onChange('test')}/>
                         <Input type='number' value={this.state.goal.frequency} className='frequency-input'
-                               onChange={() => this.onChange('frequency')}
+                               onChange={this.onChange('frequency')}
                                label={{basic: true, content: testInputLabel}}
                                labelPosition='right' disabled={this.state.goal.test !== 'atleast'}/>
                     </Form.Field>
@@ -111,7 +112,7 @@ class GoalNewEdit extends RequestComponent<Props, IGoalNewEditState> {
                         <Radio label='No more than every' name='goal-test' value='nomore'
                                checked={this.state.goal.test === 'nomore'} onChange={this.onChange('test')}/>
                         <Input type='number' value={this.state.goal.frequency}
-                               onChange={() => this.onChange('frequency')}
+                               onChange={this.onChange('frequency')}
                                label={{basic: true, content: testInputLabel}} className='frequency-input'
                                labelPosition='right' disabled={this.state.goal.test !== 'nomore'}/>
                     </Form.Field>
@@ -127,12 +128,12 @@ class GoalNewEdit extends RequestComponent<Props, IGoalNewEditState> {
                     <Form.Field>
                         <Radio label='Yes/No' name='goal-style' value='yesno'
                                checked={this.state.goal.style === 'yesno'}
-                               onChange={() => this.onChange('style')}/>
+                               onChange={this.onChange('style')}/>
                     </Form.Field>
                     <Form.Field>
                         <Radio label='Likert' name='goal-style' value='likert'
                                checked={this.state.goal.style === 'likert'}
-                               onChange={() => this.onChange('style')}/>
+                               onChange={this.onChange('style')}/>
                     </Form.Field>
                     <Divider hidden/>
 
@@ -155,11 +156,10 @@ class GoalNewEdit extends RequestComponent<Props, IGoalNewEditState> {
         );
     }
 
-    onChange = (field: string) => (event: React.FormEvent<HTMLInputElement>, {value}: CheckboxProps) =>
-        this.setState(prevState => ({
+    onChange = (field: string) => (event: React.FormEvent<any>, {value}: any) =>
+        this.setState(prevState => update(prevState, {
             goal: {
-                ...prevState.goal,
-                [field]: value
+                [field]: {$set: value}
             }
         }));
 

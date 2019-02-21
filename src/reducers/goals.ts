@@ -2,15 +2,15 @@ import update from 'immutability-helper';
 import {arrayToObject} from "../Utils";
 import {Reducer} from "redux";
 import {
+    GoalCreateAnswerSuccessAction,
+    GoalCreateSuccessAction,
+    GoalFetchOneSuccessAction,
     GoalsActionTypes,
-    GoalsCreateAnswerSuccessAction,
-    GoalsCreateSuccessAction,
-    GoalsFetchDataAction,
-    GoalsFetchOneSuccessAction,
+    GoalsFetchDataSuccessAction,
     GoalsHasErroredAction,
     GoalsIsLoadingAction,
-    GoalsUpdateAnswerSuccessAction,
-    GoalsUpdateSuccessAction
+    GoalUpdateAnswerSuccessAction,
+    GoalUpdateSuccessAction
 } from "../actions/goals";
 import {IBackendItem, IPaginatedResponse} from "../backend-common";
 
@@ -55,12 +55,12 @@ export const goalsIsLoading: Reducer<boolean, GoalsIsLoadingAction> = (state = f
 };
 
 type GoalsFetchActions =
-    GoalsCreateSuccessAction
-    | GoalsFetchDataAction
-    | GoalsUpdateSuccessAction
-    | GoalsUpdateAnswerSuccessAction
-    | GoalsCreateAnswerSuccessAction
-    | GoalsFetchOneSuccessAction;
+    GoalCreateSuccessAction
+    | GoalsFetchDataSuccessAction
+    | GoalUpdateSuccessAction
+    | GoalUpdateAnswerSuccessAction
+    | GoalCreateAnswerSuccessAction
+    | GoalFetchOneSuccessAction;
 
 export const goals: Reducer<IGoalsStoreState, GoalsFetchActions> = (state = {}, action) => {
     switch (action.type) {
@@ -86,7 +86,7 @@ export const goals: Reducer<IGoalsStoreState, GoalsFetchActions> = (state = {}, 
     }
 };
 
-export const goalsResponse: Reducer<IPaginatedResponse<IGoal>, GoalsFetchDataAction> = (state = {}, action) => {
+export const goalsResponse: Reducer<IPaginatedResponse<IGoal>, GoalsFetchDataSuccessAction> = (state = {}, action) => {
     switch (action.type) {
         case GoalsActionTypes.GOALS_FETCH_DATA_SUCCESS:
             return action.goals;
