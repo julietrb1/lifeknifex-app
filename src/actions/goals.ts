@@ -78,7 +78,7 @@ export function goalsFetchAll(search?: string): ThunkResult<void> {
 
 export function goalUpdateAnswer(goal: IGoal, value: number): ThunkResult<void> {
     return (dispatch: Dispatch<GoalsUpdateAnswerSuccessAction>) => {
-        axios.patch(goal.todays_answer, {value})
+        axios.patch(String(goal.todays_answer), {value})
             .then(response => response.data)
             .then(answer => dispatch({answer} as GoalsUpdateAnswerSuccessAction));
     };
