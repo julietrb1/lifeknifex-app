@@ -22,6 +22,7 @@ export interface IGoal extends IBackendItem {
     style?: string;
     start_date?: string;
     question: string;
+    test: string;
 }
 
 export interface IGoalsStoreState {
@@ -71,7 +72,7 @@ export const goals: Reducer<IGoalsStoreState, GoalsFetchActions> = (state = {}, 
         case GoalsActionTypes.GOAL_UPDATE_SUCCESS:
         case GoalsActionTypes.GOAL_FETCH_ONE_SUCCESS:
             return update(state, {
-                [action.goal.url]: {$set: action.goal}
+                [String(action.goal.url)]: {$set: action.goal} // TODO: Don't coerce to string - find a better way
             });
         default:
             return state;

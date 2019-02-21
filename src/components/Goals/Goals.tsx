@@ -2,7 +2,6 @@ import React from 'react';
 import HeaderBar from "../HeaderBar/HeaderBar";
 import BreadcrumbSet from "../common/BreadcrumbSet/BreadcrumbSet";
 import {connect} from "react-redux";
-import PropTypes from 'prop-types';
 import {goalsFetchAll} from "../../actions/goals";
 import {Button, Card, Divider, Header, Icon, Statistic} from "semantic-ui-react";
 import {COLOR_GOALS} from "../../constants";
@@ -14,12 +13,28 @@ import GoalsEmpty from "./GoalsEmpty/GoalsEmpty";
 
 import './Goals.scss';
 import CommonStatistic from "../common/CommonStatistic";
+import {Dispatch} from "redux";
+import {IGoal, IGoalsStoreState} from "../../reducers/goals";
+import {IPaginatedResponse} from "../../backend-common";
 
 const sections = [
     {name: 'Goals'}
 ];
 
-class Goals extends React.Component {
+interface IGoalsStateProps {
+    goalsResponse: IPaginatedResponse<IGoal>,
+    goals: IGoalsStoreState,
+    isLoading: boolean
+}
+
+interface IGoalsDispatchProps {
+    fetchGoals: () => void;
+}
+
+
+type Props = IGoalsStateProps & IGoalsDispatchProps;
+
+class Goals extends React.Component<Props> {
 
     componentDidMount() {
         if (!this.props.goalsResponse.results) {
@@ -51,8 +66,8 @@ class Goals extends React.Component {
     }
 
     AnsweringButton = () => {
-        const anyAnswered = Object.values(this.props.goals).some(goal => goal.todays_answer);
-        const allAnswered = Object.values(this.props.goals).every(goal => goal.todays_answer);
+        const anyAnswered = Object.values(this.props.goals).some(goal => !!goal.todays_answer);
+        const allAnswered = Object.values(this.props.goals).every(goal => !!goal.todays_answer);
         let url, text;
         if (allAnswered) {
             url = '/goals/answer?mode=post';
@@ -79,7 +94,7 @@ class Goals extends React.Component {
 
     DashboardContent = () => <div>
         <Statistic.Group>
-            <CommonStatistic count={this.props.goalsResponse.count} label='Goals'/>
+            <CommonStatistic count={String(this.props.goalsResponse.count)} label='Goals'/>
             <CommonStatistic count={this.getGoalToAnswerCount()} label='To answer'/>
         </Statistic.Group>
     </div>;
@@ -101,7 +116,7 @@ class Goals extends React.Component {
     };
 }
 
-function getGoalMeta(goal) {
+function getGoalMeta(goal: IGoal) {
     const {test, frequency} = goal;
     switch (test) {
         case 'atleast':
@@ -134,26 +149,26 @@ const NewButton = () => <Button
     </Button.Content>
 </Button>;
 
-const GoalCard = goal =>
+const GoalCard = (goal: IGoal) =>
     <Card key={goal.id} color={COLOR_GOALS}>
         <Card.Content>
             <Card.Header>{goal.question}</Card.Header>
             <Card.Meta>{getGoalMeta(goal)}</Card.Meta>
             <Card.Description>
-                <LastAnswered goal={goal}/>
+                {LastAnswered(goal)}
             </Card.Description>
         </Card.Content>
         <Card.Content extra>
             <div>
-                <AnswerButton goal={goal}/>
+                {AnswerButton(goal)}
                 <Button size='tiny' basic as={Link} to={`/goals/manage/${goal.id}`}>Edit Goal</Button>
             </div>
         </Card.Content>
     </Card>;
 
-const AnswerButton = props => {
-    const isChange = props.goal.last_answered && moment().isSame(props.goal.last_answered, 'day');
-    const url = `/goals/answer/${props.goal.id}`;
+const AnswerButton = (goal: IGoal) => {
+    const isChange = goal.last_answered && moment().isSame(goal.last_answered, 'day');
+    const url = `/goals/answer/${goal.id}`;
     return <Button size='tiny' basic as={Link} to={url} color={COLOR_GOALS}>
         {isChange ?
             'Change'
@@ -161,26 +176,19 @@ const AnswerButton = props => {
     </Button>;
 };
 
-AnswerButton.propTypes = {
-    goal: PropTypes.shape({
-        last_answered: PropTypes.string,
-        id: PropTypes.number.isRequired
-    })
-};
-
-const LastAnswered = props => {
-    if (!props.goal.last_answered) {
+const LastAnswered = (goal: IGoal) => {
+    if (!goal.last_answered) {
         return <div>
             <Icon name='exclamation triangle' color='orange'/>
             Never answered
         </div>;
-    } else if (moment().isSame(props.goal.last_answered, 'day')) {
+    } else if (moment().isSame(goal.last_answered, 'day')) {
         return <div>
             <Icon name='check circle' color='green'/>
             Answered today
         </div>;
     } else {
-        const relativeMoment = getRelativeMoment(props.goal.last_answered);
+        const relativeMoment = getRelativeMoment(goal.last_answered);
         return <div>
             <Icon name='exclamation triangle' color='orange'/>
             Last answered {relativeMoment}
@@ -188,22 +196,15 @@ const LastAnswered = props => {
     }
 };
 
-Goals.propTypes = {
-    fetchGoals: PropTypes.func.isRequired,
-    goals: PropTypes.object,
-    isLoading: PropTypes.bool.isRequired,
-    goalsResponse: PropTypes.object
-};
-
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: any) => ({
     goals: state.goals,
     hasErrored: state.goalsHasErrored,
     isLoading: state.goalsIsLoading,
     goalsResponse: state.goalsResponse
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
     fetchGoals: () => dispatch(goalsFetchAll()),
 });
 
-export default connect<IGoalsDispatchProps, IGoalsStateProps>(mapStateToProps, mapDispatchToProps)(Goals);
+export default connect(mapStateToProps, mapDispatchToProps)(Goals);
