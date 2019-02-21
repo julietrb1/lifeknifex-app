@@ -46,8 +46,8 @@ export function getRelativeMoment(dateString: string) {
     });
 }
 
-export const arrayToObject = (array: any[], keyField: string) =>
-    array.reduce((obj, item) => {
+export const arrayToObject = (array: any[] | undefined, keyField: string) =>
+    (array || []).reduce((obj, item) => {
         obj[item[keyField]] = item;
         return obj;
     }, {});

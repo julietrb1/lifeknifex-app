@@ -3,6 +3,7 @@ import axios from "axios";
 import {IGoal} from "../reducers/goals";
 import {Action, Dispatch} from "redux";
 import {ThunkResult} from "../store/configure-store";
+import {IPaginatedResponse} from "../backend-common";
 
 
 export type IGoalsActions =
@@ -35,7 +36,7 @@ export interface GoalsIsLoadingAction extends Action<GoalsActionTypes.GOALS_IS_L
 }
 
 export interface GoalsFetchDataAction extends Action<GoalsActionTypes.GOALS_FETCH_DATA_SUCCESS> {
-    goals: any
+    goals: IPaginatedResponse<IGoal>
 }
 
 export interface GoalsUpdateAnswerSuccessAction extends Action<GoalsActionTypes.GOAL_UPDATE_ANSWER_SUCCESS> {
@@ -51,11 +52,11 @@ export interface GoalsCreateSuccessAction extends Action<GoalsActionTypes.GOAL_C
 }
 
 export interface GoalsUpdateSuccessAction extends Action<GoalsActionTypes.GOAL_UPDATE_SUCCESS> {
-    goal: any
+    goal: IGoal
 }
 
 export interface GoalsFetchOneSuccessAction extends Action<GoalsActionTypes.GOAL_FETCH_ONE_SUCCESS> {
-    goal: any
+    goal: IGoal
 }
 
 type GoalsFetchAllActions = GoalsIsLoadingAction | GoalsFetchDataAction | GoalsHasErroredAction;
