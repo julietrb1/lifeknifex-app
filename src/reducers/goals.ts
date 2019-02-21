@@ -29,6 +29,13 @@ export interface IGoalsStoreState {
     [goalUrl: string]: IGoal;
 }
 
+export interface IGoalsSlice {
+    goalsHasErrored: boolean;
+    goalsIsLoading: boolean;
+    goals: IGoalsStoreState;
+    goalsResponse: IPaginatedResponse<IGoal>;
+}
+
 export const goalsHasErrored: Reducer<boolean, GoalsHasErroredAction> = (state = false, action) => {
     switch (action.type) {
         case GoalsActionTypes.GOALS_HAS_ERRORED:
@@ -79,10 +86,7 @@ export const goals: Reducer<IGoalsStoreState, GoalsFetchActions> = (state = {}, 
     }
 };
 
-export interface IGoalsResponseStoreState extends IPaginatedResponse<IGoal> {
-}
-
-export const goalsResponse: Reducer<IGoalsResponseStoreState, GoalsFetchDataAction> = (state = {}, action) => {
+export const goalsResponse: Reducer<IPaginatedResponse<IGoal>, GoalsFetchDataAction> = (state = {}, action) => {
     switch (action.type) {
         case GoalsActionTypes.GOALS_FETCH_DATA_SUCCESS:
             return action.goals;

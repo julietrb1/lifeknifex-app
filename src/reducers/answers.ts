@@ -39,3 +39,9 @@ export const answers: Reducer<IPaginatedResponse<IAnswer>> = (state = {}, action
             return state;
     }
 };
+
+export interface IAnswersSlice {
+    answers: IPaginatedResponse<IAnswer>;
+    answersIsLoading: boolean;
+    answersHasErrored: boolean;
+}

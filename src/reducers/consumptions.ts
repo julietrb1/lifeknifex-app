@@ -15,7 +15,10 @@ export interface IConsumption extends IBackendItem {
     food_icon: string;
 }
 
-export interface IConsumptionsStoreState extends IPaginatedResponse<IConsumption> {
+export interface IConsumptionsSlice {
+    consumptionsHasErrored: boolean;
+    consumptionsIsLoading: boolean;
+    consumptions: IPaginatedResponse<IConsumption>;
 }
 
 export const consumptionsHasErrored: Reducer<boolean, ConsumptionsHasErroredAction> = (state = false, action) => {
@@ -36,7 +39,7 @@ export const consumptionsIsLoading: Reducer<boolean, ConsumptionsIsLoadingAction
     }
 };
 
-export const consumptions: Reducer<IConsumptionsStoreState, ConsumptionsFetchDataSuccessAction> = (state = {}, action) => {
+export const consumptions: Reducer<IPaginatedResponse<IConsumption>, ConsumptionsFetchDataSuccessAction> = (state = {}, action) => {
     switch (action.type) {
         case ConsumptionsActionTypes.CONSUMPTIONS_FETCH_DATA_SUCCESS:
             return action.consumptions;

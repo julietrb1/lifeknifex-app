@@ -48,7 +48,7 @@ export const foods: Reducer<IFoodsStoreState, FoodsFetchActions> = (state = {}, 
     }
 };
 
-export interface IFoodsReduxState {
+export interface IFoodsSlice {
     foods: any;
     foodsIsLoading: boolean;
     foodsHasErrored: boolean;
