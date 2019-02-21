@@ -11,12 +11,15 @@ import './Nutrition.scss';
 import {connect} from "react-redux";
 import {consumptionsFetchAll} from "../../actions/consumptions";
 import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
+import {Dispatch} from "redux";
 
 const sections = [
     {name: 'Nutrition'}
 ];
 
-class Nutrition extends RequestComponent {
+type Props = INutritionStateProps & INutritionDispatchProps;
+
+class Nutrition extends RequestComponent<Props> {
     componentDidMount() {
         if (!this.props.consumptions.results) {
             this.props.fetchConsumptions();
@@ -78,13 +81,22 @@ class Nutrition extends RequestComponent {
     };
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: any) => ({
     isLoading: state.consumptionsIsLoading,
     consumptions: state.consumptions,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
     fetchConsumptions: () => dispatch(consumptionsFetchAll()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Nutrition);
+interface INutritionStateProps {
+    isLoading: boolean;
+    consumptions: { results: any[] };
+}
+
+interface INutritionDispatchProps {
+    fetchConsumptions: () => void;
+}
+
+export default connect<INutritionDispatchProps, INutritionStateProps>(mapStateToProps, mapDispatchToProps)(Nutrition);

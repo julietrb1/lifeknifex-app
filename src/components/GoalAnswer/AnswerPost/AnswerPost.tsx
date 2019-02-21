@@ -1,7 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {Button, Divider, Form, Radio} from 'semantic-ui-react';
 import {withRouter} from "react-router-dom";
+import {IAnswerPostProps} from "./IAnswerPostProps";
 
 const yesNoAnswerSet = [
     {label: 'Yes', value: 1}, {label: 'No', value: 2},
@@ -12,26 +12,26 @@ const likertAnswerSet = [
     {label: 'Poorly', value: 3}, {label: 'Unsuccessfully', value: 4},
 ];
 
-const BackButton = props => {
-    if (props.mode === 'post') {
-        return <Button disabled={props.isStart} type='button' onClick={props.goBack}>Back</Button>;
+const BackButton = (isStart: boolean, goBack: any, history: any, mode: string) => {
+    if (mode === 'post') {
+        return <Button disabled={isStart} type='button' onClick={goBack}>Back</Button>;
     } else {
         return <Button type='button'
-                       onClick={props.history.goBack}>Cancel</Button>;
+                       onClick={history.goBack}>Cancel</Button>;
     }
 };
 
-const NextButton = props => {
-    if (props.mode === 'post' && !props.isEnd) {
+const NextButton = (mode: string, isEnd: boolean, checkedValue: number) => {
+    if (mode === 'post' && !isEnd) {
         return <Button type="submit">Next</Button>;
-    } else if (props.mode === 'post' && props.isEnd) {
+    } else if (mode === 'post' && isEnd) {
         return <Button positive type="submit">Finish</Button>;
     } else {
-        return <Button disabled={!props.checkedValue} positive type="submit">Finish</Button>;
+        return <Button disabled={!checkedValue} positive type="submit">Finish</Button>;
     }
 };
 
-const AnswerPost = props => {
+const AnswerPost: React.FC<IAnswerPostProps> = props => {
     const answerSet = props.goal.style === 'yesno' ? yesNoAnswerSet : likertAnswerSet;
     return <div>
         <Form.Group inline>
@@ -46,22 +46,11 @@ const AnswerPost = props => {
         </Form.Group>
         <Divider hidden/>
         <Button.Group>
-            <BackButton {...props}/>
+            {BackButton(props.isStart, props.goBack, props.history, props.mode)}
             <Button.Or/>
-            <NextButton {...props}/>
+            {NextButton(props.mode, props.isEnd, props.checkedValue)}
         </Button.Group>
     </div>;
-};
-
-AnswerPost.propTypes = {
-    goal: PropTypes.object.isRequired,
-    checkedValue: PropTypes.number,
-    onAnswer: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
-    mode: PropTypes.oneOf(['single', 'post']).isRequired,
-    isStart: PropTypes.bool,
-    isEnd: PropTypes.bool,
-    goBack: PropTypes.func.isRequired
 };
 
 export default withRouter(AnswerPost);
