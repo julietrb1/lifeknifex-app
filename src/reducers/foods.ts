@@ -10,7 +10,8 @@ import {arrayToObject} from "../Utils";
 
 export interface IFood extends IBackendItem {
     name: string;
-    quality: number;
+    health_index: number;
+    is_archived: boolean;
 }
 
 export interface IFoodsStoreState {

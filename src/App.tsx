@@ -12,13 +12,12 @@ import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import NutritionLog from "./components/NutritionLog/NutritionLog";
 import NutritionLibrary from "./components/NutritionLibrary/NutritionLibrary";
-import ModifyFood from "./components/ModifyFood/ModifyFood";
 import {Container, Divider} from "semantic-ui-react";
-import NewFood from "./components/NewFood/NewFood";
 import ModifyConsumption from "./components/ModifyConsumption/ModifyConsumption";
 import createBrowserHistory from 'history/createBrowserHistory';
 import GoalNewEdit from "./components/GoalNewEdit/GoalNewEdit";
 import GoalAnswer from "./components/GoalAnswer/GoalAnswer";
+import FoodNewEdit from "./components/FoodNewEdit/FoodNewEdit";
 
 export const history = createBrowserHistory();
 
@@ -34,8 +33,8 @@ class App extends React.Component {
                     <Route exact path="/nutrition" component={Nutrition}/>
                     <Route exact path="/nutrition/library" component={NutritionLibrary}/>
                     <Route exact path="/nutrition/log" component={NutritionLog}/>
-                    <Route exact path="/nutrition/library/new" component={NewFood}/>
-                    <Route path="/nutrition/library/manage/:foodId" component={ModifyFood}/>
+                    <Route exact path="/nutrition/library/new" component={FoodNewEdit}/>
+                    <Route path="/nutrition/library/manage/:foodId" component={FoodNewEdit}/>
                     <Route path="/nutrition/history/:consumptionId" component={ModifyConsumption}/>
 
                     {/* Goals */}

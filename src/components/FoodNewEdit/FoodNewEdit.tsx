@@ -1,8 +1,9 @@
 import React from 'react';
-import './ModifyFoodForm.scss';
-import {createFood, getFood, updateFood} from '../../../Backend';
+import './FoodNewEdit.scss';
+import {createFood, getFood, updateFood} from '../../Backend';
 import {Link, RouteComponentProps, withRouter} from 'react-router-dom';
-import {extractError, healthStrings} from '../../../Utils';
+import {extractError, healthStrings} from '../../Utils';
+import update from 'immutability-helper';
 import {
     Button,
     CheckboxProps,
@@ -14,32 +15,23 @@ import {
     InputOnChangeData,
     Radio
 } from 'semantic-ui-react';
-import ErrorMessage from '../ErrorMessage/ErrorMessage';
-import RequestComponent from '../RequestComponent/RequestComponent';
-import {APP_TITLE, foodIcons} from '../../../constants';
+import ErrorMessage from '../common/ErrorMessage/ErrorMessage';
+import RequestComponent from '../common/RequestComponent/RequestComponent';
+import {APP_TITLE, foodIcons} from '../../constants';
+import {IFoodNewEditMatchParams} from "./IFoodNewEditMatchParams";
+import {IFoodNewEditFormState} from "./IFoodNewEditFormState";
+import {IFood} from "../../reducers/foods";
 
 const URL_NUTRITION_LIBRARY = '/nutrition/library';
 
-interface IModifyFoodFormProps extends RouteComponentProps {
-    foodId: number;
-}
-
-interface IModifyFoodFormState {
-    isLoading: boolean;
-    food: any;
-    submissionError: string;
-    isArchiveVisible: boolean;
-    isUnarchiveVisible: boolean;
-}
-
-class ModifyFoodForm extends RequestComponent<IModifyFoodFormProps, IModifyFoodFormState> {
+class FoodNewEdit extends RequestComponent<RouteComponentProps<IFoodNewEditMatchParams>, IFoodNewEditFormState> {
     state = {
         food: {
             id: undefined,
-            is_archived: undefined,
+            is_archived: false,
             name: '',
             health_index: 1,
-            icon: ''
+            icon: '',
         },
         isLoading: false,
         submissionError: '',
@@ -48,16 +40,16 @@ class ModifyFoodForm extends RequestComponent<IModifyFoodFormProps, IModifyFoodF
     };
 
     componentDidMount() {
-        if (this.props.foodId) {
+        if (this.props.match.params.foodId) {
             this.setState({
                 isLoading: true
             });
 
-            getFood(this.cancelToken, this.props.foodId)
-                .then(food => this.setState({
+            getFood(this.cancelToken, Number(this.props.match.params.foodId))
+                .then((food: IFood) => this.setState({
                     food: food,
                 }))
-                .catch(err => this.setState({
+                .catch((err: Error) => this.setState({
                     submissionError: extractError(err)
                 }))
                 .finally(() => this.setState({
@@ -78,7 +70,7 @@ class ModifyFoodForm extends RequestComponent<IModifyFoodFormProps, IModifyFoodF
                 <label>Quality</label>
             </Form.Field>
             {
-                healthStrings.map((label, index) =>
+                healthStrings.map((label: string, index: number) =>
                     <Form.Field key={label}>
                         <Radio
                             label={label}
@@ -161,10 +153,9 @@ class ModifyFoodForm extends RequestComponent<IModifyFoodFormProps, IModifyFoodF
     };
 
     handleHealthChange = (event: React.FormEvent<HTMLInputElement>, {value}: CheckboxProps) => {
-        this.setState(prevState => ({
+        this.setState(prevState => update(prevState, {
             food: {
-                ...prevState.food,
-                health_index: value
+                health_index: {$set: Number(value)}
             }
         }));
     };
@@ -174,11 +165,11 @@ class ModifyFoodForm extends RequestComponent<IModifyFoodFormProps, IModifyFoodF
             isLoading: true
         });
 
-        const backendFunction = this.props.foodId ? updateFood : createFood;
+        const backendFunction = this.props.match.params.foodId ? updateFood : createFood;
 
         backendFunction(this.cancelToken, this.state.food)
             .then(this.props.history.goBack)
-            .catch(err => this.setState({
+            .catch((err: Error) => this.setState({
                 submissionError: extractError(err)
             })).finally(() => this.setState({
             isLoading: false
@@ -187,4 +178,4 @@ class ModifyFoodForm extends RequestComponent<IModifyFoodFormProps, IModifyFoodF
     };
 }
 
-export default withRouter(ModifyFoodForm);
+export default withRouter(FoodNewEdit);
