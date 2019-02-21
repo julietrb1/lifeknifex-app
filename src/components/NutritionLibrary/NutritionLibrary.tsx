@@ -1,6 +1,6 @@
 import React from 'react';
 import HeaderBar from "../HeaderBar/HeaderBar";
-import {Button, Checkbox, Divider} from "semantic-ui-react";
+import {Button, Checkbox, CheckboxProps, Divider} from "semantic-ui-react";
 import BreadcrumbSet from "../common/BreadcrumbSet/BreadcrumbSet";
 import {Link} from "react-router-dom";
 import Icon from "semantic-ui-react/dist/commonjs/elements/Icon";
@@ -12,21 +12,27 @@ import {getFoods} from "../../Backend";
 import axios from 'axios';
 import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
 import './NutritionLibrary.scss';
+import {IPaginatedResponse} from "../../backend-common";
+import {IFood} from "../../reducers/foods";
+import update from 'immutability-helper';
 
 const sections = [
     {name: 'Nutrition', href: '/nutrition'},
     {name: 'Food Library'}
 ];
 
-class NutritionLibrary extends RequestComponent {
-    constructor(props) {
-        super(props);
-        this.state = {
-            isArchivedVisible: false,
-            isLoading: false,
-            foods: {}
-        };
-    }
+interface INutritionLibraryState {
+    isArchivedVisible: boolean;
+    isLoading: boolean;
+    foods: IPaginatedResponse<IFood>
+}
+
+class NutritionLibrary extends RequestComponent<{}, INutritionLibraryState> {
+    state = {
+        isArchivedVisible: false,
+        isLoading: false,
+        foods: {} as IPaginatedResponse<IFood>
+    };
 
     componentDidMount() {
         this.loadFoods();
@@ -62,8 +68,8 @@ class NutritionLibrary extends RequestComponent {
         </div>;
     }
 
-    handleChangeArchived = (e, {checked}) => {
-        this.setState({isArchivedVisible: checked, foods: {}}, () => this.loadFoods());
+    handleChangeArchived = (event: React.FormEvent<HTMLInputElement>, {value}: CheckboxProps) => {
+        this.setState({isArchivedVisible: !!value, foods: {}}, () => this.loadFoods());
     };
 
     PageContent = () => {
@@ -106,15 +112,11 @@ class NutritionLibrary extends RequestComponent {
 
         this.setState({isLoading: true});
 
-        axios.get(this.state.foods.next)
-            .then(res => this.setState(prevState => ({
-                isLoading: false,
+        axios.get(String(this.state.foods.next))
+            .then(res => this.setState(prevState => update(prevState, {
+                isLoading: {$set: false},
                 foods: {
-                    ...res.data,
-                    results: [
-                        ...prevState.foods.results,
-                        ...res.data.results
-                    ]
+                    results: {$push: res.data.results}
                 }
             })));
     };

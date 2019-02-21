@@ -171,7 +171,7 @@ export function deleteConsumption(cancelToken: CancelTokenSource, consumptionId:
         .then(res => res.data);
 }
 
-export function getFoods(cancelToken: CancelTokenSource, search: string, isArchivedVisible: boolean = false) {
+export function getFoods(cancelToken: CancelTokenSource, search: string | null | undefined, isArchivedVisible: boolean = false) {
     const queryParams = new URLSearchParams();
     if (search && search.length) {
         queryParams.append('search', search);
