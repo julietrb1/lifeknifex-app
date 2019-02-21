@@ -1,9 +1,9 @@
 import React from 'react';
 import {Form} from 'semantic-ui-react';
-import PropTypes from 'prop-types';
 import {COLOR_GOALS} from "../../../constants";
+import {IAnswerPreProps} from "./IAnswerPreProps";
 
-const AnswerPre = props => {
+const AnswerPre: React.FC<IAnswerPreProps> = props => {
     if (props.goal.style === 'yesno') {
         return <div>
             <Form.Button fluid basic color={COLOR_GOALS} onClick={() => props.onAnswer(1)}>Yes</Form.Button>
@@ -17,11 +17,6 @@ const AnswerPre = props => {
             <Form.Button fluid basic color={COLOR_GOALS} onClick={() => props.onAnswer(4)}>Unsuccessfully</Form.Button>
         </div>;
     }
-};
-
-AnswerPre.propTypes = {
-    goal: PropTypes.object.isRequired,
-    onAnswer: PropTypes.func.isRequired
 };
 
 export default AnswerPre;
