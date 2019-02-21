@@ -147,7 +147,7 @@ class FoodNewEdit extends RequestComponent<RouteComponentProps<IFoodNewEditMatch
         this.setState(prevState => ({
             food: {
                 ...prevState.food,
-                icon: value
+                icon: String(value)
             }
         }));
     };
