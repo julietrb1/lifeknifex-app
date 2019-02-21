@@ -2,27 +2,27 @@ import React from 'react';
 import ConsumptionForm from "../common/ConsumptionForm/ConsumptionForm";
 import HeaderBar from "../HeaderBar/HeaderBar";
 import BreadcrumbSet from "../common/BreadcrumbSet/BreadcrumbSet";
-import PropTypes from "prop-types";
+import {RouteComponentProps} from "react-router";
 
 const sections = [
     {name: 'Nutrition', href: '/nutrition'},
     {name: 'Edit'}
 ];
 
-const ModifyConsumption = props => {
+interface IModifyConsumptionMatchParams {
+    consumptionId: string;
+}
+
+interface IModifyConsumptionProps extends RouteComponentProps<IModifyConsumptionMatchParams> {
+    sections: any[] // TODO: Type this properly
+}
+
+const ModifyConsumption: React.FC<IModifyConsumptionProps> = props => {
     return <div>
         <BreadcrumbSet sections={sections}/>
         <HeaderBar title="Edit Consumption" icon='nutrition'/>
-        <ConsumptionForm consumptionId={props.match.params.consumptionId}/>
+        <ConsumptionForm consumptionId={Number(props.match.params.consumptionId)}/>
     </div>;
-};
-
-ModifyConsumption.propTypes = {
-    match: PropTypes.shape({
-        params: PropTypes.shape({
-            consumptionId: PropTypes.string
-        })
-    })
 };
 
 export default ModifyConsumption;
