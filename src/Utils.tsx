@@ -1,10 +1,11 @@
 import moment from "moment";
+import {SemanticCOLORS, SemanticICONS} from "semantic-ui-react/dist/commonjs/generic";
 
 export const healthStrings = ['Healthy', 'Reasonable', 'Poor', 'Unhealthy'];
 export const consumptionSizes = ['Small', 'Medium', 'Large', 'Extra Large'];
-export const consumptionIcons = ['thermometer empty', 'thermometer half', 'thermometer three quarters', 'thermometer full'];
+export const consumptionIcons: SemanticICONS[] = ['thermometer empty', 'thermometer half', 'thermometer three quarters', 'thermometer full'];
 export const foodIcons = ['angle double up', 'angle up', 'angle down', 'angle double down'];
-export const foodColors = ['teal', 'green', 'orange', 'red'];
+export const foodColors: SemanticCOLORS[] = ['teal', 'green', 'orange', 'red'];
 
 export const firstCase = (text: string, isUpper: boolean) => `${isUpper ?
     text.charAt(0).toUpperCase() :
