@@ -2,9 +2,9 @@ import React from 'react';
 import {Button, Icon, Image, Segment} from "semantic-ui-react";
 import {Link} from "react-router-dom";
 import {COLOR_NUTRITION} from "../../../constants";
-import PropTypes from 'prop-types';
+import {INutritionLibraryEmptyProps} from "./INutritionLibraryEmptyProps";
 
-const NutritionLibraryEmpty = props =>
+const NutritionLibraryEmpty: React.FC<INutritionLibraryEmptyProps> = props =>
     <Segment textAlign='center' placeholder>
         <Image className="placeholder-image" src='/img/undraw_pizza_sharing.svg' size='medium'/>
         <h3>{props.isArchivedVisible
@@ -19,9 +19,5 @@ const NutritionLibraryEmpty = props =>
                 </Button.Content>
             </Button>}
     </Segment>;
-
-NutritionLibraryEmpty.propTypes = {
-    isArchivedVisible: PropTypes.bool
-};
 
 export default NutritionLibraryEmpty;
