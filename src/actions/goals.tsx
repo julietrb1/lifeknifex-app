@@ -26,43 +26,35 @@ export enum GoalsActionTypes {
     GOAL_FETCH_ONE_SUCCESS = 'GOAL_FETCH_ONE_SUCCESS',
 }
 
-export interface GoalsHasErroredAction extends Action {
-    type: GoalsActionTypes.GOALS_HAS_ERRORED,
+export interface GoalsHasErroredAction extends Action<GoalsActionTypes.GOALS_HAS_ERRORED> {
     hasErrored: boolean
 }
 
-export interface GoalsIsLoadingAction extends Action {
-    type: GoalsActionTypes.GOALS_IS_LOADING,
+export interface GoalsIsLoadingAction extends Action<GoalsActionTypes.GOALS_IS_LOADING> {
     isLoading: boolean
 }
 
-export interface GoalsFetchDataAction extends Action {
-    type: GoalsActionTypes.GOALS_FETCH_DATA_SUCCESS,
+export interface GoalsFetchDataAction extends Action<GoalsActionTypes.GOALS_FETCH_DATA_SUCCESS> {
     goals: any
 }
 
-export interface GoalsUpdateAnswerSuccessAction extends Action {
-    type: GoalsActionTypes.GOAL_UPDATE_ANSWER_SUCCESS,
+export interface GoalsUpdateAnswerSuccessAction extends Action<GoalsActionTypes.GOAL_UPDATE_ANSWER_SUCCESS> {
     answer: any
 }
 
-export interface GoalsCreateAnswerSuccessAction extends Action {
-    type: GoalsActionTypes.GOAL_CREATE_ANSWER_SUCCESS,
+export interface GoalsCreateAnswerSuccessAction extends Action<GoalsActionTypes.GOAL_CREATE_ANSWER_SUCCESS> {
     answer: any
 }
 
-export interface GoalsCreateSuccessAction extends Action {
-    type: GoalsActionTypes.GOAL_CREATE_SUCCESS,
+export interface GoalsCreateSuccessAction extends Action<GoalsActionTypes.GOAL_CREATE_SUCCESS> {
     goal: IGoal
 }
 
-export interface GoalsUpdateSuccessAction extends Action {
-    type: GoalsActionTypes.GOAL_UPDATE_SUCCESS,
+export interface GoalsUpdateSuccessAction extends Action<GoalsActionTypes.GOAL_UPDATE_SUCCESS> {
     goal: any
 }
 
-export interface GoalsFetchOneAction extends Action {
-    type: GoalsActionTypes.GOAL_FETCH_ONE_SUCCESS,
+export interface GoalsFetchOneAction extends Action<GoalsActionTypes.GOAL_FETCH_ONE_SUCCESS> {
     goal: any
 }
 
