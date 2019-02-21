@@ -11,7 +11,7 @@ export const LOCAL_STORAGE_JWT_ACCESS = 'jwt-access';
 export const LOCAL_STORAGE_JWT_REFRESH = 'jwt-refresh';
 export const BACKEND_DATE_FORMAT = 'YYYY-MM-DD';
 
-let backendUrl = '';
+let backendUrl: string | undefined = ''; // TODO: Check this so that it isn't undefined
 switch (document.location.hostname) {
     case 'app.lifeknifex.com':
         backendUrl = process.env.REACT_APP_BACKEND_URL_PROD;
