@@ -14,6 +14,7 @@ import AnswerPost from "./AnswerPost/AnswerPost";
 import {firstCase} from "../../Utils";
 import {RouteComponentProps} from "react-router";
 import {Dispatch} from "redux";
+import {IGoal, IGoalsStoreState} from "../../reducers/goals";
 
 interface IGoalAnswerDispatchProps {
     fetchGoals: () => any;
@@ -22,7 +23,7 @@ interface IGoalAnswerDispatchProps {
 }
 
 interface IGoalAnswerStateProps {
-    goals: { [url: string]: any };
+    goals: IGoalsStoreState;
     hasErrored: boolean;
     isLoading: boolean;
 
@@ -38,9 +39,9 @@ interface IGoalAnswerState {
     currentGoalUrl: string;
     goalIndex: number;
     done: boolean;
-    candidateValue: number | null;
+    candidateValue: number;
     isPostMode: boolean;
-    filteredGoals: { [url: string]: any };
+    filteredGoals: IGoal[];
 }
 
 class GoalAnswer extends RequestComponent<Props, IGoalAnswerState> {
@@ -48,7 +49,7 @@ class GoalAnswer extends RequestComponent<Props, IGoalAnswerState> {
         currentGoalUrl: '',
         goalIndex: -1,
         done: false,
-        candidateValue: -1,
+        candidateValue: 0,
         isPostMode: new URLSearchParams(this.props.location.search).get('mode') === 'post',
         filteredGoals: []
     };
@@ -146,10 +147,11 @@ class GoalAnswer extends RequestComponent<Props, IGoalAnswerState> {
         const goalIdParam = Number(this.props.match.params.goalId);
         const today = moment().format(BACKEND_DATE_FORMAT);
         const filteredGoals = this.filterGoals(goalIdParam, today);
+        console.log(`Filtered: ${filteredGoals}`);
         const newGoalIndex = this.state.goalIndex + increment;
         if (newGoalIndex < Object.values(filteredGoals || []).length) {
-            const filteredUrl = filteredGoals[newGoalIndex].url;
-            const candidateValue = this.props.goals[filteredUrl].todays_answer_value;
+            const filteredUrl = String(filteredGoals[newGoalIndex].url);
+            const candidateValue = this.props.goals[filteredUrl].todays_answer_value || 0;
             return this.setState({
                 goalIndex: newGoalIndex,
                 currentGoalUrl: filteredUrl,
@@ -165,8 +167,8 @@ class GoalAnswer extends RequestComponent<Props, IGoalAnswerState> {
     };
 
     filterGoals(goalIdParam: number, today: string) {
-        let filteredGoals;
-        if (!this.state.filteredGoals) {
+        let filteredGoals: IGoal[];
+        if (!Object.values(this.state.filteredGoals).length) {
             filteredGoals = Object.values(this.props.goals).filter(goal => {
                 const shouldStopPre = !goalIdParam && goal.last_answered !== today;
                 const shouldStopPost = this.state.isPostMode || (goalIdParam && goal.id === Number(goalIdParam));
