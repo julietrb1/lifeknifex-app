@@ -5,13 +5,11 @@
   "dependencies": {
     "awesome-debounce-promise": "^1.0.0",
     "axios": "^0.18.0",
-    "eslint-plugin-react": "7.12.4",
     "immutability-helper": "^3.0.0",
     "jest-dom": "^3.1.2",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.23",
     "node-sass": "^4.11.0",
-    "prop-types": "^15.7.2",
     "react": "^16.8.2",
     "react-datepicker": "^2.1.0",
     "react-dom": "^16.8.2",
@@ -22,16 +20,14 @@
     "react-testing-library": "^5.9.0",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
-    "semantic-ui-react": "^0.85.0"
+    "semantic-ui-react": "^0.85.0",
+    "typescript": "^3.3.3"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "GENERATE_SOURCEMAP=false  react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": [
     ">0.2%",
@@ -41,7 +37,11 @@
   ],
   "devDependencies": {
     "@types/jest": "^24.0.6",
-    "@types/prop-types": "^15.5.9",
+    "@types/node": "^11.9.4",
+    "@types/react": "^16.8.4",
+    "@types/react-dom": "^16.8.2",
+    "@types/react-redux": "^7.0.1",
+    "@types/react-router-dom": "^4.3.1",
     "@types/semantic-ui-search": "^2.2.3"
   }
 }

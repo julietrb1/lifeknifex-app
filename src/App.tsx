@@ -66,7 +66,7 @@ class App extends React.Component {
                         </a>
                         <a href="http://www.djangoproject.com/">
                             <img src="https://www.djangoproject.com/m/img/badges/djangopowered126x54_grey.gif"
-                                 border="0" alt="Powered by Django." title="Powered by Django."/>
+                                 alt="Powered by Django." title="Powered by Django."/>
                         </a>
                         <p>
                             <small>Images include content from <a href="https://icons8.com">Icons8</a> used under <a

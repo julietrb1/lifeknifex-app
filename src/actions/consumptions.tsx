@@ -1,21 +1,21 @@
 import {API_CONSUMPTIONS} from "../Backend";
 import axios from "axios";
 
-export function consumptionsHasErrored(bool) {
+export function consumptionsHasErrored(hasErrored: boolean) {
     return {
         type: 'CONSUMPTIONS_HAS_ERRORED',
-        hasErrored: bool
+        hasErrored
     };
 }
 
-export function consumptionsIsLoading(bool) {
+export function consumptionsIsLoading(isLoading: boolean) {
     return {
         type: 'CONSUMPTIONS_IS_LOADING',
-        isLoading: bool
+        isLoading
     };
 }
 
-export function consumptionsFetchDataSuccess(consumptions) {
+export function consumptionsFetchDataSuccess(consumptions: any) {
     return {
         type: 'CONSUMPTIONS_FETCH_DATA_SUCCESS',
         consumptions
@@ -23,7 +23,7 @@ export function consumptionsFetchDataSuccess(consumptions) {
 }
 
 export function consumptionsFetchAll() {
-    return dispatch => {
+    return (dispatch: any) => {
         dispatch(consumptionsIsLoading(true));
         axios.get(API_CONSUMPTIONS)
             .then(response => {

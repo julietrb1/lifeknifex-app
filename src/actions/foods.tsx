@@ -1,38 +1,30 @@
 import {API_FOODS} from "../Backend";
 import axios from "axios";
 
-export function foodsHasErrored(bool) {
+export function foodsHasErrored(hasErrored: boolean) {
     return {
         type: 'FOODS_HAS_ERRORED',
-        hasErrored: bool
+        hasErrored
     };
 }
 
-export function foodsIsLoading(bool) {
+export function foodsIsLoading(isLoading: boolean) {
     return {
         type: 'FOODS_IS_LOADING',
-        isLoading: bool
+        isLoading
     };
 }
 
-export function foodsFetchDataSuccess(foods) {
+export function foodsFetchDataSuccess(foods: any) {
     return {
         type: 'FOODS_FETCH_DATA_SUCCESS',
         foods
     };
 }
 
-export function foodsFetchAll(search, isArchivedVisible) {
-    const params = {};
-    if (search && search.length) {
-        params['search'] = search;
-    }
-
-    if (isArchivedVisible) {
-        params['archived'] = 1;
-    }
-
-    return dispatch => {
+export function foodsFetchAll(search: string, archived: boolean) {
+    const params = {search, archived};
+    return (dispatch: any) => {
         dispatch(foodsIsLoading(true));
         axios.get(API_FOODS, {params: params})
             .then(response => {

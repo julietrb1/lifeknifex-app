@@ -1,7 +1,19 @@
-import React from 'react';
+import React, {SyntheticEvent} from 'react';
 import moment from 'moment';
-import PropTypes from 'prop-types';
-import {Button, Confirm, Divider, Dropdown, Form, Input, Message, Radio, Search} from 'semantic-ui-react';
+import {
+    Button,
+    CheckboxProps,
+    Confirm,
+    Divider,
+    Dropdown,
+    DropdownProps,
+    Form,
+    Input,
+    Message,
+    Radio,
+    Search,
+    SearchProps
+} from 'semantic-ui-react';
 import './ConsumptionForm.scss';
 import {withRouter} from 'react-router-dom';
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
@@ -17,6 +29,8 @@ import {
 import RequestComponent from '../RequestComponent/RequestComponent';
 import {TIME_FORMAT_STRING} from '../../../constants';
 import axios from 'axios';
+import {IConsumptionFormState} from "./IConsumptionFormState";
+import {IConsumptionFormProps} from "./IConsumptionFormProps";
 
 const generateHours = () => {
     const hours = [];
@@ -55,54 +69,18 @@ const generateConsumptionInfo = () => {
     };
 };
 
-class ConsumptionForm extends RequestComponent {
-    constructor(props) {
-        super(props);
-        this.state = {
-            ...generateConsumptionInfo(),
-            currentFoodSearch: '',
-            submissionMessage: '',
-            isLoading: false
-        };
-    }
-
-    componentDidMount() {
-        this.resetSearch();
-        if (!this.props.consumptionId && !this.props.location.search) {
-            return;
-        }
-
-        this.setState({isLoading: true});
-
-        if (this.props.consumptionId) {
-            getConsumption(this.cancelToken, this.props.consumptionId)
-                .then(consumption => {
-                    this.setState({consumption});
-                    return consumption;
-                })
-                .then(consumption => axios.get(consumption.food))
-                .then(res => this.setState({
-                    food: res.data,
-                    isLoading: false,
-                    currentFoodSearch: res.data.name
-                }));
-        } else {
-            const params = new URLSearchParams(this.props.location.search);
-            const foodId = params.get('food');
-            if (!foodId) {
-                return;
-            }
-            getFood(this.cancelToken, foodId)
-                .then(food => this.setState(prevState => ({
-                    currentFoodSearch: food.name,
-                    isLoading: false,
-                    consumption: {
-                        ...prevState.consumption,
-                        food: food.url
-                    }
-                })));
-        }
-    }
+class ConsumptionForm extends RequestComponent<IConsumptionFormProps, IConsumptionFormState> {
+    state = {
+        ...generateConsumptionInfo(),
+        currentFoodSearch: '',
+        submissionMessage: '',
+        isLoading: false,
+        foodResults: [],
+        submissionError: '',
+        isDeleteVisible: false,
+        searchLoading: false
+    };
+    callSearch = AwesomeDebouncePromise((search: string) => getFoods(this.cancelToken, search), 500);
 
     SubmissionMessage = () => this.state.submissionMessage ?
         <Message header='Consumption Logged'
@@ -141,53 +119,42 @@ class ConsumptionForm extends RequestComponent {
         }
     };
 
-    render() {
-        return <div>
-            <Form
-                error={!!this.state.submissionError}
-                loading={this.state.isLoading}
-                onSubmit={this.handleFormSubmit}>
-                <Message error header='Problem While Logging' list={this.state.submissionError}/>
-                <this.SubmissionMessage/>
-                <Form.Field>
-                    <label>Food</label>
-                    <this.FoodField/>
+    componentDidMount() {
+        this.resetSearch();
+        if (!this.props.consumptionId && !this.props.location.search) {
+            return;
+        }
 
-                </Form.Field>
-                <Form.Field>
-                    <label>When</label>
-                    <this.HourField/>
-                </Form.Field>
-                <Form.Field>
-                    <label>Quantity</label>
-                </Form.Field>
-                {quantities.map(qty =>
-                    <Form.Field key={qty.value}>
-                        <Radio
-                            label={qty.text}
-                            name='quantity'
-                            value={qty.value}
-                            checked={this.state.consumption.quantity === qty.value}
-                            onChange={this.handleQuantityChange}
-                        />
-                    </Form.Field>)}
-                <Divider hidden/>
-                <Button.Group>
-                    <Button type='button' onClick={this.props.history.goBack}>Back</Button>
-                    <Button.Or/>
-                    <Button positive type="submit" disabled={!this.state.consumption.food}>
-                        {this.props.consumptionId ? 'Save Log' : 'Submit Log'}
-                    </Button>
-                </Button.Group>
-                <this.DeleteButton/>
-            </Form>
-            <Confirm
-                open={this.state.isDeleteVisible}
-                onCancel={() => this.setState({isDeleteVisible: false})}
-                onConfirm={this.handleDelete}
-                header='Delete Consumption?'
-                content={'This consumption will no longer appear in your history. However, you can add it back later, and points awarded as a result of this Consumption will remain. Please note that the calculation of future points will not take this deletion into account, and will still take it into account.'}/>
-        </div>;
+        this.setState({isLoading: true});
+
+        if (this.props.consumptionId) {
+            getConsumption(this.cancelToken, this.props.consumptionId)
+                .then(consumption => {
+                    this.setState({consumption});
+                    return consumption;
+                })
+                .then(consumption => axios.get(consumption.food))
+                .then(res => this.setState({
+                    food: res.data,
+                    isLoading: false,
+                    currentFoodSearch: res.data.name
+                }));
+        } else {
+            const params = new URLSearchParams(this.props.location.search);
+            const foodId = Number(params.get('food'));
+            if (!foodId) {
+                return;
+            }
+            getFood(this.cancelToken, foodId)
+                .then(food => this.setState(prevState => ({
+                    currentFoodSearch: food.name,
+                    isLoading: false,
+                    consumption: {
+                        ...prevState.consumption,
+                        food: food.url
+                    }
+                })));
+        }
     }
 
     DeleteButton = () => {
@@ -237,7 +204,56 @@ class ConsumptionForm extends RequestComponent {
             .finally(() => this.setState({isLoading: false}));
     };
 
-    handleFoodChange = (e, data) => {
+    render() {
+        return <div>
+            <Form
+                error={!!this.state.submissionError}
+                loading={this.state.isLoading}
+                onSubmit={this.handleFormSubmit}>
+                <Message error header='Problem While Logging' list={[this.state.submissionError]}/>
+                <this.SubmissionMessage/>
+                <Form.Field>
+                    <label>Food</label>
+                    <this.FoodField/>
+
+                </Form.Field>
+                <Form.Field>
+                    <label>When</label>
+                    <this.HourField/>
+                </Form.Field>
+                <Form.Field>
+                    <label>Quantity</label>
+                </Form.Field>
+                {quantities.map(qty =>
+                    <Form.Field key={qty.value}>
+                        <Radio
+                            label={qty.text}
+                            name='quantity'
+                            value={qty.value}
+                            checked={this.state.consumption.quantity === qty.value}
+                            onChange={this.handleQuantityChange}
+                        />
+                    </Form.Field>)}
+                <Divider hidden/>
+                <Button.Group>
+                    <Button type='button' onClick={this.props.history.goBack}>Back</Button>
+                    <Button.Or/>
+                    <Button positive type="submit" disabled={!this.state.consumption.food}>
+                        {this.props.consumptionId ? 'Save Log' : 'Submit Log'}
+                    </Button>
+                </Button.Group>
+                <this.DeleteButton/>
+            </Form>
+            <Confirm
+                open={this.state.isDeleteVisible}
+                onCancel={() => this.setState({isDeleteVisible: false})}
+                onConfirm={this.handleDelete}
+                header='Delete Consumption?'
+                content={'This consumption will no longer appear in your history. However, you can add it back later, and points awarded as a result of this Consumption will remain. Please note that the calculation of future points will not take this deletion into account, and will still take it into account.'}/>
+        </div>;
+    }
+
+    handleFoodChange = (e: SyntheticEvent, data: any) => {
         this.setState(prevState => ({
             consumption: {
                 ...prevState.consumption,
@@ -247,7 +263,7 @@ class ConsumptionForm extends RequestComponent {
         }));
     };
 
-    handleQuantityChange = (e, {value}) => {
+    handleQuantityChange = (e: React.FormEvent<HTMLInputElement>, {value}: CheckboxProps) => {
         this.setState(prevState => ({
             consumption: {
                 ...prevState.consumption,
@@ -256,7 +272,7 @@ class ConsumptionForm extends RequestComponent {
         }));
     };
 
-    handleHourChange = (e, {value}) => {
+    handleHourChange = (event: React.SyntheticEvent<HTMLElement>, {value}: DropdownProps) => {
         this.setState(prevState => ({
             consumption: {
                 ...prevState.consumption,
@@ -265,18 +281,17 @@ class ConsumptionForm extends RequestComponent {
         }));
     };
 
-    callSearch = AwesomeDebouncePromise(search => getFoods(this.cancelToken, search), 500);
-
-    handleSearchChange = (e, {value}) => {
+    handleSearchChange = (event: React.MouseEvent<HTMLElement>, {value}: SearchProps) => {
+        const currentFoodSearch = value ? value.toString() : '';
         this.setState(prev => ({
-            currentFoodSearch: value,
+            currentFoodSearch: currentFoodSearch,
             consumption: {
                 ...prev.consumption,
                 food: ''
             }
         }));
 
-        if (value.length < 1) {
+        if (currentFoodSearch.length < 1) {
             return this.resetSearch();
         }
 
@@ -287,7 +302,7 @@ class ConsumptionForm extends RequestComponent {
         const foods = await this.callSearch(this.state.currentFoodSearch);
         this.setState({
             searchLoading: false,
-            foodResults: foods.results.map(food => ({
+            foodResults: foods.results.map((food: any) => ({
                 title: food.name,
                 id: food.id,
                 description: healthStrings[food.health_index - 1],
@@ -296,12 +311,8 @@ class ConsumptionForm extends RequestComponent {
             }))
         });
     }
+
     resetSearch = () => this.setState({currentFoodSearch: ''});
 }
-
-ConsumptionForm.propTypes = {
-    history: PropTypes.object.isRequired,
-    consumptionId: PropTypes.string
-};
 
 export default withRouter(ConsumptionForm);

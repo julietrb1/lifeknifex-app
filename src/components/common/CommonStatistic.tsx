@@ -1,19 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {Statistic} from "semantic-ui-react";
 
-const CommonStatistic = props => {
+interface ICommonStatisticProps {
+    count: number | string;
+    label: string;
+}
+
+const CommonStatistic: React.FC<ICommonStatisticProps> = props => {
     return (
         <Statistic>
             <Statistic.Value>{props.count ? props.count.toLocaleString() : '--'}</Statistic.Value>
             <Statistic.Label>{props.label}</Statistic.Label>
         </Statistic>
     );
-};
-
-CommonStatistic.propTypes = {
-    count: PropTypes.number,
-    label: PropTypes.string.isRequired
 };
 
 export default CommonStatistic;

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, {CancelTokenSource} from 'axios';
 import {API, LOCAL_STORAGE_JWT_ACCESS, LOCAL_STORAGE_JWT_REFRESH} from "./constants";
 import {history} from './App';
 
@@ -13,9 +13,9 @@ axios.defaults.headers.common['Authorization'] = `Bearer ${getAccessToken()}`;
 
 // for multiple requests
 let isRefreshing = false;
-let failedQueue = [];
+let failedQueue: { resolve: (value: any) => void; reject: (reason?: any) => void; }[] = [];
 
-const processQueue = (error, token = null) => {
+const processQueue = (error: Error | null, token: string | null) => {
     failedQueue.forEach(prom => {
         if (error) {
             prom.reject(error);
@@ -81,7 +81,7 @@ function getAccessToken() {
     return window.localStorage.getItem(LOCAL_STORAGE_JWT_ACCESS);
 }
 
-function setAccessToken(newAccessToken) {
+function setAccessToken(newAccessToken: string) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
     window.localStorage.setItem(LOCAL_STORAGE_JWT_ACCESS, newAccessToken);
 }
@@ -90,7 +90,7 @@ function getRefreshToken() {
     return window.localStorage.getItem(LOCAL_STORAGE_JWT_REFRESH);
 }
 
-function setRefreshToken(newRefreshToken) {
+function setRefreshToken(newRefreshToken: string) {
     window.localStorage.setItem(LOCAL_STORAGE_JWT_REFRESH, newRefreshToken);
 }
 
@@ -104,14 +104,14 @@ function clearRefreshToken() {
 
 // FEATURES
 
-export function getFeature(cancelToken, featureName) {
+export function getFeature(cancelToken: CancelTokenSource, featureName: string) {
     return axios.get(`${API_FEATURES}${featureName}/`, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
 // AUTH
 
-export function logIn(cancelToken, username, password) {
+export function logIn(cancelToken: CancelTokenSource, username: string, password: string) {
     return axios
         .post(`${API_TOKEN}`, {
             username: username,
@@ -124,7 +124,7 @@ export function logIn(cancelToken, username, password) {
         });
 }
 
-export function register(cancelToken, username, password) {
+export function register(cancelToken: CancelTokenSource, username: string, password: string) {
     // return axios
     //     .post(`${API_AUTH}register/`, {
     //         username: username,
@@ -132,7 +132,7 @@ export function register(cancelToken, username, password) {
     //     }, {cancelToken: cancelToken.token});
 }
 
-export function getAccount(cancelToken) {
+export function getAccount(cancelToken: CancelTokenSource) {
     return axios
         .get(API, {cancelToken: cancelToken.token})
         .then(res => res.data)
@@ -147,37 +147,37 @@ export function logOut() {
     });
 }
 
-export function getConsumption(cancelToken, consumptionId) {
+export function getConsumption(cancelToken: CancelTokenSource, consumptionId: number) {
     return axios
         .get(`${API_CONSUMPTIONS}${consumptionId}/`, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
-export function createConsumption(cancelToken, consumption) {
+export function createConsumption(cancelToken: CancelTokenSource, consumption: any) {
     return axios
         .post(API_CONSUMPTIONS, consumption, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
-export function updateConsumption(cancelToken, consumption) {
+export function updateConsumption(cancelToken: CancelTokenSource, consumption: any) {
     return axios
         .put(`${API_CONSUMPTIONS}${consumption.id}/`, consumption, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
-export function deleteConsumption(cancelToken, consumptionId) {
+export function deleteConsumption(cancelToken: CancelTokenSource, consumptionId: number) {
     return axios
         .delete(`${API_CONSUMPTIONS}${consumptionId}/`, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
-export function getFoods(cancelToken, search, isArchivedVisible) {
+export function getFoods(cancelToken: CancelTokenSource, search: string, isArchivedVisible: boolean = false) {
     const queryParams = new URLSearchParams();
     if (search && search.length) {
         queryParams.append('search', search);
     }
 
-    queryParams.append('is_archived', isArchivedVisible);
+    queryParams.append('is_archived', String(isArchivedVisible));
 
     const url = `${API_FOODS}?${queryParams}`;
     return axios
@@ -185,19 +185,19 @@ export function getFoods(cancelToken, search, isArchivedVisible) {
         .then(res => res.data);
 }
 
-export function getFood(cancelToken, foodId) {
+export function getFood(cancelToken: CancelTokenSource, foodId: number) {
     return axios
         .get(`${API_FOODS}${foodId}/`, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
-export function updateFood(cancelToken, food) {
+export function updateFood(cancelToken: CancelTokenSource, food: { id: any; }) {
     return axios
         .patch(`${API_FOODS}${food.id}/`, food, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }
 
-export function createFood(cancelToken, food) {
+export function createFood(cancelToken: CancelTokenSource, food: any) {
     return axios
         .post(API_FOODS, food, {cancelToken: cancelToken.token})
         .then(res => res.data);
