@@ -15,9 +15,13 @@ import {
 import {IBackendItem, IPaginatedResponse} from "../backend-common";
 
 export interface IGoal extends IBackendItem {
-    todays_answer_value: number;
-    todays_answer: string;
-    last_answered: string;
+    todays_answer_value?: number;
+    todays_answer?: string;
+    last_answered?: string;
+    frequency?: number;
+    style?: string;
+    start_date?: string;
+    question: string;
 }
 
 export interface IGoalsStoreState {

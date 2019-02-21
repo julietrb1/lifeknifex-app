@@ -1,11 +1,10 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import PropTypes from 'prop-types';
 import BreadcrumbSet from "../common/BreadcrumbSet/BreadcrumbSet";
 import HeaderBar from "../HeaderBar/HeaderBar";
 import RequestComponent from "../common/RequestComponent/RequestComponent";
 import moment from "moment";
-import {Button, Divider, Form, Input, Label, Radio} from "semantic-ui-react";
+import {Button, CheckboxProps, Divider, Form, Input, Label, Radio} from "semantic-ui-react";
 import DatePicker from "react-datepicker";
 
 import './GoalNewEdit.scss';
@@ -13,22 +12,42 @@ import 'react-datepicker/dist/react-datepicker.min.css';
 import {BACKEND_DATE_FORMAT} from "../../constants";
 import {firstCase} from "../../Utils";
 import {goalCreate, goalsFetchOne, goalUpdate} from "../../actions/goals";
+import {RouteComponentProps} from "react-router";
+import {Dispatch} from "redux";
+import {IGoal, IGoalsStoreState} from "../../reducers/goals";
 
-class GoalNewEdit extends RequestComponent {
-    constructor(props) {
-        super(props);
+interface IGoalNewEditMatchParams {
+    goalId: string;
+}
 
-        this.state = {
-            goal: {
-                question: '',
-                test: 'atleast',
-                frequency: 1,
-                style: 'yesno',
-                start_date: moment().format(BACKEND_DATE_FORMAT)
-            },
-            actionWord: props.match.params.goalId ? 'Edit' : 'New'
-        };
-    }
+interface IGoalNewEditStateProps {
+    goals: IGoalsStoreState,
+    isLoading: boolean
+}
+
+interface IGoalNewEditState {
+    goal: IGoal;
+}
+
+interface IGoalNewEditDispatchProps {
+    fetchGoal: (goalId: number) => void;
+    updateGoal: (goal: IGoal) => void;
+    createGoal: (goal: IGoal) => void;
+}
+
+type Props = RouteComponentProps<IGoalNewEditMatchParams> & IGoalNewEditStateProps & IGoalNewEditDispatchProps;
+
+class GoalNewEdit extends RequestComponent<Props, IGoalNewEditState> {
+    state = {
+        goal: {
+            question: '',
+            test: 'atleast',
+            frequency: 1,
+            style: 'yesno',
+            start_date: moment().format(BACKEND_DATE_FORMAT)
+        },
+        actionWord: this.props.match.params.goalId ? 'Edit' : 'New'
+    };
 
     componentDidMount() {
         const goalId = Number(this.props.match.params.goalId);
@@ -44,7 +63,7 @@ class GoalNewEdit extends RequestComponent {
         }
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps: Readonly<Props>) {
         const goalId = Number(this.props.match.params.goalId);
         const previousGoal = Object.values(prevProps.goals).find(goal => goal.id === goalId);
         const goal = Object.values(this.props.goals).find(goal => goal.id === goalId);
@@ -66,7 +85,7 @@ class GoalNewEdit extends RequestComponent {
                 <Form onSubmit={this.handleGoalSubmit} loading={this.props.isLoading}>
                     <Form.Field required>
                         <label>Question</label>
-                        <Input type='text' onChange={this.onChange('question')}
+                        <Input type='text' onChange={() => this.onChange('question')}
                                placeholder='Get to bed on time last night'
                                value={this.state.goal.question} label={{basic: true, content: '?'}}
                                labelPosition='right'>
@@ -82,14 +101,15 @@ class GoalNewEdit extends RequestComponent {
                         <Radio label='At least every' name='goal-test' value='atleast'
                                checked={this.state.goal.test === 'atleast'} onChange={this.onChange('test')}/>
                         <Input type='number' value={this.state.goal.frequency} className='frequency-input'
-                               onChange={this.onChange('frequency')} label={{basic: true, content: testInputLabel}}
+                               onChange={() => this.onChange('frequency')}
+                               label={{basic: true, content: testInputLabel}}
                                labelPosition='right' disabled={this.state.goal.test !== 'atleast'}/>
                     </Form.Field>
                     <Form.Field inline>
                         <Radio label='No more than every' name='goal-test' value='nomore'
                                checked={this.state.goal.test === 'nomore'} onChange={this.onChange('test')}/>
                         <Input type='number' value={this.state.goal.frequency}
-                               onChange={this.onChange('frequency')}
+                               onChange={() => this.onChange('frequency')}
                                label={{basic: true, content: testInputLabel}} className='frequency-input'
                                labelPosition='right' disabled={this.state.goal.test !== 'nomore'}/>
                     </Form.Field>
@@ -105,12 +125,12 @@ class GoalNewEdit extends RequestComponent {
                     <Form.Field>
                         <Radio label='Yes/No' name='goal-style' value='yesno'
                                checked={this.state.goal.style === 'yesno'}
-                               onChange={this.onChange('style')}/>
+                               onChange={() => this.onChange('style')}/>
                     </Form.Field>
                     <Form.Field>
                         <Radio label='Likert' name='goal-style' value='likert'
                                checked={this.state.goal.style === 'likert'}
-                               onChange={this.onChange('style')}/>
+                               onChange={() => this.onChange('style')}/>
                     </Form.Field>
                     <Divider hidden/>
 
@@ -119,7 +139,7 @@ class GoalNewEdit extends RequestComponent {
                     </Form.Field>
                     <Form.Field>
                         <DatePicker dropdownMode='select' onChange={this.onDateChange}
-                                    selected={this.state.goal.start_date} dateFormat='dd/MM/yyyy'/>
+                                    selected={moment(this.state.goal.start_date).toDate()} dateFormat='dd/MM/yyyy'/>
                     </Form.Field>
 
                     <Divider hidden/>
@@ -133,7 +153,7 @@ class GoalNewEdit extends RequestComponent {
         );
     }
 
-    onChange = field => (e, {value}) =>
+    onChange = (field: string) => (event: React.FormEvent<HTMLInputElement>, {value}: CheckboxProps) =>
         this.setState(prevState => ({
             goal: {
                 ...prevState.goal,
@@ -149,7 +169,7 @@ class GoalNewEdit extends RequestComponent {
         this.state.goal.start_date
     );
 
-    onDateChange = date => this.setState(prevState => ({
+    onDateChange = (date: Date) => this.setState(prevState => ({
         goal: {
             ...prevState.goal,
             date: moment(date).format(BACKEND_DATE_FORMAT)
@@ -157,7 +177,7 @@ class GoalNewEdit extends RequestComponent {
     }));
 
     handleGoalSubmit = () => {
-        const goal = this.state.goal;
+        const goal: IGoal = this.state.goal;
         goal.question = goal.question.replace(/(\?+)$/g, '');
         goal.question = goal.question.replace(/^((Did I)|(Have I))\s+/gi, '');
         goal.question = firstCase(goal.question, true);
@@ -174,23 +194,14 @@ class GoalNewEdit extends RequestComponent {
     };
 }
 
-GoalNewEdit.propTypes = {
-    match: PropTypes.shape({
-        params: PropTypes.shape({
-            goalId: PropTypes.string
-        })
-    }),
-    history: PropTypes.object
-};
-
-const mapStateToProps = state => ({
+const mapStateToProps = (state: any) => ({
     goals: state.goals
 });
 
-const mapDispatchToProps = dispatch => ({
-    createGoal: goal => dispatch(goalCreate(goal)),
-    updateGoal: goal => dispatch(goalUpdate(goal)),
-    fetchGoal: goalId => dispatch(goalsFetchOne(goalId)),
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+    createGoal: (goal: IGoal) => dispatch(goalCreate(goal)),
+    updateGoal: (goal: IGoal) => dispatch(goalUpdate(goal)),
+    fetchGoal: (goalId: number) => dispatch(goalsFetchOne(goalId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GoalNewEdit);
