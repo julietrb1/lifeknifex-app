@@ -5,8 +5,13 @@ import {Link} from "react-router-dom";
 import {healthStrings} from "../../../Utils";
 import {COLOR_NUTRITION} from "../../../constants";
 import FoodImage from "../../common/FoodImage/FoodImage";
+import {IFood} from "../../../reducers/foods";
 
-const FoodList = props => <Card.Group>
+interface IFoodListProps {
+    foods: IFood[];
+}
+
+const FoodList: React.FC<IFoodListProps> = props => <Card.Group>
     {props.foods.map(food =>
         <Card key={food.id} color={COLOR_NUTRITION}>
             <Card.Content>

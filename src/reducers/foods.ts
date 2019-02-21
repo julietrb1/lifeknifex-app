@@ -12,6 +12,7 @@ export interface IFood extends IBackendItem {
     name: string;
     health_index: number;
     is_archived: boolean;
+    icon: string;
 }
 
 export interface IFoodsStoreState {
