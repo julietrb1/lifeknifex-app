@@ -1,6 +1,7 @@
 import moment from "moment";
 import {SemanticCOLORS, SemanticICONS} from "semantic-ui-react/dist/commonjs/generic";
 import {IBackendItem} from "./backend-common";
+import {IGoal} from "./reducers/goals";
 
 export const healthStrings = ['Healthy', 'Reasonable', 'Poor', 'Unhealthy'];
 export const consumptionSizes = ['Small', 'Medium', 'Large', 'Extra Large'];
@@ -36,13 +37,13 @@ export const extractError = (err: any) => {
     }
 };
 
-export function getRelativeMoment(dateString: string) {
+export function getRelativeMoment(dateString: string, firstLower?: boolean) {
     return moment(dateString).calendar(undefined, {
-        sameDay: '[Today]',
-        nextDay: '[Tomorrow]',
+        sameDay: firstLower ? '[today]' : '[Today]',
+        nextDay: firstLower ? '[tomorrow]' : '[Tomorrow]',
         nextWeek: 'dddd',
-        lastDay: '[Yesterday]',
-        lastWeek: '[Last] dddd',
+        lastDay: firstLower ? '[yesterday]' : '[Yesterday]',
+        lastWeek: firstLower ? '[last] dddd' : '[Last] dddd',
         sameElse: 'DD/MM/YYYY'
     });
 }
@@ -64,4 +65,33 @@ export const arrayToIndexed = <T extends IBackendItem>(array: T[] | undefined) =
 
 export interface IStoreState<T extends IBackendItem> {
     [url: string]: T;
+}
+
+export function getGoalAnswerName(goal: IGoal) {
+    switch (goal.style) {
+        case 'yesno':
+            switch (goal.todays_answer_value) {
+                case 1:
+                    return 'Yes';
+                case 2:
+                    return 'No';
+                default:
+                    return null;
+            }
+        case 'likert':
+            switch (goal.todays_answer_value) {
+                case 1:
+                    return 'Effectively';
+                case 2:
+                    return 'Adequately';
+                case 3:
+                    return 'Poorly';
+                case 4:
+                    return 'Unsuccessfully';
+                default:
+                    return null;
+            }
+        default:
+            return null;
+    }
 }
