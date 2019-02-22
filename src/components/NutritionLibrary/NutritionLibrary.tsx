@@ -8,47 +8,31 @@ import NutritionLibraryEmpty from "./NutritionLibraryEmpty/NutritionLibraryEmpty
 import FoodList from "./FoodList/FoodList";
 import RequestComponent from "../common/RequestComponent/RequestComponent";
 import {COLOR_NUTRITION} from "../../constants";
-import {getFoods} from "../../Backend";
-import axios from 'axios';
 import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
 import './NutritionLibrary.scss';
-import {IPaginatedResponse} from "../../backend-common";
-import {IFood} from "../../reducers/foods";
-import update from 'immutability-helper';
+import {IFoodSlice} from "../../reducers/foods";
+import {connect} from "react-redux";
+import {Dispatch} from "redux";
+import {foodsFetchAll} from "../../actions/foods";
+import {INutritionLibraryStateProps} from "./INutritionLibraryStateProps";
+import {INutritionLibraryDispatchProps} from "./INutritionLibraryDispatchProps";
+import {INutritionLibraryState} from "./INutritionLibraryState";
 
 const sections = [
     {name: 'Nutrition', href: '/nutrition'},
     {name: 'Food Library'}
 ];
 
-interface INutritionLibraryState {
-    isArchivedVisible: boolean;
-    isLoading: boolean;
-    foods: IPaginatedResponse<IFood>
-}
+type Props = INutritionLibraryStateProps & INutritionLibraryDispatchProps;
 
-class NutritionLibrary extends RequestComponent<{}, INutritionLibraryState> {
+class NutritionLibrary extends RequestComponent<Props, INutritionLibraryState> {
     state = {
         isArchivedVisible: false,
-        isLoading: false,
-        foods: {} as IPaginatedResponse<IFood>
+        isLoading: false
     };
 
     componentDidMount() {
-        this.loadFoods();
-    }
-
-    loadFoods() {
-        this.setState({
-            isLoading: true
-        });
-        getFoods(this.cancelToken, null, this.state.isArchivedVisible)
-            .then(foods => {
-                this.setState({
-                    foods: foods,
-                    isLoading: false
-                });
-            });
+        this.props.fetchFoods();
     }
 
     render() {
@@ -69,26 +53,28 @@ class NutritionLibrary extends RequestComponent<{}, INutritionLibraryState> {
     }
 
     handleChangeArchived = () => {
-        this.setState(prevState => ({isArchivedVisible: !prevState.isArchivedVisible, foods: {}}),
-            () => this.loadFoods());
+        // TODO: Load archived from redux
+        // this.setState(prevState => ({isArchivedVisible: !prevState.isArchivedVisible, foods: {}}),
+        //     () => this.loadFoods());
     };
 
     PageContent = () => {
-        if (this.state.foods.results && this.state.foods.results.length) {
+        const foods = Object.values(this.props.foods);
+        if (this.props.isLoading) {
+            return <PlaceholderSet/>;
+        } else if (foods.length) {
             return <div>
-                <FoodList foods={this.state.foods.results}/>
+                <FoodList foods={foods}/>
                 <Divider hidden/>
                 <this.LoadMoreButton/>
             </div>;
-        } else if (this.state.isLoading) {
-            return <PlaceholderSet/>;
         } else {
             return <NutritionLibraryEmpty isArchivedVisible={this.state.isArchivedVisible}/>;
         }
     };
 
     LoadMoreButton = () => {
-        if (!this.state.isLoading && this.state.foods && this.state.foods.next) {
+        if (!this.props.isLoading && this.props.foodResponse.next) {
             return <div className="load-more-container">
                 <Button basic
                         onClick={this.handleLoadMore}
@@ -99,7 +85,7 @@ class NutritionLibrary extends RequestComponent<{}, INutritionLibraryState> {
                     </Button.Content>
                 </Button>
             </div>;
-        } else if (this.state.isLoading && this.state.foods && this.state.foods.results && this.state.foods.results.length) {
+        } else if (this.props.isLoading) {
             return <PlaceholderSet/>;
         } else {
             return <div className="load-more-container"><Button disabled basic>All Foods loaded</Button></div>;
@@ -111,19 +97,20 @@ class NutritionLibrary extends RequestComponent<{}, INutritionLibraryState> {
             return;
         }
 
-        this.setState({isLoading: true});
+        // this.setState({isLoading: true});
 
-        axios.get(String(this.state.foods.next))
-            .then(res => this.setState(prevState => update(prevState, {
-                isLoading: {$set: false},
-                foods: {
-                    results: {$push: res.data.results}
-                }
-            })));
+        // TODO: Fetch more through redux
+        // axios.get(String(this.state.food.next))
+        //     .then(res => this.setState(prevState => update(prevState, {
+        //         isLoading: {$set: false},
+        //         foods: {
+        //             results: {$push: res.data.results}
+        //         }
+        //     })));
     };
 
     NewButton = () => {
-        if (this.state.isLoading || this.state.isArchivedVisible || (this.state.foods.results && this.state.foods.results.length)) {
+        if (this.props.isLoading || this.state.isArchivedVisible || Object.values(this.props.foods).length) {
             return <Button
                 floated='right'
                 color={COLOR_NUTRITION}
@@ -141,4 +128,17 @@ class NutritionLibrary extends RequestComponent<{}, INutritionLibraryState> {
     };
 }
 
-export default NutritionLibrary;
+const mapStateToProps = (state: IFoodSlice) => {
+    console.log(`Component reported ${state.foods}`);
+    return ({
+        foods: state.foods,
+        isLoading: state.foodsIsLoading,
+        foodResponse: state.foodResponse
+    });
+};
+
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+    fetchFoods: () => dispatch(foodsFetchAll())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(NutritionLibrary);

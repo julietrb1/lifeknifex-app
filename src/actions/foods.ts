@@ -46,7 +46,7 @@ export const foodIsLoading: ActionCreator<ThunkAction<void, IFoodSlice, any, IFo
 
 type FoodsFetchAllActions = IFoodIsLoadingAction | IFoodHasErroredAction | IFoodFetchDataSuccessAction;
 
-export function foodsFetchAll(search: string, archived: boolean): ThunkResult<void> {
+export function foodsFetchAll(search?: string, archived: boolean = false): ThunkResult<void> {
     const params = {search, archived};
     return (dispatch: Dispatch<any>) => {
         dispatch(foodIsLoading(true));
@@ -56,7 +56,7 @@ export function foodsFetchAll(search: string, archived: boolean): ThunkResult<vo
                 return response;
             })
             .then(response => response.data)
-            .then(foods => dispatch(foodFetchDataSuccess(foods)))
+            .then(foodResponse => dispatch(foodFetchDataSuccess(foodResponse)))
             .catch(() => dispatch(foodHasErrored(true)));
     };
 }

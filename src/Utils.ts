@@ -1,5 +1,6 @@
 import moment from "moment";
 import {SemanticCOLORS, SemanticICONS} from "semantic-ui-react/dist/commonjs/generic";
+import {IBackendItem} from "./backend-common";
 
 export const healthStrings = ['Healthy', 'Reasonable', 'Poor', 'Unhealthy'];
 export const consumptionSizes = ['Small', 'Medium', 'Large', 'Extra Large'];
@@ -51,3 +52,16 @@ export const arrayToObject = (array: any[] | undefined, keyField: string) =>
         obj[item[keyField]] = item;
         return obj;
     }, {});
+
+// export const arrayToIndexedArray: [string, IBackendItem] = (array: IBackendItem[] | undefined) =>
+//     (array || []).map(item => [String(item.url), item]);
+
+export const arrayToIndexed = <T extends IBackendItem>(array: T[] | undefined) =>
+    (array || []).reduce((acc, cur) => {
+        acc.push([String(cur.url), cur]);
+        return acc;
+    }, new Array<[string, T]>());
+
+export interface IStoreState<T extends IBackendItem> {
+    [url: string]: T;
+}

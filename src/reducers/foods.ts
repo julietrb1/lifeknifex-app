@@ -1,12 +1,13 @@
 import {Reducer} from "redux";
-import {IBackendItem} from "../backend-common";
+import {IBackendItem, IPaginatedResponse} from "../backend-common";
+import update from 'immutability-helper';
 import {
     FoodActionTypes,
     IFoodFetchDataSuccessAction,
     IFoodHasErroredAction,
     IFoodIsLoadingAction
 } from "../actions/foods";
-import {arrayToObject} from "../Utils";
+import {arrayToObject, IStoreState} from "../Utils";
 
 export interface IFood extends IBackendItem {
     name: string;
@@ -15,9 +16,9 @@ export interface IFood extends IBackendItem {
     icon: string;
 }
 
-export interface IFoodsStoreState {
-    [foodUrl: string]: IFood;
+export interface IFoodStoreState extends IStoreState<IFood> {
 }
+
 
 export const foodsHasErrored: Reducer<boolean, IFoodHasErroredAction> = (state = false, action) => {
     switch (action.type) {
@@ -37,19 +38,30 @@ export const foodsIsLoading: Reducer<boolean, IFoodIsLoadingAction> = (state = f
     }
 };
 
-type FoodsFetchActions = IFoodFetchDataSuccessAction;
+type FoodFetchActions = IFoodFetchDataSuccessAction;
 
-export const foods: Reducer<IFoodsStoreState, FoodsFetchActions> = (state = {}, action) => {
+export const foods: Reducer<IFoodStoreState, FoodFetchActions> = (state = {}, action) => {
+    console.log(`Reducer reports ${state}`);
     switch (action.type) {
         case FoodActionTypes.FOOD_FETCH_DATA_SUCCESS:
-            return arrayToObject(action.foods.results, 'url');
+            return update(state, {$set: arrayToObject(action.foods.results, 'url')});
+        default:
+            return state;
+    }
+};
+
+export const foodResponse: Reducer<IPaginatedResponse<IFood>, FoodFetchActions> = (state = {}, action) => {
+    switch (action.type) {
+        case FoodActionTypes.FOOD_FETCH_DATA_SUCCESS:
+            return action.foods;
         default:
             return state;
     }
 };
 
 export interface IFoodSlice {
-    foods: any;
+    foods: IFoodStoreState;
     foodsIsLoading: boolean;
     foodsHasErrored: boolean;
+    foodResponse: IPaginatedResponse<IFood>;
 }

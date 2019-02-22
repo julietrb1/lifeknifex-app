@@ -14,7 +14,8 @@ import AnswerPost from "./AnswerPost/AnswerPost";
 import {firstCase} from "../../Utils";
 import {RouteComponentProps} from "react-router";
 import {Dispatch} from "redux";
-import {IGoal, IGoalsStoreState} from "../../reducers/goals";
+import {IGoal, IGoalSlice, IGoalsStoreState} from "../../reducers/goals";
+import {IAnswerSlice} from "../../reducers/answers";
 
 interface IGoalAnswerDispatchProps {
     fetchGoals: () => any;
@@ -200,7 +201,7 @@ class GoalAnswer extends RequestComponent<Props, IGoalAnswerState> {
     }
 }
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: IGoalSlice & IAnswerSlice) => ({
     hasErrored: state.goalsHasErrored || state.answersHasErrored,
     isLoading: state.goalsIsLoading || state.answersIsLoading,
     goals: state.goals,

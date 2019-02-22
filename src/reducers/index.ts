@@ -1,5 +1,5 @@
 import {combineReducers} from 'redux';
-import {foods, foodsHasErrored, foodsIsLoading, IFoodSlice} from './foods';
+import {foodResponse, foods, foodsHasErrored, foodsIsLoading, IFoodSlice} from './foods';
 import {goals, goalsHasErrored, goalsIsLoading, goalsResponse, IGoalSlice} from './goals';
 import {answers, answersHasErrored, answersIsLoading, IAnswerSlice} from './answers';
 import {consumptions, consumptionsHasErrored, consumptionsIsLoading, IConsumptionSlice} from "./consumptions";
@@ -8,7 +8,7 @@ import {consumptions, consumptionsHasErrored, consumptionsIsLoading, IConsumptio
 export type RootState = IFoodSlice & IAnswerSlice & IConsumptionSlice & IGoalSlice;
 
 export default combineReducers({
-    foods, foodsHasErrored, foodsIsLoading,
+    foods, foodsHasErrored, foodsIsLoading, foodResponse,
     goals, goalsHasErrored, goalsIsLoading, goalsResponse,
     answers, answersHasErrored, answersIsLoading,
     consumptions, consumptionsHasErrored, consumptionsIsLoading
