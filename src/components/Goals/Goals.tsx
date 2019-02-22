@@ -94,7 +94,7 @@ class Goals extends React.Component<Props> {
 
     DashboardContent = () => <div>
         <Statistic.Group>
-            <CommonStatistic count={String(this.props.goalsResponse.count)} label='Goals'/>
+            <CommonStatistic count={Number(this.props.goalsResponse.count)} label='Goals'/>
             <CommonStatistic count={this.getGoalToAnswerCount()} label='To answer'/>
         </Statistic.Group>
     </div>;
