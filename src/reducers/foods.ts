@@ -49,9 +49,7 @@ export const foods: Reducer<IFoodStoreState, FoodFetchActions> = (state = {}, ac
             return update(state, {$set: arrayToObject(action.foods.results, 'url')});
         case FoodActionTypes.FOOD_UPDATE_DONE:
             return update(state, {
-                $set: {
-                    [String(action.food.url)]: {$set: action.food}
-                }
+                [String(action.food.url)]: {$set: action.food}
             });
         default:
             return state;

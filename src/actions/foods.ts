@@ -83,7 +83,7 @@ export function foodsFetchAll(search?: string, archived: boolean = false): Thunk
 
 export function updateFood(food: IFood): ThunkResult<void> {
     return (dispatch: Dispatch<any>) => {
-        axios.patch(`${API_FOODS}${food.id}`, food)
+        axios.patch(`${API_FOODS}${food.id}/`, food)
             .then(response => dispatch(foodUpdateDone(response.data)))
             .catch(() => foodHasErrored(true));
     };

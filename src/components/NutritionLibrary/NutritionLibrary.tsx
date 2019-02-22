@@ -32,7 +32,9 @@ class NutritionLibrary extends RequestComponent<Props, INutritionLibraryState> {
     };
 
     componentDidMount() {
-        this.props.fetchFoods();
+        if (!Object.values(this.props.foods).length) {
+            this.props.fetchFoods();
+        }
     }
 
     render() {

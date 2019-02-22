@@ -1,7 +1,7 @@
 import React from 'react';
 import './FoodNewEdit.scss';
-import {createFood, getFood, updateFood} from '../../Backend';
-import {Link, RouteComponentProps, withRouter} from 'react-router-dom';
+import {createFood, getFood} from '../../Backend';
+import {Link, RouteComponentProps} from 'react-router-dom';
 import {extractError, healthStrings} from '../../Utils';
 import update from 'immutability-helper';
 import {
@@ -20,11 +20,26 @@ import RequestComponent from '../common/RequestComponent/RequestComponent';
 import {APP_TITLE, foodIcons} from '../../constants';
 import {IFoodNewEditMatchParams} from "./IFoodNewEditMatchParams";
 import {IFoodNewEditFormState} from "./IFoodNewEditFormState";
-import {IFood} from "../../reducers/foods";
+import {IFood, IFoodSlice, IFoodStoreState} from "../../reducers/foods";
+import {connect} from "react-redux";
+import {Dispatch} from "redux";
+import {updateFood} from "../../actions/foods";
 
 const URL_NUTRITION_LIBRARY = '/nutrition/library';
 
-class FoodNewEdit extends RequestComponent<RouteComponentProps<IFoodNewEditMatchParams>, IFoodNewEditFormState> {
+interface IFoodNewEditStateProps {
+    foods: IFoodStoreState
+}
+
+interface IFoodNewEditDispatchProps {
+    updateFood: (food: IFood) => void;
+}
+
+type Props = RouteComponentProps<IFoodNewEditMatchParams>
+    & IFoodNewEditStateProps
+    & IFoodNewEditDispatchProps;
+
+class FoodNewEdit extends RequestComponent<Props, IFoodNewEditFormState> {
     state = {
         food: {
             id: undefined,
@@ -165,17 +180,28 @@ class FoodNewEdit extends RequestComponent<RouteComponentProps<IFoodNewEditMatch
             isLoading: true
         });
 
-        const backendFunction = this.props.match.params.foodId ? updateFood : createFood;
-
-        backendFunction(this.cancelToken, this.state.food)
-            .then(this.props.history.goBack)
-            .catch((err: Error) => this.setState({
-                submissionError: extractError(err)
-            })).finally(() => this.setState({
-            isLoading: false
-        }));
+        if (!this.props.match.params.foodId) {
+            createFood(this.cancelToken, this.state.food)
+                .then(this.props.history.goBack)
+                .catch((err: Error) => this.setState({
+                    submissionError: extractError(err)
+                })).finally(() => this.setState({
+                isLoading: false
+            }));
+        } else {
+            this.props.updateFood(this.state.food);
+            this.props.history.goBack();
+        }
 
     };
 }
 
-export default withRouter(FoodNewEdit);
+const mapStateToProps = (state: IFoodSlice) => ({
+    foods: state.foods
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+    updateFood: (food: IFood) => dispatch(updateFood(food))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FoodNewEdit);
