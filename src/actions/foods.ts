@@ -13,7 +13,9 @@ export type IFoodActions = IFoodFetchDataSuccessAction
 export enum FoodActionTypes {
     FOOD_HAS_ERRORED = 'FOOD_HAS_ERRORED',
     FOOD_IS_LOADING = 'FOOD_IS_LOADING',
-    FOOD_FETCH_DATA_SUCCESS = 'FOOD_FETCH_DATA_SUCCESS'
+    FOOD_FETCH_DATA_SUCCESS = 'FOOD_FETCH_DATA_SUCCESS',
+    FOOD_UPDATE = 'FOOD_UPDATE',
+    FOOD_UPDATE_DONE = 'FOOD_UPDATE_DONE'
 }
 
 export interface IFoodFetchDataSuccessAction extends Action<FoodActionTypes.FOOD_FETCH_DATA_SUCCESS> {
@@ -25,6 +27,24 @@ export const foodFetchDataSuccess: ActionCreator<ThunkAction<void, IFoodSlice, a
         type: FoodActionTypes.FOOD_FETCH_DATA_SUCCESS,
         foods
     });
+
+export interface IFoodUpdateAction extends Action<FoodActionTypes.FOOD_UPDATE> {
+    food: IFood;
+}
+
+export const foodUpdate: ActionCreator<ThunkAction<void, IFoodSlice, any, IFoodUpdateAction>> = (food: IFood) => (dispatch: Dispatch<IFoodUpdateAction>) => dispatch({
+    type: FoodActionTypes.FOOD_UPDATE,
+    food
+});
+
+export interface IFoodUpdateDoneAction extends Action<FoodActionTypes.FOOD_UPDATE_DONE> {
+    food: IFood;
+}
+
+export const foodUpdateDone: ActionCreator<ThunkAction<void, IFoodSlice, any, IFoodUpdateDoneAction>> = (food: IFood) => (dispatch: Dispatch<IFoodUpdateDoneAction>) => dispatch({
+    type: FoodActionTypes.FOOD_UPDATE_DONE,
+    food
+});
 
 export interface IFoodHasErroredAction extends Action<FoodActionTypes.FOOD_HAS_ERRORED> {
     hasErrored: boolean
@@ -58,5 +78,13 @@ export function foodsFetchAll(search?: string, archived: boolean = false): Thunk
             .then(response => response.data)
             .then(foodResponse => dispatch(foodFetchDataSuccess(foodResponse)))
             .catch(() => dispatch(foodHasErrored(true)));
+    };
+}
+
+export function updateFood(food: IFood): ThunkResult<void> {
+    return (dispatch: Dispatch<any>) => {
+        axios.patch(`${API_FOODS}${food.id}`, food)
+            .then(response => dispatch(foodUpdateDone(response.data)))
+            .catch(() => foodHasErrored(true));
     };
 }

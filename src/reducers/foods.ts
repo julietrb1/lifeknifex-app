@@ -5,7 +5,8 @@ import {
     FoodActionTypes,
     IFoodFetchDataSuccessAction,
     IFoodHasErroredAction,
-    IFoodIsLoadingAction
+    IFoodIsLoadingAction,
+    IFoodUpdateDoneAction
 } from "../actions/foods";
 import {arrayToObject, IStoreState} from "../Utils";
 
@@ -38,13 +39,20 @@ export const foodsIsLoading: Reducer<boolean, IFoodIsLoadingAction> = (state = f
     }
 };
 
-type FoodFetchActions = IFoodFetchDataSuccessAction;
+type FoodFetchActions = IFoodFetchDataSuccessAction
+    & IFoodUpdateDoneAction;
 
 export const foods: Reducer<IFoodStoreState, FoodFetchActions> = (state = {}, action) => {
     console.log(`Reducer reports ${state}`);
     switch (action.type) {
         case FoodActionTypes.FOOD_FETCH_DATA_SUCCESS:
             return update(state, {$set: arrayToObject(action.foods.results, 'url')});
+        case FoodActionTypes.FOOD_UPDATE_DONE:
+            return update(state, {
+                $set: {
+                    [String(action.food.url)]: {$set: action.food}
+                }
+            });
         default:
             return state;
     }
