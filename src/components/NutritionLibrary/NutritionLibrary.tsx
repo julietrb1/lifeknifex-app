@@ -131,7 +131,6 @@ class NutritionLibrary extends RequestComponent<Props, INutritionLibraryState> {
 }
 
 const mapStateToProps = (state: IFoodSlice) => {
-    console.log(`Component reported ${state.foods}`);
     return ({
         foods: state.foods,
         isLoading: state.foodsIsLoading,

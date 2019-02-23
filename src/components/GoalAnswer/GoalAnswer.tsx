@@ -148,7 +148,6 @@ class GoalAnswer extends RequestComponent<Props, IGoalAnswerState> {
         const goalIdParam = Number(this.props.match.params.goalId);
         const today = moment().format(BACKEND_DATE_FORMAT);
         const filteredGoals = this.filterGoals(goalIdParam, today);
-        console.log(`Filtered: ${filteredGoals}`);
         const newGoalIndex = this.state.goalIndex + increment;
         if (newGoalIndex < Object.values(filteredGoals || []).length) {
             const filteredUrl = String(filteredGoals[newGoalIndex].url);

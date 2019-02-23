@@ -43,7 +43,6 @@ type FoodFetchActions = IFoodFetchDataSuccessAction
     & IFoodUpdateDoneAction;
 
 export const foods: Reducer<IFoodStoreState, FoodFetchActions> = (state = {}, action) => {
-    console.log(`Reducer reports ${state}`);
     switch (action.type) {
         case FoodActionTypes.FOOD_FETCH_DATA_SUCCESS:
             return update(state, {$set: arrayToObject(action.foods.results, 'url')});
