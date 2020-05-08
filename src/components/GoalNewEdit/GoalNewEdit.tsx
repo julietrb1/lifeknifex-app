@@ -15,7 +15,7 @@ import {goalCreate, goalsFetchOne, goalUpdate} from "../../actions/goals";
 import {RouteComponentProps} from "react-router";
 import {IGoal, IGoalsStoreState} from "../../reducers/goals";
 import update from 'immutability-helper';
-import {MyThunkDispatch} from "../../store/configure-store";
+import {MyThunkDispatch} from "../../redux/store";
 
 interface IGoalNewEditMatchParams {
     goalId: string;

@@ -2,7 +2,7 @@ import {API_ANSWERS, API_GOALS} from "../Backend";
 import axios from "axios";
 import {IGoal, IGoalSlice} from "../reducers/goals";
 import {Action, ActionCreator, Dispatch} from "redux";
-import {ThunkResult} from "../store/configure-store";
+import {ThunkResult} from "../redux/store";
 import {IPaginatedResponse} from "../backend-common";
 import {ThunkAction} from 'redux-thunk';
 import {IAnswer} from "../reducers/answers";
@@ -121,7 +121,7 @@ export function goalsFetchAll(search?: string): ThunkResult<void> {
             })
             .then(response => response.data)
             .then(goals => dispatch(goalsFetchDataSuccess(goals)))
-            .catch(() => dispatch(goalsHasErrored((true))));
+            .catch(() => dispatch(goalsHasErrored(true)));
     };
 }
 

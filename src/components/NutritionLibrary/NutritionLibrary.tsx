@@ -16,7 +16,7 @@ import {foodsFetchAll} from "../../actions/foods";
 import {INutritionLibraryStateProps} from "./INutritionLibraryStateProps";
 import {INutritionLibraryDispatchProps} from "./INutritionLibraryDispatchProps";
 import {INutritionLibraryState} from "./INutritionLibraryState";
-import {MyThunkDispatch} from "../../store/configure-store";
+import {MyThunkDispatch} from "../../redux/store";
 
 const sections = [
     {name: 'Nutrition', href: '/nutrition'},

@@ -2,7 +2,7 @@ import {API_CONSUMPTIONS} from "../Backend";
 import axios from "axios";
 import {Action, ActionCreator, Dispatch} from "redux";
 import {IPaginatedResponse} from "../backend-common";
-import {ThunkResult} from "../store/configure-store";
+import {ThunkResult} from "../redux/store";
 import {IConsumption, IConsumptionSlice} from "../reducers/consumptions";
 import {ThunkAction} from "redux-thunk";
 

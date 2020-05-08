@@ -15,7 +15,7 @@ import {firstCase} from "../../Utils";
 import {RouteComponentProps} from "react-router";
 import {IGoal, IGoalSlice, IGoalsStoreState} from "../../reducers/goals";
 import {IAnswerSlice} from "../../reducers/answers";
-import {MyThunkDispatch} from "../../store/configure-store";
+import {MyThunkDispatch} from "../../redux/store";
 
 interface IGoalAnswerDispatchProps {
     fetchGoals: () => any;

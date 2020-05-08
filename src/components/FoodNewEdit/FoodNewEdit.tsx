@@ -23,7 +23,7 @@ import {IFoodNewEditFormState} from "./IFoodNewEditFormState";
 import {IFood, IFoodSlice, IFoodStoreState} from "../../reducers/foods";
 import {connect} from "react-redux";
 import {updateFood} from "../../actions/foods";
-import {MyThunkDispatch} from "../../store/configure-store";
+import {MyThunkDispatch} from "../../redux/store";
 
 const URL_NUTRITION_LIBRARY = '/nutrition/library';
 

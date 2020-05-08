@@ -1,4 +1,4 @@
-import React, {SyntheticEvent} from 'react';
+import React, {SyntheticEvent, useState} from 'react';
 import moment from 'moment';
 import {
     Button,
@@ -73,6 +73,62 @@ const generateConsumptionInfo = () => {
 
 type Props = IConsumptionNewEditMatchParams;
 
+const ConsumptionFormFC: React.FC = () => {
+    const {consumptionId} = useParams();
+    const {goBack} = useHistory();
+    const {submissionError, isLoading} = useState();
+    return <div>
+        <BreadcrumbSet sections={sections}/>
+        <HeaderBar title="Edit Consumption" icon='nutrition'/>
+        <Form
+            error={!!submissionError}
+            loading={isLoading}
+            onSubmit={this.handleFormSubmit}>
+            <Message error header='Problem While Logging' list={[submissionError]}/>
+            <this.SubmissionMessage/>
+            <Form.Field>
+                <label>Food</label>
+                <this.FoodField/>
+
+            </Form.Field>
+            <Form.Field>
+                <label>When</label>
+                <this.HourField/>
+            </Form.Field>
+            <Form.Field>
+                <label>Quantity</label>
+            </Form.Field>
+            {quantities.map(qty =>
+                <Form.Field key={qty.value}>
+                    <Radio
+                        label={qty.text}
+                        name='quantity'
+                        value={qty.value}
+                        checked={this.state.consumption.quantity === qty.value}
+                        onChange={this.handleQuantityChange}
+                    />
+                </Form.Field>)}
+            <Divider hidden/>
+            <Button.Group>
+                <Button type='button' onClick={goBack}>Back</Button>
+                <Button.Or/>
+                <Button positive type="submit" disabled={!this.state.consumption.food}>
+                    {consumptionId ? 'Save Log' : 'Submit Log'}
+                </Button>
+            </Button.Group>
+            consumptionId ?
+            <Button type='button' basic floated='right' color='red'
+                    onClick={() => setState({isDeleteVisible: true})}>Delete</Button>
+            : null;
+        </Form>
+        <Confirm
+            open={this.state.isDeleteVisible}
+            onCancel={() => this.setState({isDeleteVisible: false})}
+            onConfirm={this.handleDelete}
+            header='Delete Consumption?'
+            content={'This consumption will no longer appear in your history. However, you can add it back later, and points awarded as a result of this Consumption will remain. Please note that the calculation of future points will not take this deletion into account, and will still take it into account.'}/>
+    </div>;
+};
 class ConsumptionForm extends RequestComponent<Props, IConsumptionFormState> {
     state = {
         ...generateConsumptionInfo(),
@@ -167,14 +223,6 @@ class ConsumptionForm extends RequestComponent<Props, IConsumptionFormState> {
         }
     }
 
-    DeleteButton = () => {
-        const {consumptionId} = useParams();
-        return consumptionId ?
-            <Button type='button' basic floated='right' color='red'
-                    onClick={() => this.setState({isDeleteVisible: true})}>Delete</Button>
-            : null;
-    };
-
     handleDelete = () => {
         const {consumptionId} = useParams();
         const {goBack} = useHistory();
@@ -222,59 +270,6 @@ class ConsumptionForm extends RequestComponent<Props, IConsumptionFormState> {
             .catch(err => this.setState({submissionError: extractError(err)}))
             .finally(() => this.setState({isLoading: false}));
     };
-
-    render() {
-        const {consumptionId} = useParams();
-        const {goBack} = useHistory();
-        return <div>
-            <BreadcrumbSet sections={sections}/>
-            <HeaderBar title="Edit Consumption" icon='nutrition'/>
-            <Form
-                error={!!this.state.submissionError}
-                loading={this.state.isLoading}
-                onSubmit={this.handleFormSubmit}>
-                <Message error header='Problem While Logging' list={[this.state.submissionError]}/>
-                <this.SubmissionMessage/>
-                <Form.Field>
-                    <label>Food</label>
-                    <this.FoodField/>
-
-                </Form.Field>
-                <Form.Field>
-                    <label>When</label>
-                    <this.HourField/>
-                </Form.Field>
-                <Form.Field>
-                    <label>Quantity</label>
-                </Form.Field>
-                {quantities.map(qty =>
-                    <Form.Field key={qty.value}>
-                        <Radio
-                            label={qty.text}
-                            name='quantity'
-                            value={qty.value}
-                            checked={this.state.consumption.quantity === qty.value}
-                            onChange={this.handleQuantityChange}
-                        />
-                    </Form.Field>)}
-                <Divider hidden/>
-                <Button.Group>
-                    <Button type='button' onClick={goBack}>Back</Button>
-                    <Button.Or/>
-                    <Button positive type="submit" disabled={!this.state.consumption.food}>
-                        {consumptionId ? 'Save Log' : 'Submit Log'}
-                    </Button>
-                </Button.Group>
-                <this.DeleteButton/>
-            </Form>
-            <Confirm
-                open={this.state.isDeleteVisible}
-                onCancel={() => this.setState({isDeleteVisible: false})}
-                onConfirm={this.handleDelete}
-                header='Delete Consumption?'
-                content={'This consumption will no longer appear in your history. However, you can add it back later, and points awarded as a result of this Consumption will remain. Please note that the calculation of future points will not take this deletion into account, and will still take it into account.'}/>
-        </div>;
-    }
 
     handleFoodChange = (e: SyntheticEvent, data: any) => {
         this.setState(prevState => ({

@@ -13,7 +13,7 @@ import {consumptionFetchAll} from "../../actions/consumptions";
 import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
 import {INutritionStateProps} from "./INutritionStateProps";
 import {INutritionDispatchProps} from "./INutritionDispatchProps";
-import {MyThunkDispatch} from "../../store/configure-store";
+import {MyThunkDispatch} from "../../redux/store";
 
 const sections = [
     {name: 'Nutrition'}
