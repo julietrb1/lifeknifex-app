@@ -5,16 +5,8 @@ import {
     IConsumptionIsLoadingAction
 } from "../actions/consumptions";
 import {Reducer} from "redux";
-import {IBackendItem} from "../models/IBackendItem";
 import {IPaginatedResponse} from "../models/IPaginatedReponse";
-
-export interface IConsumption extends IBackendItem {
-    food: string;
-    date: string;
-    quantity: number;
-    food_name: string;
-    food_icon: string;
-}
+import {IConsumption} from "../models/IConsumption";
 
 export interface IConsumptionSlice {
     consumptionsHasErrored: boolean;

@@ -2,9 +2,10 @@ import {API_CONSUMPTIONS} from "../Backend";
 import axios from "axios";
 import {Action, ActionCreator, Dispatch} from "redux";
 import {ThunkResult} from "../redux/store";
-import {IConsumption, IConsumptionSlice} from "../reducers/consumptions";
+import {IConsumptionSlice} from "../reducers/consumptions";
 import {ThunkAction} from "redux-thunk";
 import {IPaginatedResponse} from "../models/IPaginatedReponse";
+import {IConsumption} from "../models/IConsumption";
 
 export type IConsumptionActions =
     IConsumptionHasErroredAction
