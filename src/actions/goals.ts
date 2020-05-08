@@ -4,8 +4,8 @@ import {IGoal, IGoalSlice} from "../reducers/goals";
 import {Action, ActionCreator, Dispatch} from "redux";
 import {ThunkResult} from "../redux/store";
 import {ThunkAction} from 'redux-thunk';
-import {IAnswer} from "../reducers/answers";
 import {IPaginatedResponse} from "../models/IPaginatedReponse";
+import {IAnswer} from "../models/IAnswer";
 
 
 export type IGoalsActions =

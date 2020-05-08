@@ -1,9 +1,9 @@
 import {API_ANSWERS} from "../Backend";
 import axios from "axios";
 import {Action, Dispatch} from "redux";
-import {IAnswer} from "../reducers/answers";
 import {ThunkResult} from "../redux/store";
 import {IPaginatedResponse} from "../models/IPaginatedReponse";
+import {IAnswer} from "../models/IAnswer";
 
 export enum AnswerActionTypes {
     ANSWER_HAS_ERRORED = 'ANSWER_HAS_ERRORED',

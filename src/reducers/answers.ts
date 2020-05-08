@@ -1,13 +1,7 @@
 import {AnswerActionTypes, AnswersHasErroredAction, AnswersIsLoadingAction} from "../actions/answers";
 import {Reducer} from "redux";
-import {IBackendItem} from "../models/IBackendItem";
 import {IPaginatedResponse} from "../models/IPaginatedReponse";
-
-export interface IAnswer extends IBackendItem {
-    goal: string;
-    value: number;
-    date: string;
-}
+import {IAnswer} from "../models/IAnswer";
 
 // TODO: Either use this with 'answers' or remove it
 // export interface IAnswersStoreState {
