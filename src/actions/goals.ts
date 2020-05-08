@@ -1,11 +1,12 @@
 import {API_ANSWERS, API_GOALS} from "../Backend";
 import axios from "axios";
-import {IGoal, IGoalSlice} from "../reducers/goals";
+import {IGoalSlice} from "../reducers/goals";
 import {Action, ActionCreator, Dispatch} from "redux";
 import {ThunkResult} from "../redux/store";
 import {ThunkAction} from 'redux-thunk';
 import {IPaginatedResponse} from "../models/IPaginatedReponse";
 import {IAnswer} from "../models/IAnswer";
+import {IGoal} from "../models/IGoal";
 
 
 export type IGoalsActions =

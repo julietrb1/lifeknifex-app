@@ -12,19 +12,8 @@ import {
     GoalUpdateAnswerSuccessAction,
     GoalUpdateSuccessAction
 } from "../actions/goals";
-import {IBackendItem} from "../models/IBackendItem";
 import {IPaginatedResponse} from "../models/IPaginatedReponse";
-
-export interface IGoal extends IBackendItem {
-    todays_answer_value?: number;
-    todays_answer?: string;
-    last_answered?: string;
-    frequency?: number;
-    style?: string;
-    start_date?: string;
-    question: string;
-    test: string;
-}
+import {IGoal} from "../models/IGoal";
 
 export interface IGoalsStoreState {
     [goalUrl: string]: IGoal;

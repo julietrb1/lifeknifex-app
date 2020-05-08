@@ -13,9 +13,10 @@ import {BACKEND_DATE_FORMAT} from "../../constants";
 import {firstCase} from "../../Utils";
 import {goalCreate, goalsFetchOne, goalUpdate} from "../../actions/goals";
 import {RouteComponentProps} from "react-router";
-import {IGoal, IGoalsStoreState} from "../../reducers/goals";
+import {IGoalsStoreState} from "../../reducers/goals";
 import update from 'immutability-helper';
 import {MyThunkDispatch} from "../../redux/store";
+import {IGoal} from "../../models/IGoal";
 
 interface IGoalNewEditMatchParams {
     goalId: string;

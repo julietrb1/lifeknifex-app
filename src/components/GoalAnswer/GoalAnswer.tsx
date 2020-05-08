@@ -13,9 +13,10 @@ import AnswerPre from "./AnswerPre/AnswerPre";
 import AnswerPost from "./AnswerPost/AnswerPost";
 import {firstCase} from "../../Utils";
 import {RouteComponentProps} from "react-router";
-import {IGoal, IGoalSlice, IGoalsStoreState} from "../../reducers/goals";
+import {IGoalSlice, IGoalsStoreState} from "../../reducers/goals";
 import {IAnswerSlice} from "../../reducers/answers";
 import {MyThunkDispatch} from "../../redux/store";
+import {IGoal} from "../../models/IGoal";
 
 interface IGoalAnswerDispatchProps {
     fetchGoals: () => any;
