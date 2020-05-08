@@ -1,4 +1,3 @@
-import {IBackendItem, IPaginatedResponse} from "../backend-common";
 import {
     ConsumptionActionTypes,
     IConsumptionFetchDataSuccessAction,
@@ -6,6 +5,8 @@ import {
     IConsumptionIsLoadingAction
 } from "../actions/consumptions";
 import {Reducer} from "redux";
+import {IBackendItem} from "../models/IBackendItem";
+import {IPaginatedResponse} from "../models/IPaginatedReponse";
 
 export interface IConsumption extends IBackendItem {
     food: string;

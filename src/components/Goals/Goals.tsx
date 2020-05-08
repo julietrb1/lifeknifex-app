@@ -14,8 +14,8 @@ import GoalsEmpty from "./GoalsEmpty/GoalsEmpty";
 import './Goals.scss';
 import CommonStatistic from "../common/CommonStatistic";
 import {IGoal, IGoalsStoreState} from "../../reducers/goals";
-import {IPaginatedResponse} from "../../backend-common";
 import {MyThunkDispatch} from "../../redux/store";
+import {IPaginatedResponse} from "../../models/IPaginatedReponse";
 
 const sections = [
     {name: 'Goals'}

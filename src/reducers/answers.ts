@@ -1,6 +1,7 @@
 import {AnswerActionTypes, AnswersHasErroredAction, AnswersIsLoadingAction} from "../actions/answers";
-import {IBackendItem, IPaginatedResponse} from "../backend-common";
 import {Reducer} from "redux";
+import {IBackendItem} from "../models/IBackendItem";
+import {IPaginatedResponse} from "../models/IPaginatedReponse";
 
 export interface IAnswer extends IBackendItem {
     goal: string;

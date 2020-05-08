@@ -2,9 +2,9 @@ import {API_FOODS} from "../Backend";
 import axios from "axios";
 import {Action, ActionCreator, Dispatch} from "redux";
 import {ThunkResult} from "../redux/store";
-import {IPaginatedResponse} from "../backend-common";
 import {IFood, IFoodSlice} from "../reducers/foods";
 import {ThunkAction} from "redux-thunk";
+import {IPaginatedResponse} from "../models/IPaginatedReponse";
 
 export type IFoodActions = IFoodFetchDataSuccessAction
     | IFoodHasErroredAction

@@ -1,5 +1,5 @@
 import {IFood, IFoodStoreState} from "../../reducers/foods";
-import {IPaginatedResponse} from "../../backend-common";
+import {IPaginatedResponse} from "../../models/IPaginatedReponse";
 
 export interface INutritionLibraryStateProps {
     foods: IFoodStoreState;

@@ -12,7 +12,8 @@ import {
     GoalUpdateAnswerSuccessAction,
     GoalUpdateSuccessAction
 } from "../actions/goals";
-import {IBackendItem, IPaginatedResponse} from "../backend-common";
+import {IBackendItem} from "../models/IBackendItem";
+import {IPaginatedResponse} from "../models/IPaginatedReponse";
 
 export interface IGoal extends IBackendItem {
     todays_answer_value?: number;

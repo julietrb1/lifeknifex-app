@@ -3,9 +3,9 @@ import axios from "axios";
 import {IGoal, IGoalSlice} from "../reducers/goals";
 import {Action, ActionCreator, Dispatch} from "redux";
 import {ThunkResult} from "../redux/store";
-import {IPaginatedResponse} from "../backend-common";
 import {ThunkAction} from 'redux-thunk';
 import {IAnswer} from "../reducers/answers";
+import {IPaginatedResponse} from "../models/IPaginatedReponse";
 
 
 export type IGoalsActions =

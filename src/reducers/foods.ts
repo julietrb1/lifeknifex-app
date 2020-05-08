@@ -1,5 +1,4 @@
 import {Reducer} from "redux";
-import {IBackendItem, IPaginatedResponse} from "../backend-common";
 import update from 'immutability-helper';
 import {
     FoodActionTypes,
@@ -9,13 +8,8 @@ import {
     IFoodUpdateDoneAction
 } from "../actions/foods";
 import {arrayToObject, IStoreState} from "../Utils";
+import {IPaginatedResponse} from "../models/IPaginatedReponse";
 
-export interface IFood extends IBackendItem {
-    name: string;
-    health_index: number;
-    is_archived: boolean;
-    icon: string;
-}
 
 export interface IFoodStoreState extends IStoreState<IFood> {
 }

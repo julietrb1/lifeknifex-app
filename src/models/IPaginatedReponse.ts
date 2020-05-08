@@ -4,8 +4,3 @@ export interface IPaginatedResponse<T> {
     previous?: string;
     results?: T[];
 }
-
-export interface IBackendItem {
-    id?: number;
-    url?: string;
-}
