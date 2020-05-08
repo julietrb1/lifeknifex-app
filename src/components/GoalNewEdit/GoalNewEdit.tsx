@@ -13,9 +13,9 @@ import {BACKEND_DATE_FORMAT} from "../../constants";
 import {firstCase} from "../../Utils";
 import {goalCreate, goalsFetchOne, goalUpdate} from "../../actions/goals";
 import {RouteComponentProps} from "react-router";
-import {Dispatch} from "redux";
 import {IGoal, IGoalsStoreState} from "../../reducers/goals";
 import update from 'immutability-helper';
+import {MyThunkDispatch} from "../../store/configure-store";
 
 interface IGoalNewEditMatchParams {
     goalId: string;
@@ -200,7 +200,7 @@ const mapStateToProps = (state: any) => ({
     goals: state.goals
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+const mapDispatchToProps = (dispatch: MyThunkDispatch) => ({
     createGoal: (goal: IGoal) => dispatch(goalCreate(goal)),
     updateGoal: (goal: IGoal) => dispatch(goalUpdate(goal)),
     fetchGoal: (goalId: number) => dispatch(goalsFetchOne(goalId)),

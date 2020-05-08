@@ -13,9 +13,9 @@ import GoalsEmpty from "./GoalsEmpty/GoalsEmpty";
 
 import './Goals.scss';
 import CommonStatistic from "../common/CommonStatistic";
-import {Dispatch} from "redux";
 import {IGoal, IGoalsStoreState} from "../../reducers/goals";
 import {IPaginatedResponse} from "../../backend-common";
+import {MyThunkDispatch} from "../../store/configure-store";
 
 const sections = [
     {name: 'Goals'}
@@ -204,7 +204,7 @@ const mapStateToProps = (state: any) => ({
     goalsResponse: state.goalsResponse
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+const mapDispatchToProps = (dispatch: MyThunkDispatch) => ({
     fetchGoals: () => dispatch(goalsFetchAll()),
 });
 

@@ -15,17 +15,10 @@ import {
     SearchProps
 } from 'semantic-ui-react';
 import './ConsumptionForm.scss';
-import {RouteComponentProps, withRouter} from 'react-router-dom';
+import {useHistory, useLocation, useParams} from 'react-router-dom';
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
 import {extractError, healthStrings} from '../../../Utils';
-import {
-    createConsumption,
-    deleteConsumption,
-    getConsumption,
-    getFood,
-    getFoods,
-    updateConsumption
-} from '../../../Backend';
+import {createConsumption, deleteConsumption, getFood, getFoods, updateConsumption} from '../../../Backend';
 import RequestComponent from '../RequestComponent/RequestComponent';
 import {TIME_FORMAT_STRING} from '../../../constants';
 import {IConsumptionFormState} from "./IConsumptionFormState";
@@ -38,7 +31,7 @@ const sections = [
 ];
 
 interface IConsumptionNewEditMatchParams {
-    consumptionId: string;
+    consumptionId?: string;
 }
 
 const generateHours = () => {
@@ -78,15 +71,7 @@ const generateConsumptionInfo = () => {
     };
 };
 
-interface IConsumptionNewEditDispatchProps {
-    
-}
-
-interface IConsumptionNewEditStateProps {
-    
-}
-
-type Props = IConsumptionNewEditStateProps & IConsumptionNewEditDispatchProps & RouteComponentProps<IConsumptionNewEditMatchParams>;
+type Props = IConsumptionNewEditMatchParams;
 
 class ConsumptionForm extends RequestComponent<Props, IConsumptionFormState> {
     state = {
@@ -108,7 +93,8 @@ class ConsumptionForm extends RequestComponent<Props, IConsumptionFormState> {
         null;
 
     FoodField = () => {
-        if (this.props.match.params.consumptionId) {
+        const {consumptionId} = useParams();
+        if (consumptionId) {
             return <Input
                 value={this.state.currentFoodSearch}
                 disabled={true}
@@ -126,7 +112,8 @@ class ConsumptionForm extends RequestComponent<Props, IConsumptionFormState> {
     };
 
     HourField = () => {
-        if (this.props.match.params.consumptionId) {
+        const {consumptionId} = useParams();
+        if (consumptionId) {
             return <Input disabled value={moment(this.state.consumption.date).format(TIME_FORMAT_STRING)}/>;
         } else {
             return <Dropdown
@@ -134,19 +121,22 @@ class ConsumptionForm extends RequestComponent<Props, IConsumptionFormState> {
                 options={this.state.availableHours}
                 onChange={this.handleHourChange}
                 value={this.state.consumption.date}
-                disabled={!!this.props.match.params.consumptionId}/>;
+                disabled={!!consumptionId}/>;
         }
     };
 
     componentDidMount() {
+        const {consumptionId} = useParams();
+        const {goBack} = useHistory();
+        const {search} = useLocation();
         this.resetSearch();
-        if (!this.props.match.params.consumptionId && !this.props.location.search) {
+        if (!consumptionId && !search) {
             return;
         }
 
         this.setState({isLoading: true});
 
-        if (this.props.match.params.consumptionId) {
+        if (consumptionId) {
             // getConsumption(this.cancelToken, this.props.match.params.consumptionId)
             //     .then(consumption => {
             //         this.setState({consumption});
@@ -160,7 +150,7 @@ class ConsumptionForm extends RequestComponent<Props, IConsumptionFormState> {
             //     }));
             // if (this.props.consumptions)
         } else {
-            const params = new URLSearchParams(this.props.location.search);
+            const params = new URLSearchParams(search);
             const foodId = Number(params.get('food'));
             if (!foodId) {
                 return;
@@ -178,14 +168,17 @@ class ConsumptionForm extends RequestComponent<Props, IConsumptionFormState> {
     }
 
     DeleteButton = () => {
-        return this.props.match.params.consumptionId ?
+        const {consumptionId} = useParams();
+        return consumptionId ?
             <Button type='button' basic floated='right' color='red'
                     onClick={() => this.setState({isDeleteVisible: true})}>Delete</Button>
             : null;
     };
 
     handleDelete = () => {
-        if (this.props.match.params.consumptionId === undefined) {
+        const {consumptionId} = useParams();
+        const {goBack} = useHistory();
+        if (consumptionId === undefined) {
             return;
         }
 
@@ -194,13 +187,15 @@ class ConsumptionForm extends RequestComponent<Props, IConsumptionFormState> {
             isDeleteVisible: false
         });
 
-        deleteConsumption(this.cancelToken, Number(this.props.match.params.consumptionId))
-            .then(this.props.history.goBack)
+        deleteConsumption(this.cancelToken, Number(consumptionId))
+            .then(goBack)
             .catch(err => this.setState({submissionError: extractError(err)}))
             .finally(() => this.setState({isLoading: false}));
     };
 
     handleFormSubmit = () => {
+        const {consumptionId} = useParams();
+        const {goBack} = useHistory();
         if (this.state.isLoading) {
             return;
         }
@@ -210,11 +205,11 @@ class ConsumptionForm extends RequestComponent<Props, IConsumptionFormState> {
             submissionMessage: ''
         });
 
-        const backEndFunction = this.props.match.params.consumptionId ? updateConsumption : createConsumption;
+        const backEndFunction = consumptionId ? updateConsumption : createConsumption;
         backEndFunction(this.cancelToken, this.state.consumption)
             .then(() => {
-                if (this.props.match.params.consumptionId) {
-                    this.props.history.goBack();
+                if (consumptionId) {
+                    goBack();
                 } else {
                     this.setState(prevState => ({
                         submissionError: '',
@@ -229,6 +224,8 @@ class ConsumptionForm extends RequestComponent<Props, IConsumptionFormState> {
     };
 
     render() {
+        const {consumptionId} = useParams();
+        const {goBack} = useHistory();
         return <div>
             <BreadcrumbSet sections={sections}/>
             <HeaderBar title="Edit Consumption" icon='nutrition'/>
@@ -262,10 +259,10 @@ class ConsumptionForm extends RequestComponent<Props, IConsumptionFormState> {
                     </Form.Field>)}
                 <Divider hidden/>
                 <Button.Group>
-                    <Button type='button' onClick={this.props.history.goBack}>Back</Button>
+                    <Button type='button' onClick={goBack}>Back</Button>
                     <Button.Or/>
                     <Button positive type="submit" disabled={!this.state.consumption.food}>
-                        {this.props.match.params.consumptionId ? 'Save Log' : 'Submit Log'}
+                        {consumptionId ? 'Save Log' : 'Submit Log'}
                     </Button>
                 </Button.Group>
                 <this.DeleteButton/>
@@ -341,4 +338,4 @@ class ConsumptionForm extends RequestComponent<Props, IConsumptionFormState> {
     resetSearch = () => this.setState({currentFoodSearch: ''});
 }
 
-export default withRouter(ConsumptionForm);
+export default ConsumptionForm;

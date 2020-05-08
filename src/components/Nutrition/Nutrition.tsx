@@ -11,9 +11,9 @@ import './Nutrition.scss';
 import {connect} from "react-redux";
 import {consumptionFetchAll} from "../../actions/consumptions";
 import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
-import {Dispatch} from "redux";
 import {INutritionStateProps} from "./INutritionStateProps";
 import {INutritionDispatchProps} from "./INutritionDispatchProps";
+import {MyThunkDispatch} from "../../store/configure-store";
 
 const sections = [
     {name: 'Nutrition'}
@@ -88,7 +88,7 @@ const mapStateToProps = (state: any) => ({
     consumptions: state.consumptions,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+const mapDispatchToProps = (dispatch: MyThunkDispatch) => ({
     fetchConsumptions: () => dispatch(consumptionFetchAll()),
 });
 

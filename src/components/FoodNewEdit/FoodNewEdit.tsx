@@ -22,8 +22,8 @@ import {IFoodNewEditMatchParams} from "./IFoodNewEditMatchParams";
 import {IFoodNewEditFormState} from "./IFoodNewEditFormState";
 import {IFood, IFoodSlice, IFoodStoreState} from "../../reducers/foods";
 import {connect} from "react-redux";
-import {Dispatch} from "redux";
 import {updateFood} from "../../actions/foods";
+import {MyThunkDispatch} from "../../store/configure-store";
 
 const URL_NUTRITION_LIBRARY = '/nutrition/library';
 
@@ -200,7 +200,7 @@ const mapStateToProps = (state: IFoodSlice) => ({
     foods: state.foods
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+const mapDispatchToProps = (dispatch: MyThunkDispatch) => ({
     updateFood: (food: IFood) => dispatch(updateFood(food))
 });
 

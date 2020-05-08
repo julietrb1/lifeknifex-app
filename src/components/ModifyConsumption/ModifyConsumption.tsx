@@ -21,7 +21,7 @@ const ModifyConsumption: React.FC<IModifyConsumptionProps> = props => {
     return <div>
         <BreadcrumbSet sections={sections}/>
         <HeaderBar title="Edit Consumption" icon='nutrition'/>
-        <ConsumptionForm consumptionId={Number(props.match.params.consumptionId)}/>
+        <ConsumptionForm consumptionId={props.match.params.consumptionId}/>
     </div>;
 };
 

@@ -13,9 +13,9 @@ import AnswerPre from "./AnswerPre/AnswerPre";
 import AnswerPost from "./AnswerPost/AnswerPost";
 import {firstCase} from "../../Utils";
 import {RouteComponentProps} from "react-router";
-import {Dispatch} from "redux";
 import {IGoal, IGoalSlice, IGoalsStoreState} from "../../reducers/goals";
 import {IAnswerSlice} from "../../reducers/answers";
+import {MyThunkDispatch} from "../../store/configure-store";
 
 interface IGoalAnswerDispatchProps {
     fetchGoals: () => any;
@@ -206,7 +206,7 @@ const mapStateToProps = (state: IGoalSlice & IAnswerSlice) => ({
     goals: state.goals,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+const mapDispatchToProps = (dispatch: MyThunkDispatch) => ({
     fetchGoals: () => dispatch(goalsFetchAll()),
     updateAnswer: (goal: any, value: number) => dispatch(goalUpdateAnswer(goal, value)),
     createAnswer: (goal: any, value: number) => dispatch(goalCreateAnswer(goal, value))

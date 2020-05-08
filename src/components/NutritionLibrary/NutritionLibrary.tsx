@@ -12,11 +12,11 @@ import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
 import './NutritionLibrary.scss';
 import {IFoodSlice} from "../../reducers/foods";
 import {connect} from "react-redux";
-import {Dispatch} from "redux";
 import {foodsFetchAll} from "../../actions/foods";
 import {INutritionLibraryStateProps} from "./INutritionLibraryStateProps";
 import {INutritionLibraryDispatchProps} from "./INutritionLibraryDispatchProps";
 import {INutritionLibraryState} from "./INutritionLibraryState";
+import {MyThunkDispatch} from "../../store/configure-store";
 
 const sections = [
     {name: 'Nutrition', href: '/nutrition'},
@@ -138,7 +138,7 @@ const mapStateToProps = (state: IFoodSlice) => {
     });
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+const mapDispatchToProps = (dispatch: MyThunkDispatch) => ({
     fetchFoods: () => dispatch(foodsFetchAll())
 });
 
