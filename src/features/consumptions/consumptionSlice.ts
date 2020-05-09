@@ -3,6 +3,8 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {AppThunk} from "../../redux/store";
 import IConsumption from "../../models/IConsumption";
 import {IPaginatedResponse} from "../../models/IPaginatedReponse";
+import axios from "axios";
+import {API_CONSUMPTIONS} from "../../Backend";
 
 interface IConsumptionState extends ICommonState {
     consumptions: IConsumption[];
@@ -45,8 +47,8 @@ export default consumptionSlice.reducer;
 export const fetchConsumptions = (): AppThunk => async dispatch => {
     try {
         dispatch(getConsumptionsStart());
-        // TODO: Fetch consumptions
-        //dispatch(getConsumptionsSuccess());
+        const {data} = await axios.get(API_CONSUMPTIONS);
+        dispatch(getConsumptionsSuccess(data));
     } catch (err) {
         dispatch(getConsumptionsFailure(err.toString()));
     }
