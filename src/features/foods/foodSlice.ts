@@ -3,6 +3,8 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {AppThunk} from "../../redux/store";
 import IFood from "../../models/IFood";
 import {IPaginatedResponse} from "../../models/IPaginatedReponse";
+import axios from "axios";
+import {API_FOODS} from "../../Backend";
 
 interface IFoodState extends ICommonState {
     foods: IFood[];
@@ -42,11 +44,12 @@ export const {saveFood, deleteFood, getFoodsFailure, getFoodsStart, getFoodsSucc
 
 export default foodSlice.reducer;
 
-export const fetchFoods = (): AppThunk => async dispatch => {
+export const fetchFoods = (search?: string, archived: boolean = false): AppThunk => async dispatch => {
+    const params = {search, archived};
     try {
         dispatch(getFoodsStart());
-        // TODO: Fetch foods
-        //dispatch(getFoodsSuccess());
+        const {data} = await axios.get(API_FOODS, {params: params});
+        dispatch(getFoodsSuccess(data));
     } catch (err) {
         dispatch(getFoodsFailure(err.toString()));
     }
