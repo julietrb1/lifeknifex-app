@@ -1,47 +1,44 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import HeaderBar from '../HeaderBar/HeaderBar';
 import ConsumptionList from './ConsumptionList/ConsumptionList';
 import BreadcrumbSet from '../common/BreadcrumbSet/BreadcrumbSet';
-import RequestComponent from '../common/RequestComponent/RequestComponent';
 import {Button, Divider, Icon} from 'semantic-ui-react';
 import NutritionHistoryEmpty from './NutritionHistoryEmpty/NutritionHistoryEmpty';
 import {Link} from 'react-router-dom';
 import {COLOR_NUTRITION} from "../../constants";
 import './Nutrition.scss';
-import {connect} from "react-redux";
-import {consumptionFetchAll} from "../../actions/consumptions";
+import {useDispatch, useSelector} from "react-redux";
 import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
-import {INutritionStateProps} from "./INutritionStateProps";
-import {INutritionDispatchProps} from "./INutritionDispatchProps";
-import {MyThunkDispatch} from "../../redux/store";
+import {RootState} from "../../redux/rootReducer";
+import {fetchConsumptions} from "../../features/consumptions/consumptionSlice";
 
 const sections = [
     {name: 'Nutrition'}
 ];
 
-type Props = INutritionStateProps & INutritionDispatchProps;
-
-class Nutrition extends RequestComponent<Props> {
-    componentDidMount() {
-        if (!this.props.consumptions.results) {
-            this.props.fetchConsumptions();
+const Nutrition = () => {
+    const dispatch = useDispatch();
+    const {consumptionResponse, isLoading} = useSelector((state: RootState) => state.consumptionState);
+    useEffect(() => {
+        if (!consumptionResponse?.results) {
+            dispatch(fetchConsumptions());
         }
-    }
+    });
 
-    render() {
-        return <div>
-            <BreadcrumbSet sections={sections}/>
-            <HeaderBar title="Nutrition" icon='nutrition'/>
-            <div className='buttons'>
-                <this.NewButton/>
-                <this.LibraryButton/>
-            </div>
-            <Divider hidden/>
-            <this.PageContent/>
-        </div>;
-    }
+    const pageContent = () => {
+        if (!isLoading && consumptionResponse?.results) {
+            return <ConsumptionList consumptionItems={consumptionResponse?.results}/>;
+        } else if (isLoading) {
+            return <div>
+                <Divider hidden/>
+                <PlaceholderSet/>
+            </div>;
+        } else {
+            return <NutritionHistoryEmpty/>;
+        }
+    };
 
-    LibraryButton = () => <Button
+    const libraryButton = () => <Button
         basic
         as={Link}
         to='/nutrition/library'
@@ -52,8 +49,8 @@ class Nutrition extends RequestComponent<Props> {
         </Button.Content>
     </Button>;
 
-    NewButton = () => {
-        if (this.props.isLoading || this.props.consumptions.results) {
+    const newButton = () => {
+        if (isLoading || consumptionResponse?.results) {
             return <Button
                 color={COLOR_NUTRITION}
                 as={Link}
@@ -69,27 +66,16 @@ class Nutrition extends RequestComponent<Props> {
         }
     };
 
-    PageContent = () => {
-        if (!this.props.isLoading && this.props.consumptions.results) {
-            return <ConsumptionList consumptionItems={this.props.consumptions.results}/>;
-        } else if (this.props.isLoading) {
-            return <div>
-                <Divider hidden/>
-                <PlaceholderSet/>
-            </div>;
-        } else {
-            return <NutritionHistoryEmpty/>;
-        }
-    };
-}
+    return <div>
+        <BreadcrumbSet sections={sections}/>
+        <HeaderBar title="Nutrition" icon='nutrition'/>
+        <div className='buttons'>
+            {newButton()}
+            {libraryButton()}
+        </div>
+        <Divider hidden/>
+        {pageContent()}
+    </div>;
+};
 
-const mapStateToProps = (state: any) => ({
-    isLoading: state.consumptionsIsLoading,
-    consumptions: state.consumptions,
-});
-
-const mapDispatchToProps = (dispatch: MyThunkDispatch) => ({
-    fetchConsumptions: () => dispatch(consumptionFetchAll()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Nutrition);
+export default Nutrition;
