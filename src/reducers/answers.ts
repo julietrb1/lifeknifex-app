@@ -1,7 +1,7 @@
 import {AnswerActionTypes, AnswersHasErroredAction, AnswersIsLoadingAction} from "../actions/answers";
 import {Reducer} from "redux";
 import {IPaginatedResponse} from "../models/IPaginatedReponse";
-import {IAnswer} from "../models/IAnswer";
+import IAnswer from "../models/IAnswer";
 
 // TODO: Either use this with 'answers' or remove it
 // export interface IAnswersStoreState {
