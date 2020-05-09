@@ -1,85 +1,69 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import './FoodNewEdit.scss';
-import {createFood, getFood} from '../../Backend';
-import {Link, RouteComponentProps} from 'react-router-dom';
-import {extractError, healthStrings} from '../../Utils';
-import update from 'immutability-helper';
-import {
-    Button,
-    CheckboxProps,
-    Confirm,
-    Divider,
-    Dropdown,
-    DropdownProps,
-    Form,
-    InputOnChangeData,
-    Radio
-} from 'semantic-ui-react';
+import {Link, useHistory, useParams} from 'react-router-dom';
+import {healthStrings} from '../../Utils';
+import {Button, Confirm, Divider, Dropdown, Form, Radio} from 'semantic-ui-react';
 import ErrorMessage from '../common/ErrorMessage/ErrorMessage';
-import RequestComponent from '../common/RequestComponent/RequestComponent';
 import {APP_TITLE, foodIcons} from '../../constants';
-import {IFoodNewEditMatchParams} from "./IFoodNewEditMatchParams";
-import {IFoodNewEditFormState} from "./IFoodNewEditFormState";
-import {IFood, IFoodSlice, IFoodStoreState} from "../../reducers/foods";
-import {connect} from "react-redux";
-import {updateFood} from "../../actions/foods";
-import {MyThunkDispatch} from "../../redux/store";
+import {useSelector} from "react-redux";
+import {RootState} from "../../redux/rootReducer";
+import {selectFoodById} from "../../features/foods/foodSelectors";
+import IFood from "../../models/IFood";
 
 const URL_NUTRITION_LIBRARY = '/nutrition/library';
 
-interface IFoodNewEditStateProps {
-    foods: IFoodStoreState
-}
+const FoodNewEdit = () => {
+    const {foodId} = useParams();
+    const history = useHistory();
+    const [isArchiveVisible, setIsArchiveVisible] = useState(false);
+    const [isUnarchiveVisible, setIsUnarchiveVisible] = useState(false);
+    const {isLoading} = useSelector((state: RootState) => state.foodState);
+    const food: IFood | undefined = useSelector((state: RootState) => selectFoodById(state, foodId));
+    const [draftFood, setDraftFood] = useState<IFood>(food || {} as IFood);
+    const [submissionError, setSubmissionError] = useState('');
 
-interface IFoodNewEditDispatchProps {
-    updateFood: (food: IFood) => void;
-}
+    useEffect(() => {
+        //TODO: Load food by ID
+    });
 
-type Props = RouteComponentProps<IFoodNewEditMatchParams>
-    & IFoodNewEditStateProps
-    & IFoodNewEditDispatchProps;
+    const handleSave = () => {
+        if (!foodId) {
+            // createFood(cancelToken, food)
+            //     .then(props.history.goBack)
+            //     .catch((err: Error) => setState({
+            //         submissionError: extractError(err)
+            //     })).finally(() => setState({
+            //     isLoading: false
+            // })); // TODO: Replace createFood with redux-toolkit
+        } else {
+            // props.updateFood(food); // TODO: Replace updateFood with redux-toolkit
+            history.goBack();
+        }
 
-class FoodNewEdit extends RequestComponent<Props, IFoodNewEditFormState> {
-    state = {
-        food: {
-            id: undefined,
-            is_archived: false,
-            name: '',
-            health_index: 1,
-            icon: '',
-        },
-        isLoading: false,
-        submissionError: '',
-        isArchiveVisible: false,
-        isUnarchiveVisible: false
     };
 
-    componentDidMount() {
-        if (this.props.match.params.foodId) {
-            this.setState({
-                isLoading: true
-            });
-
-            getFood(this.cancelToken, Number(this.props.match.params.foodId))
-                .then((food: IFood) => this.setState({
-                    food: food,
-                }))
-                .catch((err: Error) => this.setState({
-                    submissionError: extractError(err)
-                }))
-                .finally(() => this.setState({
-                    isLoading: false
-                }));
+    const SetArchivedButton = () => {
+        if (food?.id && !food.is_archived) {
+            return <Button type='button' basic floated='right' color='red'
+                           onClick={() => setIsArchiveVisible(true)}>Archive</Button>;
+        } else if (food?.id && food.is_archived) {
+            return <Button type='button' basic floated='right'
+                           onClick={() => setIsUnarchiveVisible(true)}>Unarchive</Button>;
+        } else {
+            return null;
         }
-    }
+    };
 
-    render() {
-        return <div><Form onSubmit={this.handleSave} loading={this.state.isLoading}
-                          error={!!this.state.submissionError}>
-            <ErrorMessage header='Problem While Saving Food' content={this.state.submissionError}/>
+    const toggleArchived = () => setDraftFood({...draftFood, is_archived: !draftFood.is_archived});
+
+    return <div>
+        <Form onSubmit={handleSave} loading={isLoading}
+              error={!!submissionError}>
+            <ErrorMessage header='Problem While Saving Food' content={submissionError}/>
             <Form.Field>
                 <label>Name</label>
-                <Form.Input autoFocus value={this.state.food.name} onChange={this.handleNameChange}/>
+                <Form.Input autoFocus value={food?.name}
+                            onChange={e => setDraftFood({...draftFood, name: e.target.value})}/>
             </Form.Field>
             <Form.Field>
                 <label>Quality</label>
@@ -91,8 +75,8 @@ class FoodNewEdit extends RequestComponent<Props, IFoodNewEditFormState> {
                             label={label}
                             name='healthRadios'
                             value={index + 1}
-                            checked={this.state.food.health_index === index + 1}
-                            onChange={this.handleHealthChange}
+                            checked={food?.health_index === index + 1}
+                            onChange={(e, d) => setDraftFood({...draftFood, health_index: d.value as number})}
                         />
                     </Form.Field>
                 )
@@ -102,8 +86,8 @@ class FoodNewEdit extends RequestComponent<Props, IFoodNewEditFormState> {
                 <Dropdown search clearable
                           selection
                           options={foodIcons}
-                          onChange={this.handleIconChange}
-                          value={this.state.food.icon}/>
+                          onChange={(e, d) => setDraftFood({...draftFood, icon: d.value as string})}
+                          value={food?.icon}/>
             </Form.Field>
             <Divider hidden/>
             <Button.Group>
@@ -111,97 +95,21 @@ class FoodNewEdit extends RequestComponent<Props, IFoodNewEditFormState> {
                 <Button.Or/>
                 <Button positive type="submit">Save Food</Button>
             </Button.Group>
-            <this.SetArchivedButton/>
+            <SetArchivedButton/>
         </Form>
-            <Confirm
-                open={this.state.isArchiveVisible}
-                onCancel={() => this.setState({isArchiveVisible: false})}
-                onConfirm={this.handleToggleArchive}
-                header='Archive Food?'
-                content={`Archived foods do not show in searches for consumptions. Previous consumptions will remain unaffected. Archiving food does not delete it from ${APP_TITLE}, and you can restore it from the archive at any time.`}/>
-            <Confirm
-                open={this.state.isUnarchiveVisible}
-                onCancel={() => this.setState({isUnarchiveVisible: false})}
-                onConfirm={this.handleToggleArchive}
-                header='Unarchive Food?'
-                content={'This food will appear in your list of available foods when logging consumption. You can archive this food again at any time.'}/>
-        </div>;
-    }
+        <Confirm
+            open={isArchiveVisible}
+            onCancel={() => setIsArchiveVisible(false)}
+            onConfirm={toggleArchived}
+            header='Archive Food?'
+            content={`Archived foods do not show in searches for consumptions. Previous consumptions will remain unaffected. Archiving food does not delete it from ${APP_TITLE}, and you can restore it from the archive at any time.`}/>
+        <Confirm
+            open={isUnarchiveVisible}
+            onCancel={() => setIsUnarchiveVisible(false)}
+            onConfirm={toggleArchived}
+            header='Unarchive Food?'
+            content={'This food will appear in your list of available foods when logging consumption. You can archive this food again at any time.'}/>
+    </div>;
+};
 
-    SetArchivedButton = () => {
-        if (this.state.food.id && !this.state.food.is_archived) {
-            return <Button type='button' basic floated='right' color='red'
-                           onClick={() => this.setState({isArchiveVisible: true})}>Archive</Button>;
-        } else if (this.state.food.id && this.state.food.is_archived) {
-            return <Button type='button' basic floated='right'
-                           onClick={() => this.setState({isUnarchiveVisible: true})}>Unarchive</Button>;
-        } else {
-            return null;
-        }
-    };
-
-    handleToggleArchive = () => {
-        this.setState(prevState => ({
-            food: {
-                ...prevState.food,
-                is_archived: !prevState.food.is_archived
-            }
-        }), this.handleSave);
-    };
-
-    handleNameChange = (event: React.ChangeEvent<HTMLInputElement>, {value}: InputOnChangeData) => {
-        this.setState(prevState => ({
-            food: {
-                ...prevState.food,
-                name: value
-            }
-        }));
-    };
-
-    handleIconChange = (event: React.SyntheticEvent<HTMLElement>, {value}: DropdownProps) => {
-        this.setState(prevState => ({
-            food: {
-                ...prevState.food,
-                icon: String(value)
-            }
-        }));
-    };
-
-    handleHealthChange = (event: React.FormEvent<HTMLInputElement>, {value}: CheckboxProps) => {
-        this.setState(prevState => update(prevState, {
-            food: {
-                health_index: {$set: Number(value)}
-            }
-        }));
-    };
-
-    handleSave = () => {
-        this.setState({
-            isLoading: true
-        });
-
-        if (!this.props.match.params.foodId) {
-            createFood(this.cancelToken, this.state.food)
-                .then(this.props.history.goBack)
-                .catch((err: Error) => this.setState({
-                    submissionError: extractError(err)
-                })).finally(() => this.setState({
-                isLoading: false
-            }));
-        } else {
-            this.props.updateFood(this.state.food);
-            this.props.history.goBack();
-        }
-
-    };
-}
-
-const mapStateToProps = (state: IFoodSlice) => ({
-    foods: state.foods
-});
-
-const mapDispatchToProps = (dispatch: MyThunkDispatch) => ({
-    updateFood: (food: IFood) => dispatch(updateFood(food))
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FoodNewEdit);
+export default FoodNewEdit;
