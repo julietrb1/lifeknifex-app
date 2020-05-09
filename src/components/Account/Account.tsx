@@ -3,42 +3,38 @@ import HeaderBar from '../HeaderBar/HeaderBar';
 import BreadcrumbSet from '../common/BreadcrumbSet/BreadcrumbSet';
 import {Button} from 'semantic-ui-react';
 import {getAccount, logOut} from '../../Backend';
-import RequestComponent from '../common/RequestComponent/RequestComponent';
-import {RouteComponentProps} from "react-router";
+import {useHistory} from 'react-router-dom';
+import axios from "axios";
 
 const sections = [
     {name: 'Account'}
 ];
 
-class Account extends RequestComponent<RouteComponentProps> {
-    state = {
-        account: null
-    };
+const AccountFC: React.FC = () => {
+    const [account, setAccount] = React.useState<any>();
+    const history = useHistory();
+    const cancelToken = axios.CancelToken.source();
 
-    componentDidMount() {
-        getAccount(this.cancelToken)
-            .then(account => {
-                this.setState({
-                    account: account
-                });
-            });
-    }
+    React.useEffect(() => {
+        (async () => {
+            const account = await getAccount(cancelToken);
+            setAccount(account);
+        })();
+    }, [cancelToken]);
 
-    logOutLocal = () => {
+    const logOutLocal = () => {
         logOut()
-            .then(() => this.props.history.replace('/login'));
+            .then(() => history.replace('/login'));
     };
 
-    render() {
-        return <div>
-            <BreadcrumbSet sections={sections}/>
-            <HeaderBar title="Account" icon='account'/>
-            <div className="main-links">
-                <span>Loading Account...</span>
-                <Button onClick={this.logOutLocal}>Log Out</Button>
-            </div>
-        </div>;
-    }
-}
+    return <div>
+        <BreadcrumbSet sections={sections}/>
+        <HeaderBar title="Account" icon='account'/>
+        <div className="main-links">
+            <span>{account ?? 'Loading Account...'}</span>
+            <Button onClick={logOutLocal}>Log Out</Button>
+        </div>
+    </div>;
+};
 
-export default Account;
+export default AccountFC;
