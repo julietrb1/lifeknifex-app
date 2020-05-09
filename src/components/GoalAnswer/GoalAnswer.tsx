@@ -12,7 +12,7 @@ import AnswerPost from "./AnswerPost/AnswerPost";
 import {firstCase} from "../../Utils";
 import IGoal from "../../models/IGoal";
 import {RootState} from "../../redux/rootReducer";
-import {fetchGoals} from "../../features/goals/goalSlice";
+import {fetchAllGoals} from "../../features/goals/goalSlice";
 import {useHistory, useLocation, useParams} from 'react-router-dom';
 
 const sections = [
@@ -33,7 +33,7 @@ const GoalAnswerFC: React.FC = () => {
     const [isPostMode, setIsPostMode] = useState(new URLSearchParams(search).get('mode') === 'post');
     const [filteredGoals, setFilteredGoals] = useState<IGoal[]>([]);
     useEffect(() => {
-        if (!goals.length) dispatch(fetchGoals());
+        if (!goals.length) dispatch(fetchAllGoals());
     });
 
     const pageContent = () => {
