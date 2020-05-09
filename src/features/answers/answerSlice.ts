@@ -3,6 +3,8 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {AppThunk} from "../../redux/store";
 import {IPaginatedResponse} from "../../models/IPaginatedReponse";
 import IAnswer from "../../models/IAnswer";
+import axios from "axios";
+import {API_ANSWERS} from "../../Backend";
 
 interface IAnswerState extends ICommonState {
     answers: IAnswer[];
@@ -42,11 +44,12 @@ export const {saveAnswer, deleteAnswer, getAnswersFailure, getAnswersStart, getA
 
 export default answerSlice.reducer;
 
-export const fetchAnswers = (): AppThunk => async dispatch => {
+export const fetchAnswers = (search: string, archived: boolean): AppThunk => async dispatch => {
+    const params = {search, archived};
     try {
         dispatch(getAnswersStart());
-        // TODO: Fetch answers
-        //dispatch(getAnswersSuccess());
+        const {data} = await axios.get(API_ANSWERS, {params: params});
+        dispatch(getAnswersSuccess(data));
     } catch (err) {
         dispatch(getAnswersFailure(err.toString()));
     }
