@@ -47,7 +47,8 @@
     "@types/react-redux": "^7.1.8",
     "@types/react-redux-toastr": "^7.6.0",
     "@types/react-router-dom": "^5.1.5",
-    "@types/semantic-ui-search": "^2.2.3"
+    "@types/semantic-ui-search": "^2.2.3",
+    "@types/webpack-env": "^1.15.2"
   },
   "heroku-run-build-script": true
 }
