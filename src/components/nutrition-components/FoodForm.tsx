@@ -30,7 +30,7 @@ const FoodForm: React.FC = () => {
 
     const handleSave = () => {
         if (foodId) dispatch(updateFood(draftFood));
-        else dispatch(createFood(food));
+        else dispatch(createFood(draftFood));
     };
 
     const SetArchivedButton = () => {
