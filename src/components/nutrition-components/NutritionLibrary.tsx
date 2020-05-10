@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import HeaderBar from "../common-components/HeaderBar";
 import {Button, Checkbox, Divider} from "semantic-ui-react";
 import BreadcrumbSet from "../common-components/BreadcrumbSet";
@@ -30,6 +30,10 @@ const NutritionLibrary: React.FC = () => {
     const foodResponse = useSelector(selectFoodResponse);
     const [isArchivedVisible, setIsArchivedVisible] = React.useState(false);
     const areFoodsLoaded = useSelector(selectFoodsLoaded);
+
+    useEffect(() => {
+        if (!areFoodsLoaded) dispatch(fetchAllFoods());
+    }, [dispatch, areFoodsLoaded]);
 
     const PageContent = () => {
         if (isLoading) {
@@ -87,9 +91,6 @@ const NutritionLibrary: React.FC = () => {
         }
     };
 
-    if (!areFoodsLoaded) {
-        dispatch(fetchAllFoods());
-    }
     return <div>
         <BreadcrumbSet sections={sections}/>
         <HeaderBar title='Food Library' icon='nutrition'/>
