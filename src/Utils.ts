@@ -1,6 +1,7 @@
 import moment from "moment";
 import {SemanticCOLORS, SemanticICONS} from "semantic-ui-react/dist/commonjs/generic";
 import IGoal from "./models/IGoal";
+import {useEffect, useState} from "react";
 
 export const healthStrings = ['Healthy', 'Reasonable', 'Poor', 'Unhealthy'];
 export const consumptionSizes = ['Small', 'Medium', 'Large', 'Extra Large'];
@@ -36,6 +37,30 @@ export const extractError = (err: any) => {
         return [unknownErrorMessage];
     }
 };
+
+export function useDebounce(value: string, delay: number) {
+    // State and setters for debounced value
+    const [debouncedValue, setDebouncedValue] = useState(value);
+
+    useEffect(
+        () => {
+            // Update debounced value after delay
+            const handler = setTimeout(() => {
+                setDebouncedValue(value);
+            }, delay);
+
+            // Cancel the timeout if value changes (also on delay change or unmount)
+            // This is how we prevent debounced value from updating if value is changed ...
+            // .. within the delay period. Timeout gets cleared and restarted.
+            return () => {
+                clearTimeout(handler);
+            };
+        },
+        [value, delay] // Only re-call effect if value or delay changes
+    );
+
+    return debouncedValue;
+}
 
 export function getRelativeMoment(dateString: string, firstLower?: boolean) {
     return moment(dateString).calendar(undefined, {

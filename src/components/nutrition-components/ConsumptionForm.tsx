@@ -17,8 +17,6 @@ import {
 } from 'semantic-ui-react';
 import './ConsumptionForm.scss';
 import {useHistory, useParams} from 'react-router-dom';
-import AwesomeDebouncePromise from 'awesome-debounce-promise';
-import {healthStrings} from '../../Utils';
 import {TIME_FORMAT_STRING} from '../../constants';
 import {useDispatch, useSelector} from "react-redux";
 import {selectFoodsLoading} from "../../features/foods/foodSelectors";
@@ -37,6 +35,7 @@ import {
 } from "../../features/consumptions/consumptionSlice";
 import HeaderBar from "../common-components/HeaderBar";
 import BreadcrumbSet from "../common-components/BreadcrumbSet";
+import {healthStrings, useDebounce} from "../../Utils";
 import {getFoods} from "../../backend";
 
 interface IConsumptionFormMatchParams {
@@ -93,6 +92,7 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
     const [submissionError, setSubmissionError] = useState('');
     const [submissionMessage, setSubmissionMessage] = useState('');
     const [currentFoodSearch, setCurrentFoodSearch] = useState('');
+    const debouncedCurrentFoodSearch = useDebounce(currentFoodSearch, 500);
     const [isDeleteVisible, setIsDeleteVisible] = useState(false);
     const [isSearchLoading, setIsSearchLoading] = useState(false);
     const sections = [
@@ -109,32 +109,28 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
         }
     }, [consumptionId, consumptionLoaded, consumption, isSubmitting, isLoading, dispatch, goBack, availableHours, currentFoodSearch]);
 
-    const callSearch = AwesomeDebouncePromise((search: string) => getFoods(cancelToken, search), 500);
+    useEffect(() => {
+        (async () => {
+            if (!debouncedCurrentFoodSearch) return;
+            if (isSearchLoading) cancelToken.cancel('New search requested');
+            else setIsSearchLoading(true);
+            const foods = await getFoods(cancelToken, debouncedCurrentFoodSearch);
+            setIsSearchLoading(false);
+            setFoodResults(foods.results.map((food: any) => ({
+                title: food.name,
+                id: food.id,
+                description: healthStrings[food.health_index - 1],
+                url: food.url,
+                image: food.icon ? `/img/food_icons/${food.icon}.svg` : null
+            })));
+        })();
+    }, [debouncedCurrentFoodSearch]);
 
     const SubmissionMessage = () => submissionMessage ?
         <Message header='Consumption Logged'
                  content={submissionMessage}
                  onDismiss={() => setSubmissionMessage('')}/> :
         null;
-
-    const FoodField = () => {
-        const {consumptionId} = useParams();
-        if (consumptionId) {
-            return <Input
-                value={currentFoodSearch}
-                disabled={true}
-            />;
-        } else {
-            return <Search
-                autoFocus
-                loading={isSearchLoading}
-                onResultSelect={handleFoodChange}
-                onSearchChange={handleSearchChange}
-                results={foodResults}
-                value={currentFoodSearch}
-            />;
-        }
-    };
 
     const HourField = () => {
         const {consumptionId} = useParams();
@@ -171,7 +167,7 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
                 setAvailableHours(generateHours());
                 setDraftConsumption(generateBlankConsumption());
                 setSubmissionMessage(`Well done! Your consumption of ${currentFoodSearch} at ${moment(draftConsumption.date).format(TIME_FORMAT_STRING)} has been logged.`);
-                resetSearch();
+                setCurrentFoodSearch('')
             } catch (e) {
                 setSubmissionError(e.message);
             }
@@ -191,28 +187,25 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
         setDraftConsumption({...draftConsumption, date: String(value)});
     };
 
-    const resetSearch = () => setCurrentFoodSearch('');
-
-    const handleSearchChange = (event: React.MouseEvent<HTMLElement>, {value}: SearchProps) => {
-        const newFoodSearch = value ? value.toString() : '';
+    const handleSearchChange = async (event: React.MouseEvent<HTMLElement>, {value}: SearchProps) => {
+        const newFoodSearch = value?.toString() ?? '';
         setDraftConsumption({...draftConsumption, food: ''});
         setCurrentFoodSearch(newFoodSearch);
-        if (newFoodSearch.length < 1) return resetSearch();
-        if (!isSearchLoading) setIsSearchLoading(true);
-        return performSearch();
     };
 
-    const performSearch = async () => {
-        const foods = await callSearch(currentFoodSearch);
-        setIsSearchLoading(false);
-        setFoodResults(foods.results.map((food: any) => ({
-            title: food.name,
-            id: food.id,
-            description: healthStrings[food.health_index - 1],
-            url: food.url,
-            image: food.icon ? `/img/food_icons/${food.icon}.svg` : null
-        })));
-    }
+    const foodField = consumptionId ?
+        <Input
+            value={currentFoodSearch}
+            disabled={true}
+        />
+        :
+        <Search
+            loading={isSearchLoading}
+            onResultSelect={handleFoodChange}
+            onSearchChange={handleSearchChange}
+            results={foodResults}
+            value={currentFoodSearch}
+        />;
 
     return <div>
         <BreadcrumbSet sections={sections}/>
@@ -225,8 +218,7 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
             <SubmissionMessage/>
             <Form.Field>
                 <label>Food</label>
-                <FoodField/>
-
+                {foodField}
             </Form.Field>
             <Form.Field>
                 <label>When</label>
