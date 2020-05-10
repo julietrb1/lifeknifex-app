@@ -4,8 +4,9 @@ import * as backend from '../../backend';
 import NutritionLibrary from "./NutritionLibrary";
 import {Provider} from "react-redux";
 import configureStore from 'redux-mock-store';
-import {BrowserRouter as Router} from 'react-router-dom';
+import {MemoryRouter as Router} from 'react-router-dom';
 import thunk from 'redux-thunk'
+import IFood from "../../models/IFood";
 
 jest.mock('./../../backend');
 const mockedBackend = backend as jest.Mocked<typeof backend>;
@@ -16,15 +17,8 @@ describe('<NutritionLibrary/>', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
-    it('should show empty message with no foods', async () => {
-        mockedBackend.reqGetAllFoods.mockImplementationOnce(async () => ({
-            data: {results: []},
-            config: {},
-            headers: [],
-            request: {},
-            status: 200,
-            statusText: ''
-        }))
+
+    it('should show empty food list', async () => {
         const store = mockStore({
             foodState: {
                 isLoading: false,
@@ -37,15 +31,22 @@ describe('<NutritionLibrary/>', () => {
         expect(backend.reqGetAllFoods).toHaveBeenCalledTimes(1);
     });
 
+    it('should show foods', async () => {
+        const foodName = 'My food';
+        const food: IFood = {id: 1, url: '', name: foodName, health_index: 1, is_archived: false, icon: ''};
+        const store = mockStore({
+            foodState: {
+                isLoading: false,
+                foodsByUrl: [food],
+                foodResponse: {}
+            }
+        });
+
+        render(<Router><Provider store={store}><NutritionLibrary/></Provider></Router>);
+        await waitFor(() => screen.getByRole('heading', {name: foodName}));
+    });
+
     it('should not perform any requests when loaded', async () => {
-        mockedBackend.reqGetAllFoods.mockImplementationOnce(async () => ({
-            data: {results: []},
-            config: {},
-            headers: [],
-            request: {},
-            status: 200,
-            statusText: ''
-        }))
         const store = mockStore({
             foodState: {
                 isLoading: false,

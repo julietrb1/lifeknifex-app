@@ -17,7 +17,7 @@ const FoodList: React.FC<IFoodListProps> = props => (
             <Card key={food.url} color={COLOR_NUTRITION}>
                 <Card.Content>
                     <FoodImage icon={food.icon}/>
-                    <Card.Header>{food.name}</Card.Header>
+                    <Card.Header as="h3">{food.name}</Card.Header>
                     <Card.Meta>{healthStrings[food.health_index - 1]}</Card.Meta>
                 </Card.Content>
                 <Card.Content extra>
