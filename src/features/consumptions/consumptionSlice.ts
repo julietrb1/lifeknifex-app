@@ -103,8 +103,10 @@ export const createConsumption = (consumption: IConsumption): AppThunk => async 
         dispatch(createConsumptionStart());
         const {data} = await reqCreateConsumption(consumption);
         dispatch(createConsumptionSuccess(data));
+        return data;
     } catch (e) {
-        dispatch(createConsumptionFailure(e.toString()));
+        // dispatch(createConsumptionFailure(e.toString())); // TODO: Consider scope of failure logic
+        throw(e);
     }
 };
 

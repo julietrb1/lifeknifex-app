@@ -5,6 +5,7 @@ import IConsumption from "./models/IConsumption";
 import IFood from "./models/IFood";
 import IGoal from "./models/IGoal";
 import IAnswer from "./models/IAnswer";
+import {extractError} from "./Utils";
 
 const API_FEATURES = `${API}features/`;
 const API_CONSUMPTIONS = `${API}consumptions/`;
@@ -150,10 +151,18 @@ export function logOut() {
     });
 }
 
+const handleRequestExceptions = async (requestFunc: () => any) => {
+    try {
+        return await requestFunc();
+    } catch (e) {
+        throw Error(extractError(e));
+    }
+};
+
 // Consumptions
 export const reqGetConsumption = (consumptionId: number) => axios.get(`${API_CONSUMPTIONS}${consumptionId}/`);
 export const reqGetAllConsumptions = (search?: string) => axios.get(API_CONSUMPTIONS, {params: {search}});
-export const reqCreateConsumption = (consumption: IConsumption) => axios.post(API_CONSUMPTIONS, consumption);
+export const reqCreateConsumption = (consumption: IConsumption) => handleRequestExceptions(() => axios.post(API_CONSUMPTIONS, consumption));
 export const reqUpdateConsumption = (consumption: IConsumption) => axios.patch(`${API_CONSUMPTIONS}${consumption.id}/`, consumption);
 export const reqDeleteConsumption = (consumption: IConsumption) => axios.delete(`${API_CONSUMPTIONS}${consumption.id}/`);
 

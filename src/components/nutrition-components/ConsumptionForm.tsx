@@ -104,18 +104,8 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
 
 
     useEffect(() => {
-        if (consumptionId && !consumptionLoaded && !consumption) {
+        if (consumptionId && !consumptionLoaded && !consumption && !isSubmitting && !isLoading) {
             dispatch(fetchConsumption(consumptionId));
-        } else if (!isSubmitting || isLoading) return;
-
-        if (consumptionId) {
-            goBack();
-        } else {
-            setSubmissionError('');
-            setAvailableHours(generateHours());
-            setDraftConsumption(generateBlankConsumption());
-            setSubmissionMessage(`Well done! Your consumption of ${currentFoodSearch} at ${moment(consumption.date).format(TIME_FORMAT_STRING)} has been logged.`);
-            resetSearch();
         }
     }, [consumptionId, consumptionLoaded, consumption, isSubmitting, isLoading, dispatch, goBack, availableHours, currentFoodSearch]);
 
@@ -165,13 +155,27 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
         dispatch(deleteConsumption(consumption));
     };
 
-    const handleFormSubmit = () => {
+    const handleFormSubmit = async () => {
         if (isLoading) return;
         setSubmissionMessage('');
         setIsSubmitting(true);
 
-        if (consumptionId) dispatch(updateConsumption(draftConsumption));
-        else dispatch(createConsumption(draftConsumption));
+        if (consumptionId) {
+            await dispatch(updateConsumption(draftConsumption));
+            goBack();
+
+        } else {
+            try {
+                await dispatch(createConsumption(draftConsumption));
+                setSubmissionError('');
+                setAvailableHours(generateHours());
+                setDraftConsumption(generateBlankConsumption());
+                setSubmissionMessage(`Well done! Your consumption of ${currentFoodSearch} at ${moment(draftConsumption.date).format(TIME_FORMAT_STRING)} has been logged.`);
+                resetSearch();
+            } catch (e) {
+                setSubmissionError(e.message);
+            }
+        }
     }
 
     const handleFoodChange = (e: SyntheticEvent, data: any) => {
