@@ -10,17 +10,18 @@ const sections = [
     {name: 'Account'}
 ];
 
-const AccountFC: React.FC = () => {
+const Account: React.FC = () => {
     const [account, setAccount] = React.useState<any>();
     const history = useHistory();
     const cancelToken = axios.CancelToken.source();
 
     React.useEffect(() => {
         (async () => {
-            const account = await getAccount(cancelToken);
-            setAccount(account);
+            if (account) return;
+            const fetchedAccount = await getAccount(cancelToken);
+            setAccount(fetchedAccount);
         })();
-    }, [cancelToken]);
+    }, [cancelToken, account]);
 
     const logOutLocal = () => {
         logOut()
@@ -31,10 +32,10 @@ const AccountFC: React.FC = () => {
         <BreadcrumbSet sections={sections}/>
         <HeaderBar title="Account" icon='account'/>
         <div className="main-links">
-            <span>{account ?? 'Loading Account...'}</span>
+            <span>{account ? 'Logged In' : 'Loading Account...'}</span>
             <Button onClick={logOutLocal}>Log Out</Button>
         </div>
     </div>;
 };
 
-export default AccountFC;
+export default Account;
