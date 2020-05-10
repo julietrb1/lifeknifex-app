@@ -23,9 +23,12 @@ const GoalForm: React.FC = () => {
     const goal = useSelector((state: RootState) => selectGoalById(state, goalId));
     const [draftGoal, setDraftGoal] = useState<IGoal>(goal || {
         id: 0,
-        question: '',
         url: '',
-        test: ''
+        question: '',
+        test: 'atleast',
+        frequency: 1,
+        style: 'yesno',
+        start_date: moment().format(BACKEND_DATE_FORMAT)
     });
     const isLoading = useSelector(selectGoalsLoading);
     const testInputLabel = `day${goal?.frequency !== 1 ? 's' : ''}`;
@@ -36,11 +39,11 @@ const GoalForm: React.FC = () => {
     ];
 
     const isFormValid = !!(
-        goal &&
-        goal.question && goal.question.length >= 3 &&
-        goal.test &&
-        goal.style &&
-        goal.start_date
+        draftGoal &&
+        draftGoal.question && draftGoal.question.length >= 3 &&
+        draftGoal.test &&
+        draftGoal.style &&
+        draftGoal.start_date
     );
 
     const onDateChange = (date: Date) => setDraftGoal({
