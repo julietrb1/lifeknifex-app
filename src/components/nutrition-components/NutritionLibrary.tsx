@@ -99,7 +99,7 @@ const NutritionLibrary: React.FC = () => {
         <Checkbox
             toggle
             label='Show archived'
-            onChange={(e, d) => setIsArchivedVisible(!!d.value)}
+            onChange={() => setIsArchivedVisible(!isArchivedVisible)}
             checked={isArchivedVisible}/>
         <NewButton/>
         <Divider hidden/>
