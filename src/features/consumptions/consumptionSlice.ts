@@ -3,8 +3,13 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {AppThunk} from "../../redux/store";
 import IConsumption from "../../models/IConsumption";
 import {IPaginatedResponse} from "../../models/IPaginatedReponse";
-import axios from "axios";
-import {API_CONSUMPTIONS} from "../../Backend";
+import {
+    reqCreateConsumption,
+    reqDeleteConsumption,
+    reqGetAllConsumptions,
+    reqGetConsumption,
+    reqUpdateConsumption
+} from "../../Backend";
 
 interface IConsumptionState extends ICommonState {
     consumptionsById: { [consumptionUrl: string]: IConsumption };
@@ -74,10 +79,9 @@ export const {
 export default consumptionSlice.reducer;
 
 export const fetchAllConsumptions = (search?: string): AppThunk => async dispatch => {
-    const params = {search};
     try {
         dispatch(getAllConsumptionsStart());
-        const {data} = await axios.get(API_CONSUMPTIONS, {params: params});
+        const {data} = await reqGetAllConsumptions(search);
         dispatch(getAllConsumptionsSuccess(data));
     } catch (e) {
         dispatch(getAllConsumptionsFailure(e.toString()));
@@ -87,7 +91,7 @@ export const fetchAllConsumptions = (search?: string): AppThunk => async dispatc
 export const fetchConsumption = (consumptionId: number): AppThunk => async dispatch => {
     try {
         dispatch(getConsumptionStart());
-        const {data} = await axios.get(`${API_CONSUMPTIONS}${consumptionId}/`);
+        const {data} = await reqGetConsumption(consumptionId);
         dispatch(getConsumptionSuccess(data));
     } catch (e) {
         dispatch(getConsumptionFailure(e.toString()));
@@ -97,7 +101,7 @@ export const fetchConsumption = (consumptionId: number): AppThunk => async dispa
 export const createConsumption = (consumption: IConsumption): AppThunk => async dispatch => {
     try {
         dispatch(createConsumptionStart());
-        const {data} = await axios.post(API_CONSUMPTIONS, consumption);
+        const {data} = await reqCreateConsumption(consumption);
         dispatch(createConsumptionSuccess(data));
     } catch (e) {
         dispatch(createConsumptionFailure(e.toString()));
@@ -107,7 +111,7 @@ export const createConsumption = (consumption: IConsumption): AppThunk => async 
 export const updateConsumption = (consumption: IConsumption): AppThunk => async dispatch => {
     try {
         dispatch(updateConsumptionStart());
-        const {data} = await axios.patch(`${API_CONSUMPTIONS}${consumption.id}/`, consumption);
+        const {data} = await reqUpdateConsumption(consumption);
         dispatch(updateConsumptionSuccess(data));
     } catch (e) {
         dispatch(updateConsumptionFailure(e.toString()));
@@ -117,7 +121,7 @@ export const updateConsumption = (consumption: IConsumption): AppThunk => async 
 export const deleteConsumption = (consumption: IConsumption): AppThunk => async dispatch => {
     try {
         dispatch(deleteConsumptionStart());
-        const {data} = await axios.delete(`${API_CONSUMPTIONS}${consumption.id}/`);
+        const {data} = await reqDeleteConsumption(consumption);
         dispatch(deleteConsumptionSuccess(data));
     } catch (e) {
         dispatch(deleteConsumptionFailure(e.toString()));

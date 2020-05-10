@@ -1,6 +1,7 @@
 import axios, {AxiosError, CancelTokenSource} from 'axios';
 import {API, LOCAL_STORAGE_JWT_ACCESS, LOCAL_STORAGE_JWT_REFRESH} from "./constants";
 import {history} from './App';
+import IConsumption from "./models/IConsumption";
 
 const API_FEATURES = `${API}features/`;
 export const API_CONSUMPTIONS = `${API}consumptions/`;
@@ -146,17 +147,12 @@ export function logOut() {
     });
 }
 
-export function getConsumption(cancelToken: CancelTokenSource, consumptionId: number) {
-    return axios
-        .get(`${API_CONSUMPTIONS}${consumptionId}/`, {cancelToken: cancelToken.token})
-        .then(res => res.data);
-}
+export const reqGetConsumption = (consumptionId: number) => axios.get(`${API_CONSUMPTIONS}${consumptionId}/`);
+export const reqGetAllConsumptions = (search?: string) => axios.get(API_CONSUMPTIONS, {params: {search}});
+export const reqCreateConsumption = (consumption: IConsumption) => axios.post(API_CONSUMPTIONS, consumption);
+export const reqUpdateConsumption = (consumption: IConsumption) => axios.patch(`${API_CONSUMPTIONS}${consumption.id}/`, consumption);
+export const reqDeleteConsumption = (consumption: IConsumption) => axios.delete(`${API_CONSUMPTIONS}${consumption.id}/`);
 
-export function createConsumption(cancelToken: CancelTokenSource, consumption: any) {
-    return axios
-        .post(API_CONSUMPTIONS, consumption, {cancelToken: cancelToken.token})
-        .then(res => res.data);
-}
 
 export function updateConsumption(cancelToken: CancelTokenSource, consumption: any) {
     return axios
