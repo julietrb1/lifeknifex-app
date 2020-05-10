@@ -1,4 +1,5 @@
 import React, {SyntheticEvent, useEffect, useState} from 'react';
+import axios from "axios";
 import moment from 'moment';
 import {
     Button,
@@ -34,9 +35,9 @@ import {
     fetchConsumption,
     updateConsumption
 } from "../../features/consumptions/consumptionSlice";
-import {fetchAllFoods} from "../../features/foods/foodSlice";
 import HeaderBar from "../common-components/HeaderBar";
 import BreadcrumbSet from "../common-components/BreadcrumbSet";
+import {getFoods} from "../../Backend";
 
 interface IConsumptionFormMatchParams {
     consumptionId?: string;
@@ -68,6 +69,7 @@ const quantities = [
 ];
 
 const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
+    const cancelToken = axios.CancelToken.source();
     const dispatch = useDispatch();
     const {consumptionId} = useParams();
     const consumptionLoaded = useSelector((state: RootState) => selectConsumptionLoadedById(state, consumptionId));
@@ -117,7 +119,7 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
         }
     }, [consumptionId, consumptionLoaded, consumption, isSubmitting, isLoading, dispatch, goBack, availableHours, currentFoodSearch]);
 
-    const callSearch = AwesomeDebouncePromise((search: string) => dispatch(fetchAllFoods(search)), 500);
+    const callSearch = AwesomeDebouncePromise((search: string) => getFoods(cancelToken, search), 500);
 
     const SubmissionMessage = () => submissionMessage ?
         <Message header='Consumption Logged'
@@ -135,7 +137,7 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
         } else {
             return <Search
                 autoFocus
-                loading={isLoading}
+                loading={isSearchLoading}
                 onResultSelect={handleFoodChange}
                 onSearchChange={handleSearchChange}
                 results={foodResults}
@@ -191,8 +193,8 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
         const newFoodSearch = value ? value.toString() : '';
         setDraftConsumption({...draftConsumption, food: ''});
         setCurrentFoodSearch(newFoodSearch);
-
         if (newFoodSearch.length < 1) return resetSearch();
+        if (!isSearchLoading) setIsSearchLoading(true);
         return performSearch();
     };
 
