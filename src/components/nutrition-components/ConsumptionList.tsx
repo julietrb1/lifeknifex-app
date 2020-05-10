@@ -1,29 +1,30 @@
 import React from 'react';
-import moment from "moment";
+import moment, {Moment} from "moment";
 import {Card, Divider, Header, Label} from "semantic-ui-react";
 import {consumptionSizes, getRelativeMoment} from "../../Utils";
 import {Link} from "react-router-dom";
 import {COLOR_NUTRITION, TIME_FORMAT_STRING} from "../../constants";
 import FoodImage from "../common-components/FoodImage";
+import IConsumption from "../../models/IConsumption";
 
 interface IConsumptionListProps {
-    consumptionItems: any[];
+    consumptionItems: IConsumption[];
 }
 
-const ConsumptionList: React.FC<IConsumptionListProps> = (props) => {
-    const consumptionItems = props.consumptionItems.map(item => {
-        item.date = moment(item.date).local();
-        return item;
-    });
+const getDate = (consumptionItem: IConsumption): Moment => moment(consumptionItem.date).local();
 
-    const consumptionItemsByDate = consumptionItems.length ? consumptionItems.reduce((acc, item) => {
-        const dateString = item.date.format('YYYYMMDD');
+const ConsumptionList: React.FC<IConsumptionListProps> = (props) => {
+    const {consumptionItems} = props;
+
+    const consumptionItemsByDate = consumptionItems.length ? consumptionItems.reduce((acc: { [dateString: string]: IConsumption[] }, item) => {
+
+        const dateString = getDate(item).format('YYYYMMDD');
         if (typeof acc[dateString] === 'undefined') {
             acc[dateString] = [];
         }
         acc[dateString].push(item);
         return acc;
-    }, {}) : [];
+    }, {}) : {};
 
     return <div>
         {
@@ -35,13 +36,13 @@ const ConsumptionList: React.FC<IConsumptionListProps> = (props) => {
 
                     <Divider hidden/>
                     <Card.Group>
-                        {consumptionItemsByDate[dateString].map((item: any) => // TODO: Add consumption type
+                        {consumptionItemsByDate[dateString].map((item: IConsumption) =>
                             <Card key={item.id} as={Link} to={`/nutrition/history/${item.id}`} color={COLOR_NUTRITION}>
                                 <Card.Content>
                                     <FoodImage icon={item.food_icon}/>
                                     <Card.Header>{item.food_name}</Card.Header>
                                     <Card.Meta><Label
-                                        size='small'>{consumptionSizes[item.quantity - 1]}</Label>&emsp;{item.date.format(TIME_FORMAT_STRING)}
+                                        size='small'>{consumptionSizes[item.quantity - 1]}</Label>&emsp;{getDate(item).format(TIME_FORMAT_STRING)}
                                     </Card.Meta>
                                 </Card.Content>
                             </Card>

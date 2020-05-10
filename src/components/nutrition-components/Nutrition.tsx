@@ -9,8 +9,12 @@ import {COLOR_NUTRITION} from "../../constants";
 import './Nutrition.scss';
 import {useDispatch, useSelector} from "react-redux";
 import PlaceholderSet from "../common-components/PlaceholderSet";
-import {RootState} from "../../redux/rootReducer";
 import {fetchAllConsumptions} from "../../features/consumptions/consumptionSlice";
+import {
+    selectAllConsumptions,
+    selectConsumptionsLoaded,
+    selectConsumptionsLoading
+} from "../../features/consumptions/consumptionSelectors";
 
 const sections = [
     {name: 'Nutrition'}
@@ -18,16 +22,18 @@ const sections = [
 
 const Nutrition: React.FC = () => {
     const dispatch = useDispatch();
-    const {consumptionResponse, isLoading} = useSelector((state: RootState) => state.consumptionState);
+    const isLoaded = useSelector(selectConsumptionsLoaded);
+    const consumptions = useSelector(selectAllConsumptions);
+    const isLoading = useSelector(selectConsumptionsLoading);
     useEffect(() => {
-        if (!consumptionResponse?.results) {
+        if (!isLoaded) {
             dispatch(fetchAllConsumptions());
         }
     });
 
     const pageContent = () => {
-        if (!isLoading && consumptionResponse?.results) {
-            return <ConsumptionList consumptionItems={consumptionResponse?.results}/>;
+        if (!isLoading && consumptions.length) {
+            return <ConsumptionList consumptionItems={consumptions}/>;
         } else if (isLoading) {
             return <div>
                 <Divider hidden/>
@@ -50,7 +56,7 @@ const Nutrition: React.FC = () => {
     </Button>;
 
     const newButton = () => {
-        if (isLoading || consumptionResponse?.results) {
+        if (isLoading || consumptions.length) {
             return <Button
                 color={COLOR_NUTRITION}
                 as={Link}
