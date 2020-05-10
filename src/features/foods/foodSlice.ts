@@ -7,12 +7,12 @@ import axios from "axios";
 import {API_FOODS} from "../../Backend";
 
 interface IFoodState extends ICommonState {
-    foods: IFood[];
+    foodsById: { [foodUrl: string]: IFood };
     foodResponse: IPaginatedResponse<IFood> | null;
 }
 
 const foodsInitialState: IFoodState = {
-    error: null, isLoading: false, foods: [], foodResponse: null
+    error: null, isLoading: false, foodsById: {}, foodResponse: null
 };
 
 const startLoading = (state: IFoodState) => {
@@ -24,33 +24,95 @@ const loadingFailed = (state: IFoodState, action: PayloadAction<string>) => {
     state.error = action.payload;
 };
 
+const singleFoodSuccess = (state: IFoodState, {payload}: PayloadAction<IFood>) => {
+    state.isLoading = false;
+    state.error = null;
+    state.foodsById[payload.url] = payload;
+};
+
+const deletionFoodSuccess = (state: IFoodState, {payload}: PayloadAction<string>) => {
+    state.isLoading = false;
+    state.error = null;
+    delete state.foodsById[payload];
+};
+
 const foodSlice = createSlice({
     name: 'foods', initialState: foodsInitialState, reducers: {
-        getFoodsStart: startLoading,
-        getFoodsSuccess(state, {payload}: PayloadAction<IPaginatedResponse<IFood>>) {
-            state.foodResponse = payload;
-            state.error = null;
-            state.isLoading = false;
-        }, getFoodsFailure: loadingFailed,
-        saveFood(state, {payload: food}: PayloadAction<IFood[]>) {
-            // TODO: Save food
-        }, deleteFood(state, {payload: foodToDelete}: PayloadAction<IFood>) {
-            // TODO: Delete food
-        }
+        getAllFoodsStart: startLoading,
+        getAllFoodsSuccess: singleFoodSuccess,
+        getAllFoodsFailure: loadingFailed,
+        getFoodStart: startLoading,
+        getFoodSuccess: singleFoodSuccess,
+        getFoodFailure: loadingFailed,
+        createFoodStart: startLoading,
+        createFoodSuccess: singleFoodSuccess,
+        createFoodFailure: loadingFailed,
+        updateFoodStart: startLoading,
+        updateFoodSuccess: singleFoodSuccess,
+        updateFoodFailure: loadingFailed,
+        deleteFoodStart: startLoading,
+        deleteFoodSuccess: deletionFoodSuccess,
+        deleteFoodFailure: loadingFailed,
     }
 });
 
-export const {saveFood, deleteFood, getFoodsFailure, getFoodsStart, getFoodsSuccess} = foodSlice.actions;
+export const {
+    getAllFoodsFailure, getAllFoodsStart, getAllFoodsSuccess,
+    createFoodFailure, createFoodStart, createFoodSuccess,
+    deleteFoodFailure, deleteFoodStart, deleteFoodSuccess,
+    getFoodFailure, getFoodStart, getFoodSuccess,
+    updateFoodFailure, updateFoodStart, updateFoodSuccess
+} = foodSlice.actions;
 
 export default foodSlice.reducer;
 
-export const fetchFoods = (search?: string, archived: boolean = false): AppThunk => async dispatch => {
-    const params = {search, archived};
+export const fetchAllFoods = (search?: string): AppThunk => async dispatch => {
+    const params = {search};
     try {
-        dispatch(getFoodsStart());
+        dispatch(getAllFoodsStart());
         const {data} = await axios.get(API_FOODS, {params: params});
-        dispatch(getFoodsSuccess(data));
-    } catch (err) {
-        dispatch(getFoodsFailure(err.toString()));
+        dispatch(getAllFoodsSuccess(data));
+    } catch (e) {
+        dispatch(getAllFoodsFailure(e.toString()));
+    }
+};
+
+export const fetchFood = (foodId: number): AppThunk => async dispatch => {
+    try {
+        dispatch(getFoodStart());
+        const {data} = await axios.get(`${API_FOODS}${foodId}/`);
+        dispatch(getFoodSuccess(data));
+    } catch (e) {
+        dispatch(getFoodFailure(e.toString()));
+    }
+};
+
+export const createFood = (food: IFood): AppThunk => async dispatch => {
+    try {
+        dispatch(createFoodStart());
+        const {data} = await axios.post(API_FOODS, food);
+        dispatch(createFoodSuccess(data));
+    } catch (e) {
+        dispatch(createFoodFailure(e.toString()));
+    }
+};
+
+export const updateFood = (food: IFood): AppThunk => async dispatch => {
+    try {
+        dispatch(updateFoodStart());
+        const {data} = await axios.patch(`${API_FOODS}${food.id}/`, food);
+        dispatch(updateFoodSuccess(data));
+    } catch (e) {
+        dispatch(updateFoodFailure(e.toString()));
+    }
+};
+
+export const deleteFood = (food: IFood): AppThunk => async dispatch => {
+    try {
+        dispatch(deleteFoodStart());
+        const {data} = await axios.delete(`${API_FOODS}${food.id}/`);
+        dispatch(deleteFoodSuccess(data));
+    } catch (e) {
+        dispatch(deleteFoodFailure(e.toString()));
     }
 };
