@@ -7,12 +7,12 @@ import axios from "axios";
 import {API_FOODS} from "../../Backend";
 
 interface IFoodState extends ICommonState {
-    foodsById: { [foodUrl: string]: IFood };
+    foodsByUrl: { [foodUrl: string]: IFood };
     foodResponse: IPaginatedResponse<IFood> | null;
 }
 
 const foodsInitialState: IFoodState = {
-    error: null, isLoading: false, foodsById: {}, foodResponse: null
+    error: null, isLoading: false, foodsByUrl: {}, foodResponse: null
 };
 
 const startLoading = (state: IFoodState) => {
@@ -27,19 +27,26 @@ const loadingFailed = (state: IFoodState, action: PayloadAction<string>) => {
 const singleFoodSuccess = (state: IFoodState, {payload}: PayloadAction<IFood>) => {
     state.isLoading = false;
     state.error = null;
-    state.foodsById[payload.url] = payload;
+    state.foodsByUrl[payload.url] = payload;
+};
+
+const allFoodsSuccess = (state: IFoodState, {payload}: PayloadAction<IPaginatedResponse<IFood>>) => {
+    state.isLoading = false;
+    state.error = null;
+    payload.results?.forEach(c => state.foodsByUrl[c.url] = c);
+    state.foodResponse = payload;
 };
 
 const deletionFoodSuccess = (state: IFoodState, {payload}: PayloadAction<string>) => {
     state.isLoading = false;
     state.error = null;
-    delete state.foodsById[payload];
+    delete state.foodsByUrl[payload];
 };
 
 const foodSlice = createSlice({
     name: 'foods', initialState: foodsInitialState, reducers: {
         getAllFoodsStart: startLoading,
-        getAllFoodsSuccess: singleFoodSuccess,
+        getAllFoodsSuccess: allFoodsSuccess,
         getAllFoodsFailure: loadingFailed,
         getFoodStart: startLoading,
         getFoodSuccess: singleFoodSuccess,
