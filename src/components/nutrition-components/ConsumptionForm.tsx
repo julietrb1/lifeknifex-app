@@ -113,7 +113,7 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
             setSubmissionMessage(`Well done! Your consumption of ${currentFoodSearch} at ${moment(consumption.date).format(TIME_FORMAT_STRING)} has been logged.`);
             resetSearch();
         }
-    });
+    }, [consumptionId, consumptionLoaded, consumption, isSubmitting, isLoading, dispatch, goBack, availableHours, currentFoodSearch]);
 
     const callSearch = AwesomeDebouncePromise((search: string) => dispatch(fetchAllFoods(search)), 500);
 
