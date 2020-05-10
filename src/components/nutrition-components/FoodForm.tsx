@@ -66,7 +66,7 @@ const FoodForm: React.FC = () => {
                             label={label}
                             name='healthRadios'
                             value={index + 1}
-                            checked={food?.health_index === index + 1}
+                            checked={draftFood?.health_index === index + 1}
                             onChange={(e, d) => setDraftFood({...draftFood, health_index: d.value as number})}
                         />
                     </Form.Field>
