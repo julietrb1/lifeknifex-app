@@ -28,13 +28,14 @@ const sections = [
 const Goals: React.FC = () => {
     const dispatch = useDispatch();
     const goals = useSelector(selectAllGoals);
+    console.log(goals);
     const goalsResponse = useSelector(selectGoalResponse);
     const isLoading = useSelector(selectGoalsLoading);
     const isLoaded = useSelector(selectGoalsLoaded);
 
     useEffect(() => {
         if (!isLoaded) dispatch(fetchAllGoals());
-    });
+    }, [isLoaded, dispatch]);
 
     const DashboardContent = () => <div>
         <Statistic.Group>

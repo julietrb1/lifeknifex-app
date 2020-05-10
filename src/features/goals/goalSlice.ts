@@ -31,6 +31,13 @@ const singleGoalSuccess = (state: IGoalState, {payload}: PayloadAction<IGoal>) =
     state.goalsByUrl[payload.url] = payload;
 };
 
+const allGoalsSuccess = (state: IGoalState, {payload}: PayloadAction<IPaginatedResponse<IGoal>>) => {
+    state.isLoading = false;
+    state.error = null;
+    payload.results?.forEach(c => state.goalsByUrl[c.url] = c);
+    state.goalResponse = payload;
+};
+
 const singleGoalAnswerSuccess = (state: IGoalState, {payload}: PayloadAction<IAnswer>) => {
     state.isLoading = false;
     state.error = null;
@@ -47,7 +54,7 @@ const deletionGoalSuccess = (state: IGoalState, {payload}: PayloadAction<string>
 const goalSlice = createSlice({
     name: 'goals', initialState: goalsInitialState, reducers: {
         getAllGoalsStart: startLoading,
-        getAllGoalsSuccess: singleGoalSuccess,
+        getAllGoalsSuccess: allGoalsSuccess,
         getAllGoalsFailure: loadingFailed,
         getGoalStart: startLoading,
         getGoalSuccess: singleGoalSuccess,
