@@ -111,14 +111,11 @@ export function getFeature(cancelToken: CancelTokenSource, featureName: string) 
 // AUTH
 
 export async function logIn(cancelToken: CancelTokenSource, username: string, password: string) {
-    console.log('Logging in');
     const res = await axios
         .post(`${API_TOKEN}`, {
             username: username,
             password: password
         }, {cancelToken: cancelToken.token});
-    console.log(res.status);
-    console.log(JSON.stringify(res.data));
     setAccessToken(res.data.access);
     setRefreshToken(res.data.refresh);
     return res.data;
