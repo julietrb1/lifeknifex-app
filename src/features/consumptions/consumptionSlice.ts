@@ -30,6 +30,13 @@ const singleConsumptionSuccess = (state: IConsumptionState, {payload}: PayloadAc
     state.consumptionsById[payload.url] = payload;
 };
 
+const allConsumptionSuccess = (state: IConsumptionState, {payload}: PayloadAction<IPaginatedResponse<IConsumption>>) => {
+    state.isLoading = false;
+    state.error = null;
+    payload.results?.forEach(c => state.consumptionsById[c.url] = c);
+    state.consumptionResponse = payload;
+};
+
 const deletionConsumptionSuccess = (state: IConsumptionState, {payload}: PayloadAction<string>) => {
     state.isLoading = false;
     state.error = null;
@@ -39,7 +46,7 @@ const deletionConsumptionSuccess = (state: IConsumptionState, {payload}: Payload
 const consumptionSlice = createSlice({
     name: 'consumptions', initialState: consumptionsInitialState, reducers: {
         getAllConsumptionsStart: startLoading,
-        getAllConsumptionsSuccess: singleConsumptionSuccess,
+        getAllConsumptionsSuccess: allConsumptionSuccess,
         getAllConsumptionsFailure: loadingFailed,
         getConsumptionStart: startLoading,
         getConsumptionSuccess: singleConsumptionSuccess,
