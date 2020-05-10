@@ -3,13 +3,15 @@ import {API, LOCAL_STORAGE_JWT_ACCESS, LOCAL_STORAGE_JWT_REFRESH} from "./consta
 import {history} from './App';
 import IConsumption from "./models/IConsumption";
 import IFood from "./models/IFood";
+import IGoal from "./models/IGoal";
+import IAnswer from "./models/IAnswer";
 
 const API_FEATURES = `${API}features/`;
-export const API_CONSUMPTIONS = `${API}consumptions/`;
-export const API_FOODS = `${API}foods/`;
-export const API_GOALS = `${API}goals/`;
-export const API_ANSWERS = `${API}answers/`;
-export const API_TOKEN = `${API}token/`;
+const API_CONSUMPTIONS = `${API}consumptions/`;
+const API_FOODS = `${API}foods/`;
+const API_GOALS = `${API}goals/`;
+const API_ANSWERS = `${API}answers/`;
+const API_TOKEN = `${API}token/`;
 
 axios.defaults.headers.common['Authorization'] = `Bearer ${getAccessToken()}`;
 
@@ -161,6 +163,17 @@ export const reqGetAllFoods = (search?: string) => axios.get(API_FOODS, {params:
 export const reqCreateFood = (food: IFood) => axios.post(API_FOODS, food);
 export const reqUpdateFood = (food: IFood) => axios.patch(`${API_FOODS}${food.id}/`, food);
 export const reqDeleteFood = (food: IFood) => axios.delete(`${API_FOODS}${food.id}/`);
+
+// Goals
+export const reqGetGoal = (goalId: number) => axios.get(`${API_GOALS}${goalId}/`);
+export const reqGetAllGoals = (search?: string) => axios.get(API_GOALS, {params: {search}});
+export const reqCreateGoal = (goal: IGoal) => axios.post(API_GOALS, goal);
+export const reqUpdateGoal = (goal: IGoal) => axios.patch(`${API_GOALS}${goal.id}/`, goal);
+export const reqDeleteGoal = (goal: IGoal) => axios.delete(`${API_GOALS}${goal.id}/`);
+
+// Answers
+export const reqCreateAnswer = (answer: {goal: string, value: number}) => axios.post(API_ANSWERS, answer);
+export const reqUpdateAnswer = (answer: IAnswer) => axios.patch(`${API_ANSWERS}${answer.id}/`, answer);
 
 export function updateConsumption(cancelToken: CancelTokenSource, consumption: any) {
     return axios

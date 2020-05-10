@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 import {COLOR_GOALS} from "../../constants";
 // import PropTypes from 'prop-types';
 
-const GoalAnswerEmpty = () =>
+const AnswerEmpty = () =>
     <Segment textAlign='center' placeholder>
         <Image className="placeholder-image" src='/img/undraw_i_can_fly_7egl.svg' size='medium'/>
         <h3>All Done!</h3>
@@ -16,6 +16,6 @@ const GoalAnswerEmpty = () =>
         </Button>
     </Segment>;
 
-GoalAnswerEmpty.propTypes = {};
+AnswerEmpty.propTypes = {};
 
-export default GoalAnswerEmpty;
+export default AnswerEmpty;

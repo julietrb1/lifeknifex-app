@@ -11,7 +11,7 @@ import NutritionLibrary from "./components/nutrition-components/NutritionLibrary
 import {Container, Divider} from "semantic-ui-react";
 import {createBrowserHistory} from 'history';
 import GoalNewEdit from "./components/goal-components/GoalForm";
-import GoalAnswer from "./components/goal-components/GoalAnswer";
+import Answer from "./components/goal-components/Answer";
 import FoodForm from "./components/nutrition-components/FoodForm";
 import ConsumptionForm from "./components/nutrition-components/ConsumptionForm";
 
@@ -37,7 +37,7 @@ class App extends React.Component {
                     <Route exact path="/goals" component={Goals}/>
                     <Route exact path="/goals/new" component={GoalNewEdit}/>
                     <Route exact path="/goals/manage/:goalId" component={GoalNewEdit}/>
-                    <Route exact path="/goals/answer/:goalId?" component={GoalAnswer}/>
+                    <Route exact path="/goals/answer/:goalId?" component={Answer}/>
 
                     {/* Auth */}
                     <Route exact path="/account" component={Account}/>

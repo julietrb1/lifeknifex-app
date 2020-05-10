@@ -7,7 +7,7 @@ import {COLOR_GOALS} from "../../constants";
 import PlaceholderSet from "../common-components/PlaceholderSet";
 import {Link} from "react-router-dom";
 import moment from 'moment-timezone';
-import {getGoalAnswerName, getRelativeMoment} from "../../Utils";
+import {getAnswerName, getRelativeMoment} from "../../Utils";
 import GoalsEmpty from "./GoalsEmpty";
 
 import './Goals.scss';
@@ -173,10 +173,10 @@ const LastAnswered = (goal: IGoal) => {
             Never answered
         </div>;
     } else if (moment().isSame(goal.last_answered, 'day')) {
-        const goalAnswerName = getGoalAnswerName(goal);
+        const answerName = getAnswerName(goal);
         return <div>
             <Icon name='check circle' color='green'/>
-            Answered {goalAnswerName ? `"${goalAnswerName.toLowerCase()}"` : null} today
+            Answered {answerName ? `"${answerName.toLowerCase()}"` : null} today
         </div>;
     } else {
         const relativeMoment = getRelativeMoment(goal.last_answered, true);

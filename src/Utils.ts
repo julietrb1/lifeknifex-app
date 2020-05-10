@@ -1,6 +1,5 @@
 import moment from "moment";
 import {SemanticCOLORS, SemanticICONS} from "semantic-ui-react/dist/commonjs/generic";
-import {IBackendItem} from "./models/IBackendItem";
 import IGoal from "./models/IGoal";
 
 export const healthStrings = ['Healthy', 'Reasonable', 'Poor', 'Unhealthy'];
@@ -49,26 +48,7 @@ export function getRelativeMoment(dateString: string, firstLower?: boolean) {
     });
 }
 
-export const arrayToObject = (array: any[] | undefined, keyField: string) =>
-    (array || []).reduce((obj, item) => {
-        obj[item[keyField]] = item;
-        return obj;
-    }, {});
-
-// export const arrayToIndexedArray: [string, IBackendItem] = (array: IBackendItem[] | undefined) =>
-//     (array || []).map(item => [String(item.url), item]);
-
-export const arrayToIndexed = <T extends IBackendItem>(array: T[] | undefined) =>
-    (array || []).reduce((acc, cur) => {
-        acc.push([String(cur.url), cur]);
-        return acc;
-    }, new Array<[string, T]>());
-
-export interface IStoreState<T extends IBackendItem> {
-    [url: string]: T;
-}
-
-export function getGoalAnswerName(goal: IGoal) {
+export function getAnswerName(goal: IGoal) {
     switch (goal.style) {
         case 'yesno':
             switch (goal.todays_answer_value) {

@@ -6,7 +6,7 @@ import {Form, Header} from "semantic-ui-react";
 import PlaceholderSet from "../common-components/PlaceholderSet";
 import moment from "moment";
 import {BACKEND_DATE_FORMAT} from "../../constants";
-import GoalAnswerEmpty from "./GoalAnswerEmpty";
+import AnswerEmpty from "./AnswerEmpty";
 import AnswerPre from "./AnswerPre";
 import AnswerPost from "./AnswerPost";
 import {firstCase} from "../../Utils";
@@ -21,7 +21,7 @@ const sections = [
     {name: 'Answer'}
 ];
 
-const GoalAnswerFC: React.FC = () => {
+const Answer: React.FC = () => {
     const dispatch = useDispatch();
     const {search} = useLocation();
     const {goalId} = useParams();
@@ -41,7 +41,7 @@ const GoalAnswerFC: React.FC = () => {
 
     const PageContent = () => {
         if (done) {
-            return <GoalAnswerEmpty/>;
+            return <AnswerEmpty/>;
         } else {
             const loading = isLoading || !filteredGoals;
             return <Form loading={loading} onSubmit={handleFormAction}>
@@ -126,8 +126,8 @@ const GoalAnswerFC: React.FC = () => {
     const handleFormAction = (increment: any) => {
         const parsedIncrement = typeof increment === "number" ? increment as number : 1;
         const haveSingleGoal = !!goalId;
-        const goalAnswered = !!goals.find(g => g.url === currentGoalUrl)?.todays_answer;
-        if ((haveSingleGoal && goalAnswered) || isPostMode) {
+        const answered = !!goals.find(g => g.url === currentGoalUrl)?.todays_answer;
+        if ((haveSingleGoal && answered) || isPostMode) {
             // updateAnswer(goals.find(g => g.url === currentGoalUrl), candidateValue); TODO: Implement redux-toolkit operation
             if (isPostMode) {
                 goToGoal(parsedIncrement);
@@ -147,4 +147,4 @@ const GoalAnswerFC: React.FC = () => {
     </div>;
 };
 
-export default GoalAnswerFC;
+export default Answer;

@@ -3,8 +3,13 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {AppThunk} from "../../redux/store";
 import IGoal from "../../models/IGoal";
 import {IPaginatedResponse} from "../../models/IPaginatedReponse";
-import axios from "axios";
-import {API_ANSWERS, API_GOALS} from "../../Backend";
+import {
+    reqCreateGoal, reqCreateAnswer,
+    reqDeleteGoal,
+    reqGetGoal,
+    reqUpdateGoal,
+    reqUpdateAnswer, reqGetAllGoals
+} from "../../Backend";
 import IAnswer from "../../models/IAnswer";
 
 interface IGoalState extends ICommonState {
@@ -38,7 +43,7 @@ const allGoalsSuccess = (state: IGoalState, {payload}: PayloadAction<IPaginatedR
     state.goalResponse = payload;
 };
 
-const singleGoalAnswerSuccess = (state: IGoalState, {payload}: PayloadAction<IAnswer>) => {
+const singleAnswerSuccess = (state: IGoalState, {payload}: PayloadAction<IAnswer>) => {
     state.isLoading = false;
     state.error = null;
     state.goalsByUrl[payload.url].todays_answer = payload.url;
@@ -68,32 +73,31 @@ const goalSlice = createSlice({
         deleteGoalStart: startLoading,
         deleteGoalSuccess: deletionGoalSuccess,
         deleteGoalFailure: loadingFailed,
-        updateGoalAnswerStart: startLoading,
-        updateGoalAnswerSuccess: singleGoalAnswerSuccess,
-        updateGoalAnswerFailure: loadingFailed,
-        createGoalAnswerStart: startLoading,
-        createGoalAnswerSuccess: singleGoalAnswerSuccess,
-        createGoalAnswerFailure: loadingFailed
+        updateAnswerStart: startLoading,
+        updateAnswerSuccess: singleAnswerSuccess,
+        updateAnswerFailure: loadingFailed,
+        createAnswerStart: startLoading,
+        createAnswerSuccess: singleAnswerSuccess,
+        createAnswerFailure: loadingFailed
     }
 });
 
 export const {
     getAllGoalsFailure, getAllGoalsStart, getAllGoalsSuccess,
-    createGoalAnswerFailure, createGoalAnswerStart, createGoalAnswerSuccess,
+    createAnswerFailure, createAnswerStart, createAnswerSuccess,
     createGoalFailure, createGoalStart, createGoalSuccess,
     deleteGoalFailure, deleteGoalStart, deleteGoalSuccess,
     getGoalFailure, getGoalStart, getGoalSuccess,
-    updateGoalAnswerFailure, updateGoalAnswerStart, updateGoalAnswerSuccess,
+    updateAnswerFailure, updateAnswerStart, updateAnswerSuccess,
     updateGoalFailure, updateGoalStart, updateGoalSuccess
 } = goalSlice.actions;
 
 export default goalSlice.reducer;
 
 export const fetchAllGoals = (search?: string): AppThunk => async dispatch => {
-    const params = {search};
     try {
         dispatch(getAllGoalsStart());
-        const {data} = await axios.get(API_GOALS, {params: params});
+        const {data} = await reqGetAllGoals(search);
         dispatch(getAllGoalsSuccess(data));
     } catch (e) {
         dispatch(getAllGoalsFailure(e.toString()));
@@ -103,7 +107,7 @@ export const fetchAllGoals = (search?: string): AppThunk => async dispatch => {
 export const fetchGoal = (goalId: number): AppThunk => async dispatch => {
     try {
         dispatch(getGoalStart());
-        const {data} = await axios.get(`${API_GOALS}${goalId}/`);
+        const {data} = await reqGetGoal(goalId);
         dispatch(getGoalSuccess(data));
     } catch (e) {
         dispatch(getGoalFailure(e.toString()));
@@ -113,7 +117,7 @@ export const fetchGoal = (goalId: number): AppThunk => async dispatch => {
 export const createGoal = (goal: IGoal): AppThunk => async dispatch => {
     try {
         dispatch(createGoalStart());
-        const {data} = await axios.post(API_GOALS, goal);
+        const {data} = await reqCreateGoal(goal);
         dispatch(createGoalSuccess(data));
     } catch (e) {
         dispatch(createGoalFailure(e.toString()));
@@ -123,7 +127,7 @@ export const createGoal = (goal: IGoal): AppThunk => async dispatch => {
 export const updateGoal = (goal: IGoal): AppThunk => async dispatch => {
     try {
         dispatch(updateGoalStart());
-        const {data} = await axios.patch(`${API_GOALS}${goal.id}/`, goal);
+        const {data} = await reqUpdateGoal(goal);
         dispatch(updateGoalSuccess(data));
     } catch (e) {
         dispatch(updateGoalFailure(e.toString()));
@@ -133,32 +137,32 @@ export const updateGoal = (goal: IGoal): AppThunk => async dispatch => {
 export const deleteGoal = (goal: IGoal): AppThunk => async dispatch => {
     try {
         dispatch(deleteGoalStart());
-        const {data} = await axios.delete(`${API_GOALS}${goal.id}/`);
+        const {data} = await reqDeleteGoal(goal);
         dispatch(deleteGoalSuccess(data));
     } catch (e) {
         dispatch(deleteGoalFailure(e.toString()));
     }
 };
 
-export const updateGoalAnswer = (goal: IGoal, answer: IAnswer): AppThunk => async dispatch => {
+export const updateAnswer = (goal: IGoal, answer: IAnswer): AppThunk => async dispatch => {
     try {
-        dispatch(updateGoalAnswerStart());
-        const {data} = await axios.patch(String(goal.todays_answer), {answer});
-        dispatch(updateGoalAnswerSuccess(data));
+        dispatch(updateAnswerStart());
+        const {data} = await reqUpdateAnswer(answer);
+        dispatch(updateAnswerSuccess(data));
     } catch (e) {
-        dispatch(updateGoalAnswerFailure(e.toString()));
+        dispatch(updateAnswerFailure(e.toString()));
     }
 };
 
-export const createGoalAnswer = (goal: any, value: number): AppThunk => async dispatch => {
+export const createAnswer = (goal: any, value: number): AppThunk => async dispatch => {
     try {
-        dispatch(createGoalAnswerStart());
-        const {data} = await axios.post(API_ANSWERS, {
+        dispatch(createAnswerStart());
+        const {data} = await reqCreateAnswer({
             goal: goal.url,
             value: value
         });
-        dispatch(createGoalAnswerSuccess(data));
+        dispatch(createAnswerSuccess(data));
     } catch (e) {
-        dispatch(createGoalAnswerFailure(e.toString()));
+        dispatch(createAnswerFailure(e.toString()));
     }
 };
