@@ -35,6 +35,8 @@ import {
     updateConsumption
 } from "../../features/consumptions/consumptionSlice";
 import {fetchAllFoods} from "../../features/foods/foodSlice";
+import HeaderBar from "../common-components/HeaderBar";
+import BreadcrumbSet from "../common-components/BreadcrumbSet";
 
 interface IConsumptionFormMatchParams {
     consumptionId?: string;
@@ -91,6 +93,10 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
     const [currentFoodSearch, setCurrentFoodSearch] = useState('');
     const [isDeleteVisible, setIsDeleteVisible] = useState(false);
     const [isSearchLoading, setIsSearchLoading] = useState(false);
+    const sections = [
+        {name: 'Nutrition', href: '/nutrition'},
+        {name: consumptionId ? 'Edit' : 'Log Consumption'}
+    ];
 
     const [foodResults, setFoodResults] = useState<IFood[]>();
 
@@ -203,8 +209,8 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
     }
 
     return <div>
-        {/*<BreadcrumbSet sections={sections}/>*/}
-        {/*<HeaderBar title="Edit Consumption" icon='nutrition'/>*/}
+        <BreadcrumbSet sections={sections}/>
+        <HeaderBar title={consumptionId ? 'Edit Consumption' : 'Log Consumption'} icon='nutrition'/>
         <Form
             error={!!submissionError}
             loading={isLoading}
