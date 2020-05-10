@@ -1,4 +1,4 @@
-import axios, {CancelTokenSource} from 'axios';
+import axios, {AxiosError, CancelTokenSource} from 'axios';
 import {API, LOCAL_STORAGE_JWT_ACCESS, LOCAL_STORAGE_JWT_REFRESH} from "./constants";
 import {history} from './App';
 
@@ -29,11 +29,10 @@ const processQueue = (error: Error | null, token: string | null) => {
 
 axios.interceptors.response.use(function (response) {
     return response;
-}, function (error) {
-
+}, function (error: AxiosError) {
     const originalRequest = error.config;
 
-    if (!error.response || error.response.status !== 401 || originalRequest._retry) {
+    if (!error.response || error.response.status !== 401 || (originalRequest as any)._retry || originalRequest.url?.endsWith('/token/')) {
         return Promise.reject(error);
     }
 
@@ -48,7 +47,7 @@ axios.interceptors.response.use(function (response) {
         });
     }
 
-    originalRequest._retry = true;
+    (originalRequest as any)._retry = true;
     isRefreshing = true;
 
     const refreshToken = getRefreshToken();
@@ -111,17 +110,18 @@ export function getFeature(cancelToken: CancelTokenSource, featureName: string) 
 
 // AUTH
 
-export function logIn(cancelToken: CancelTokenSource, username: string, password: string) {
-    return axios
+export async function logIn(cancelToken: CancelTokenSource, username: string, password: string) {
+    console.log('Logging in');
+    const res = await axios
         .post(`${API_TOKEN}`, {
             username: username,
             password: password
-        }, {cancelToken: cancelToken.token})
-        .then(res => {
-            setAccessToken(res.data.access);
-            setRefreshToken(res.data.refresh);
-            return res.data;
-        });
+        }, {cancelToken: cancelToken.token});
+    console.log(res.status);
+    console.log(JSON.stringify(res.data));
+    setAccessToken(res.data.access);
+    setRefreshToken(res.data.refresh);
+    return res.data;
 }
 
 export function register(cancelToken: CancelTokenSource, username: string, password: string) {

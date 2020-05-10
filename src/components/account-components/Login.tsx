@@ -38,7 +38,8 @@ class Login extends RequestComponent<RouteComponentProps<ILoginMatchParams>, ILo
         //     .then(() => this.props.history.replace('/'))
         //     .catch(() => console.debug('Not logged in'));
     }
-    performLogin = () => {
+
+    performLogin = async () => {
         if (this.state.loggingIn) {
             return;
         }
@@ -53,18 +54,16 @@ class Login extends RequestComponent<RouteComponentProps<ILoginMatchParams>, ILo
         }
 
         this.setState({loggingIn: true});
-        logIn(this.cancelToken, this.state.username, this.state.password)
-            .then(account => {
-                if (account) {
-                    this.props.history.replace('/');
-                }
-            }).catch(err => {
+        try {
+            const account = await logIn(this.cancelToken, this.state.username, this.state.password);
+            if (account) this.props.history.replace('/');
+        } catch (e) {
             this.setState({
                 loggingIn: false,
-                submissionError: extractError(err)
+                submissionError: extractError(e)
             });
-        });
-    };
+        }
+    }
 
     handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>, {value}: InputOnChangeData) => {
         this.setState({username: value});
