@@ -10,18 +10,18 @@ import './Nutrition.scss';
 import {useDispatch, useSelector} from "react-redux";
 import PlaceholderSet from "../common-components/PlaceholderSet";
 import {RootState} from "../../redux/rootReducer";
-import {fetchConsumptions} from "../../features/consumptions/consumptionSlice";
+import {fetchAllConsumptions} from "../../features/consumptions/consumptionSlice";
 
 const sections = [
     {name: 'Nutrition'}
 ];
 
-const Nutrition = () => {
+const Nutrition: React.FC = () => {
     const dispatch = useDispatch();
     const {consumptionResponse, isLoading} = useSelector((state: RootState) => state.consumptionState);
     useEffect(() => {
         if (!consumptionResponse?.results) {
-            dispatch(fetchConsumptions());
+            dispatch(fetchAllConsumptions());
         }
     });
 
