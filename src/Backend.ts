@@ -2,6 +2,7 @@ import axios, {AxiosError, CancelTokenSource} from 'axios';
 import {API, LOCAL_STORAGE_JWT_ACCESS, LOCAL_STORAGE_JWT_REFRESH} from "./constants";
 import {history} from './App';
 import IConsumption from "./models/IConsumption";
+import IFood from "./models/IFood";
 
 const API_FEATURES = `${API}features/`;
 export const API_CONSUMPTIONS = `${API}consumptions/`;
@@ -147,12 +148,19 @@ export function logOut() {
     });
 }
 
+// Consumptions
 export const reqGetConsumption = (consumptionId: number) => axios.get(`${API_CONSUMPTIONS}${consumptionId}/`);
 export const reqGetAllConsumptions = (search?: string) => axios.get(API_CONSUMPTIONS, {params: {search}});
 export const reqCreateConsumption = (consumption: IConsumption) => axios.post(API_CONSUMPTIONS, consumption);
 export const reqUpdateConsumption = (consumption: IConsumption) => axios.patch(`${API_CONSUMPTIONS}${consumption.id}/`, consumption);
 export const reqDeleteConsumption = (consumption: IConsumption) => axios.delete(`${API_CONSUMPTIONS}${consumption.id}/`);
 
+// Foods
+export const reqGetFood = (foodId: number) => axios.get(`${API_FOODS}${foodId}/`);
+export const reqGetAllFoods = (search?: string) => axios.get(API_FOODS, {params: {search}});
+export const reqCreateFood = (food: IFood) => axios.post(API_FOODS, food);
+export const reqUpdateFood = (food: IFood) => axios.patch(`${API_FOODS}${food.id}/`, food);
+export const reqDeleteFood = (food: IFood) => axios.delete(`${API_FOODS}${food.id}/`);
 
 export function updateConsumption(cancelToken: CancelTokenSource, consumption: any) {
     return axios
