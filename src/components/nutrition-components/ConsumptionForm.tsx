@@ -19,8 +19,6 @@ import {useHistory, useParams} from 'react-router-dom';
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
 import {healthStrings} from '../../Utils';
 import {TIME_FORMAT_STRING} from '../../constants';
-import HeaderBar from "../common-components/HeaderBar";
-import BreadcrumbSet from "../common-components/BreadcrumbSet";
 import {useDispatch, useSelector} from "react-redux";
 import {selectFoodsLoading} from "../../features/foods/foodSelectors";
 import {
@@ -37,11 +35,6 @@ import {
     updateConsumption
 } from "../../features/consumptions/consumptionSlice";
 import {fetchAllFoods} from "../../features/foods/foodSlice";
-
-const sections = [
-    {name: 'Nutrition', href: '/nutrition'},
-    {name: 'Edit'}
-];
 
 interface IConsumptionFormMatchParams {
     consumptionId?: string;
@@ -77,7 +70,17 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
     const {consumptionId} = useParams();
     const consumptionLoaded = useSelector((state: RootState) => selectConsumptionLoadedById(state, consumptionId));
     const consumption = useSelector((state: RootState) => selectConsumptionById(state, consumptionId));
-    const [draftConsumption, setDraftConsumption] = useState(consumption);
+    const [availableHours, setAvailableHours] = useState<{ text: string, value: string, key: number }[]>(generateHours());
+    const generateBlankConsumption = () => ({
+        date: availableHours[availableHours.length - 1].value,
+        quantity: 1,
+        food: '',
+        food_name: '',
+        food_icon: '',
+        id: 0,
+        url: ''
+    });
+    const [draftConsumption, setDraftConsumption] = useState(consumption || generateBlankConsumption());
     const {goBack} = useHistory();
     const foodsLoading = useSelector(selectFoodsLoading);
     const consumptionsLoading = useSelector(selectConsumptionsLoading);
@@ -88,8 +91,9 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
     const [currentFoodSearch, setCurrentFoodSearch] = useState('');
     const [isDeleteVisible, setIsDeleteVisible] = useState(false);
     const [isSearchLoading, setIsSearchLoading] = useState(false);
-    const [availableHours, setAvailableHours] = useState<{ text: string, value: string, key: number }[]>([]);
+
     const [foodResults, setFoodResults] = useState<IFood[]>();
+
 
     useEffect(() => {
         if (consumptionId && !consumptionLoaded && !consumption) {
@@ -101,15 +105,7 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
         } else {
             setSubmissionError('');
             setAvailableHours(generateHours());
-            setDraftConsumption({
-                date: availableHours[availableHours.length - 1].value,
-                quantity: 1,
-                food: '',
-                food_name: '',
-                food_icon: '',
-                id: 0,
-                url: ''
-            });
+            setDraftConsumption(generateBlankConsumption());
             setSubmissionMessage(`Well done! Your consumption of ${currentFoodSearch} at ${moment(consumption.date).format(TIME_FORMAT_STRING)} has been logged.`);
             resetSearch();
         }
@@ -145,13 +141,13 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
     const HourField = () => {
         const {consumptionId} = useParams();
         if (consumptionId) {
-            return <Input disabled value={moment(consumption.date).format(TIME_FORMAT_STRING)}/>;
+            return <Input disabled value={moment(draftConsumption.date).format(TIME_FORMAT_STRING)}/>;
         } else {
             return <Dropdown
                 selection
                 options={availableHours}
                 onChange={handleHourChange}
-                value={consumption.date}
+                value={draftConsumption.date}
                 disabled={!!consumptionId}/>;
         }
     };
@@ -172,22 +168,22 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
 
     const handleFoodChange = (e: SyntheticEvent, data: any) => {
         setCurrentFoodSearch(data.result.title);
-        setDraftConsumption({...consumption, food: data.result.url});
+        setDraftConsumption({...draftConsumption, food: data.result.url});
     };
 
     const handleQuantityChange = (e: React.FormEvent<HTMLInputElement>, {value}: CheckboxProps) => {
-        setDraftConsumption({...consumption, quantity: Number(value)});
+        setDraftConsumption({...draftConsumption, quantity: Number(value)});
     };
 
     const handleHourChange = (event: React.SyntheticEvent<HTMLElement>, {value}: DropdownProps) => {
-        setDraftConsumption({...consumption, date: String(value)});
+        setDraftConsumption({...draftConsumption, date: String(value)});
     };
 
     const resetSearch = () => setCurrentFoodSearch('');
 
     const handleSearchChange = (event: React.MouseEvent<HTMLElement>, {value}: SearchProps) => {
         const newFoodSearch = value ? value.toString() : '';
-        setDraftConsumption({...consumption, food: ''});
+        setDraftConsumption({...draftConsumption, food: ''});
         setCurrentFoodSearch(newFoodSearch);
 
         if (newFoodSearch.length < 1) return resetSearch();
@@ -207,8 +203,8 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
     }
 
     return <div>
-        <BreadcrumbSet sections={sections}/>
-        <HeaderBar title="Edit Consumption" icon='nutrition'/>
+        {/*<BreadcrumbSet sections={sections}/>*/}
+        {/*<HeaderBar title="Edit Consumption" icon='nutrition'/>*/}
         <Form
             error={!!submissionError}
             loading={isLoading}
@@ -233,7 +229,7 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
                         label={qty.text}
                         name='quantity'
                         value={qty.value}
-                        checked={consumption.quantity === qty.value}
+                        checked={draftConsumption.quantity === qty.value}
                         onChange={handleQuantityChange}
                     />
                 </Form.Field>)}
@@ -241,14 +237,14 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
             <Button.Group>
                 <Button type='button' onClick={goBack}>Back</Button>
                 <Button.Or/>
-                <Button positive type="submit" disabled={!consumption.food}>
+                <Button positive type="submit" disabled={!draftConsumption.food}>
                     {consumptionId ? 'Save Log' : 'Submit Log'}
                 </Button>
             </Button.Group>
-            consumptionId ?
-            <Button type='button' basic floated='right' color='red'
-                    onClick={() => setIsDeleteVisible(false)}>Delete</Button>
-            : null;
+            {consumptionId ?
+                <Button type='button' basic floated='right' color='red'
+                        onClick={() => setIsDeleteVisible(false)}>Delete</Button>
+                : null}
         </Form>
         <Confirm
             open={isDeleteVisible}
