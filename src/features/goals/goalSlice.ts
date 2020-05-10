@@ -146,10 +146,10 @@ export const deleteGoal = (goal: IGoal): AppThunk => async dispatch => {
     }
 };
 
-export const updateAnswer = (goal: IGoal, answer: IAnswer): AppThunk => async dispatch => {
+export const updateAnswer = (answerUrl: string, value: number): AppThunk => async dispatch => {
     try {
         dispatch(updateAnswerStart());
-        const {data} = await reqUpdateAnswer(answer);
+        const {data} = await reqUpdateAnswer(answerUrl, value);
         dispatch(updateAnswerSuccess(data));
     } catch (e) {
         dispatch(updateAnswerFailure(e.toString()));

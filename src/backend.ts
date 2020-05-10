@@ -4,7 +4,6 @@ import {history} from './App';
 import IConsumption from "./models/IConsumption";
 import IFood from "./models/IFood";
 import IGoal from "./models/IGoal";
-import IAnswer from "./models/IAnswer";
 import {extractError} from "./Utils";
 
 const API_FEATURES = `${API}features/`;
@@ -181,8 +180,8 @@ export const reqUpdateGoal = (goal: IGoal) => axios.patch(`${API_GOALS}${goal.id
 export const reqDeleteGoal = (goal: IGoal) => axios.delete(`${API_GOALS}${goal.id}/`);
 
 // Answers
-export const reqCreateAnswer = (answer: {goal: string, value: number}) => axios.post(API_ANSWERS, answer);
-export const reqUpdateAnswer = (answer: IAnswer) => axios.patch(`${API_ANSWERS}${answer.id}/`, answer);
+export const reqCreateAnswer = (answer: { goal: string, value: number }) => axios.post(API_ANSWERS, answer);
+export const reqUpdateAnswer = (answerUrl: string, value: number) => axios.patch(answerUrl, value);
 
 export function getFoods(cancelToken: CancelTokenSource, search: string | null | undefined, isArchivedVisible: boolean = false) {
     const queryParams = new URLSearchParams();

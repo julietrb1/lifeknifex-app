@@ -12,9 +12,14 @@ import AnswerPost from "./AnswerPost";
 import {firstCase} from "../../Utils";
 import IGoal from "../../models/IGoal";
 import {RootState} from "../../redux/rootReducer";
-import {fetchAllGoals} from "../../features/goals/goalSlice";
+import {createAnswer, fetchAllGoals, updateAnswer} from "../../features/goals/goalSlice";
 import {useHistory, useLocation, useParams} from 'react-router-dom';
-import {selectAllGoals, selectGoalByUrl, selectGoalsLoading} from "../../features/goals/goalSelectors";
+import {
+    selectAllGoals,
+    selectGoalByUrl,
+    selectGoalsLoaded,
+    selectGoalsLoading
+} from "../../features/goals/goalSelectors";
 
 const sections = [
     {name: 'Goals', href: '/goals'},
@@ -28,16 +33,17 @@ const Answer: React.FC = () => {
     const history = useHistory();
     const goals = useSelector(selectAllGoals);
     const isLoading = useSelector(selectGoalsLoading);
+    const isLoaded = useSelector(selectGoalsLoaded);
     const [currentGoalUrl, setCurrentGoalUrl] = useState('');
     const currentGoal = useSelector((state: RootState) => selectGoalByUrl(state, currentGoalUrl));
     const [goalIndex, setGoalIndex] = useState(-1);
     const [done, setDone] = useState(false);
     const [candidateValue, setCandidateValue] = useState(0);
-    const [isPostMode, setIsPostMode] = useState(new URLSearchParams(search).get('mode') === 'post');
+    const isPostMode = new URLSearchParams(search).get('mode') === 'post';
     const [filteredGoals, setFilteredGoals] = useState<IGoal[]>([]);
     useEffect(() => {
-        if (!goals.length) dispatch(fetchAllGoals());
-    });
+        if (!isLoaded) dispatch(fetchAllGoals());
+    }, [isLoaded]);
 
     const PageContent = () => {
         if (done) {
@@ -56,8 +62,8 @@ const Answer: React.FC = () => {
         }
     };
 
-    const handlePreAnswer = (answerValue: number) => {
-        // createAnswer(goals.find(g => g.url === currentGoalUrl), answerValue); TODO: Submit answer creation
+    const handlePreAnswer = async (answerValue: number) => {
+        await dispatch(createAnswer(currentGoal, answerValue));
         goToGoal();
     };
 
@@ -77,11 +83,11 @@ const Answer: React.FC = () => {
         }
     };
 
-    const filterGoals = (goalIdParam: number, today: string) => {
-        if (!Object.values(filteredGoals).length) {
-            setFilteredGoals(Object.values(goals).filter(goal => {
-                const shouldStopPre = !goalIdParam && goal.last_answered !== today;
-                const shouldStopPost = isPostMode || (goalIdParam && goal.id === Number(goalIdParam));
+    const filterGoals = () => {
+        if (!filteredGoals.length) {
+            setFilteredGoals(goals.filter(goal => {
+                const shouldStopPre = !goalId && goal.last_answered !== moment().format(BACKEND_DATE_FORMAT);
+                const shouldStopPost = isPostMode || (goalId && goal.id === Number(goalId));
                 return shouldStopPost || shouldStopPre;
             }));
         }
@@ -92,19 +98,17 @@ const Answer: React.FC = () => {
             throw new Error('No goals');
         }
 
-        const goalIdParam = Number(goalId);
-        const today = moment().format(BACKEND_DATE_FORMAT);
-        filterGoals(goalIdParam, today);
+        filterGoals();
         const newGoalIndex = goalIndex + increment;
         if (newGoalIndex < Object.values(filteredGoals).length) {
             const filteredUrl = filteredGoals.find(g => g.url === currentGoalUrl)?.url ?? '';
-            const candidateValue = goals.find(g => g.url === currentGoalUrl)?.todays_answer_value || 0;
+            const candidateValue = currentGoal.todays_answer_value || 0;
             setGoalIndex(newGoalIndex);
             setCurrentGoalUrl(filteredUrl);
             setCandidateValue(candidateValue);
         }
 
-        if (goalIdParam) {
+        if (goalId) {
             history.replace('/goals');
         } else {
             setDone(true);
@@ -123,19 +127,19 @@ const Answer: React.FC = () => {
         return <Header.Subheader>{currentGoalIndex} / {filteredGoalLength}</Header.Subheader>;
     };
 
-    const handleFormAction = (increment: any) => {
+    const handleFormAction = async (increment: any) => {
         const parsedIncrement = typeof increment === "number" ? increment as number : 1;
         const haveSingleGoal = !!goalId;
-        const answered = !!goals.find(g => g.url === currentGoalUrl)?.todays_answer;
-        if ((haveSingleGoal && answered) || isPostMode) {
-            // updateAnswer(goals.find(g => g.url === currentGoalUrl), candidateValue); TODO: Implement redux-toolkit operation
+        const todaysAnswer = currentGoal.todays_answer;
+        if ((haveSingleGoal || isPostMode) && todaysAnswer) {
+            await dispatch(updateAnswer(todaysAnswer, candidateValue));
             if (isPostMode) {
                 goToGoal(parsedIncrement);
             } else {
                 history.goBack();
             }
         } else if (haveSingleGoal) {
-            // createAnswer(goals.find(g => g.url === currentGoalUrl), candidateValue); // TODO: Implement redux-toolkit operation
+            await dispatch(createAnswer(currentGoal, candidateValue));
             history.goBack();
         }
     };
