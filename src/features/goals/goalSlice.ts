@@ -8,12 +8,12 @@ import {API_ANSWERS, API_GOALS} from "../../Backend";
 import IAnswer from "../../models/IAnswer";
 
 interface IGoalState extends ICommonState {
-    goalsById: { [goalUrl: string]: IGoal };
+    goalsByUrl: { [goalUrl: string]: IGoal };
     goalResponse: IPaginatedResponse<IGoal> | null;
 }
 
 const goalsInitialState: IGoalState = {
-    error: null, isLoading: false, goalsById: {}, goalResponse: null
+    error: null, isLoading: false, goalResponse: null, goalsByUrl: {}
 };
 
 const startLoading = (state: IGoalState) => {
@@ -28,20 +28,20 @@ const loadingFailed = (state: IGoalState, action: PayloadAction<string>) => {
 const singleGoalSuccess = (state: IGoalState, {payload}: PayloadAction<IGoal>) => {
     state.isLoading = false;
     state.error = null;
-    state.goalsById[payload.url] = payload;
+    state.goalsByUrl[payload.url] = payload;
 };
 
 const singleGoalAnswerSuccess = (state: IGoalState, {payload}: PayloadAction<IAnswer>) => {
     state.isLoading = false;
     state.error = null;
-    state.goalsById[payload.url].todays_answer = payload.url;
-    state.goalsById[payload.url].todays_answer_value = payload.value;
+    state.goalsByUrl[payload.url].todays_answer = payload.url;
+    state.goalsByUrl[payload.url].todays_answer_value = payload.value;
 };
 
 const deletionGoalSuccess = (state: IGoalState, {payload}: PayloadAction<string>) => {
     state.isLoading = false;
     state.error = null;
-    delete state.goalsById[payload];
+    delete state.goalsByUrl[payload];
 };
 
 const goalSlice = createSlice({

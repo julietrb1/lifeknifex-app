@@ -21,9 +21,14 @@ const GoalForm: React.FC = () => {
     const {goBack} = useHistory();
     const {goalId} = useParams();
     const goal = useSelector((state: RootState) => selectGoalById(state, goalId));
-    const [draftGoal, setDraftGoal] = useState<IGoal>(goal || {});
+    const [draftGoal, setDraftGoal] = useState<IGoal>(goal || {
+        id: 0,
+        question: '',
+        url: '',
+        test: ''
+    });
     const isLoading = useSelector(selectGoalsLoading);
-    const testInputLabel = `day${goal.frequency !== 1 ? 's' : ''}`;
+    const testInputLabel = `day${goal?.frequency !== 1 ? 's' : ''}`;
     const actionWord = goalId ? 'Edit' : 'New';
     const sections = [
         {name: 'Goals', href: '/goals'},
@@ -44,25 +49,25 @@ const GoalForm: React.FC = () => {
     });
 
     const handleGoalSubmit = () => {
-        goal.question = goal.question.replace(/(\?+)$/g, '');
-        goal.question = goal.question.replace(/^((Did I)|(Have I))\s+/gi, '');
-        goal.question = firstCase(goal.question, true);
+        draftGoal.question = draftGoal.question.replace(/(\?+)$/g, '');
+        draftGoal.question = draftGoal.question.replace(/^((Did I)|(Have I))\s+/gi, '');
+        draftGoal.question = firstCase(draftGoal.question, true);
 
-        if (goal.id) dispatch(updateGoal(goal));
-        else dispatch(createGoal(goal));
+        if (draftGoal.id) dispatch(updateGoal(draftGoal));
+        else dispatch(createGoal(draftGoal));
         goBack();
     };
 
     return (
         <div>
             <BreadcrumbSet sections={sections}/>
-            <HeaderBar title={`${actionWord} Goal`} icon='goals'/>
+            <HeaderBar title={`${actionWord} Goal`} icon='draftGoals'/>
             <Form onSubmit={handleGoalSubmit} loading={isLoading}>
                 <Form.Field required>
                     <label>Question</label>
                     <Input type='text' onChange={e => setDraftGoal({...draftGoal, question: e.target.value})}
                            placeholder='Get to bed on time last night'
-                           value={goal.question} label={{basic: true, content: '?'}}
+                           value={draftGoal.question} label={{basic: true, content: '?'}}
                            labelPosition='right'>
                         <Label>Did I</Label>
                         <input/>
@@ -73,25 +78,25 @@ const GoalForm: React.FC = () => {
                     <label>Test</label>
                 </Form.Field>
                 <Form.Field inline>
-                    <Radio label='At least every' name='goal-test' value='atleast'
-                           checked={goal.test === 'atleast'}
+                    <Radio label='At least every' name='draftGoal-test' value='atleast'
+                           checked={draftGoal.test === 'atleast'}
                            onChange={(e, d) => setDraftGoal({...draftGoal, test: String(d.value)})}/>
-                    <Input type='number' value={goal.frequency} className='frequency-input'
+                    <Input type='number' value={draftGoal.frequency} className='frequency-input'
                            onChange={e => setDraftGoal({...draftGoal, frequency: Number(e.target.value)})}
                            label={{basic: true, content: testInputLabel}}
-                           labelPosition='right' disabled={goal.test !== 'atleast'}/>
+                           labelPosition='right' disabled={draftGoal.test !== 'atleast'}/>
                 </Form.Field>
                 <Form.Field inline>
                     <Radio label='No more than every' name='goal-test' value='nomore'
-                           checked={goal.test === 'nomore'}
+                           checked={draftGoal.test === 'nomore'}
                            onChange={(e, d) => setDraftGoal({...draftGoal, test: String(d.value)})}/>
-                    <Input type='number' value={goal.frequency}
+                    <Input type='number' value={draftGoal.frequency}
                            onChange={e => setDraftGoal({...draftGoal, frequency: Number(e.target.value)})}
                            label={{basic: true, content: testInputLabel}} className='frequency-input'
-                           labelPosition='right' disabled={goal.test !== 'nomore'}/>
+                           labelPosition='right' disabled={draftGoal.test !== 'nomore'}/>
                 </Form.Field>
                 <Form.Field>
-                    <Radio label='Never' name='goal-test' value='never' checked={goal.test === 'never'}
+                    <Radio label='Never' name='goal-test' value='never' checked={draftGoal.test === 'never'}
                            onChange={(e, d) => setDraftGoal({...draftGoal, test: String(d.value)})}/>
                 </Form.Field>
                 <Divider hidden/>
@@ -101,12 +106,12 @@ const GoalForm: React.FC = () => {
                 </Form.Field>
                 <Form.Field>
                     <Radio label='Yes/No' name='goal-style' value='yesno'
-                           checked={goal.style === 'yesno'}
+                           checked={draftGoal.style === 'yesno'}
                            onChange={(e, d) => setDraftGoal({...draftGoal, style: String(d.value)})}/>
                 </Form.Field>
                 <Form.Field>
                     <Radio label='Likert' name='goal-style' value='likert'
-                           checked={goal.style === 'likert'}
+                           checked={draftGoal.style === 'likert'}
                            onChange={(e, d) => setDraftGoal({...draftGoal, style: String(d.value)})}/>
                 </Form.Field>
                 <Divider hidden/>
@@ -116,7 +121,7 @@ const GoalForm: React.FC = () => {
                 </Form.Field>
                 <Form.Field>
                     <DatePicker dropdownMode='select' onChange={onDateChange}
-                                selected={moment(goal.start_date).toDate()} dateFormat='dd/MM/yyyy'/>
+                                selected={moment(draftGoal.start_date).toDate()} dateFormat='dd/MM/yyyy'/>
                 </Form.Field>
 
                 <Divider hidden/>

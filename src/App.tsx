@@ -3,9 +3,6 @@ import {Route, Router} from "react-router-dom";
 import './App.scss';
 import Nutrition from './components/nutrition-components/Nutrition';
 import Goals from './components/goal-components/Goals';
-import Career from './components/Career/Career';
-import Mood from './components/Mood/Mood';
-import Score from './components/Score/Score';
 import Account from './components/account-components/Account';
 import Home from "./components/Home/Home";
 import Login from "./components/account-components/Login";
@@ -42,15 +39,6 @@ class App extends React.Component {
                     <Route exact path="/goals/new" component={GoalNewEdit}/>
                     <Route exact path="/goals/manage/:goalId" component={GoalNewEdit}/>
                     <Route exact path="/goals/answer/:goalId?" component={GoalAnswer}/>
-
-                    {/* Career */}
-                    <Route exact path="/career" component={Career}/>
-
-                    {/* Mood */}
-                    <Route exact path="/mood" component={Mood}/>
-
-                    {/* Score */}
-                    <Route exact path="/score" component={Score}/>
 
                     {/* Auth */}
                     <Route exact path="/account" component={Account}/>

@@ -14,6 +14,7 @@ import IGoal from "../../models/IGoal";
 import {RootState} from "../../redux/rootReducer";
 import {fetchAllGoals} from "../../features/goals/goalSlice";
 import {useHistory, useLocation, useParams} from 'react-router-dom';
+import {selectAllGoals, selectGoalByUrl, selectGoalsLoading} from "../../features/goals/goalSelectors";
 
 const sections = [
     {name: 'Goals', href: '/goals'},
@@ -25,8 +26,10 @@ const GoalAnswerFC: React.FC = () => {
     const {search} = useLocation();
     const {goalId} = useParams();
     const history = useHistory();
-    const {goals, isLoading} = useSelector((state: RootState) => state.goalState);
+    const goals = useSelector(selectAllGoals);
+    const isLoading = useSelector(selectGoalsLoading);
     const [currentGoalUrl, setCurrentGoalUrl] = useState('');
+    const currentGoal = useSelector((state: RootState) => selectGoalByUrl(state, currentGoalUrl));
     const [goalIndex, setGoalIndex] = useState(-1);
     const [done, setDone] = useState(false);
     const [candidateValue, setCandidateValue] = useState(0);
@@ -36,11 +39,20 @@ const GoalAnswerFC: React.FC = () => {
         if (!goals.length) dispatch(fetchAllGoals());
     });
 
-    const pageContent = () => {
+    const PageContent = () => {
         if (done) {
             return <GoalAnswerEmpty/>;
         } else {
             const loading = isLoading || !filteredGoals;
+            return <Form loading={loading} onSubmit={handleFormAction}>
+                <Header>
+                    {currentGoalUrl ?
+                        `Did I ${firstCase(currentGoal.question)}?` :
+                        'Loading Goal...'}
+                    <GoalProgressCount/>
+                </Header>
+                <FormContent/>
+            </Form>;
         }
     };
 
@@ -49,7 +61,7 @@ const GoalAnswerFC: React.FC = () => {
         goToGoal();
     };
 
-    const formContent = () => {
+    const FormContent = () => {
         if (isLoading || !currentGoalUrl) {
             return <PlaceholderSet/>;
         } else if (isPostMode || goalId) {
@@ -99,7 +111,7 @@ const GoalAnswerFC: React.FC = () => {
         }
     };
 
-    const goalProgressCount = () => {
+    const GoalProgressCount = () => {
         if (goalId) {
             return null;
         }
@@ -131,15 +143,7 @@ const GoalAnswerFC: React.FC = () => {
     return <div>
         <BreadcrumbSet sections={sections}/>
         <HeaderBar title='Answer Goals' icon='goals'/>
-        <Form loading={isLoading} onSubmit={handleFormAction}>
-            <Header>
-                {currentGoalUrl ?
-                    `Did I ${firstCase(goals.find(g => g.url === currentGoalUrl)?.question || '')}?` :
-                    'Loading Goal...'}
-                {goalProgressCount()}
-            </Header>
-            {formContent()}
-        </Form>
+        <PageContent/>
     </div>;
 };
 

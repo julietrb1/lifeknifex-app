@@ -1,7 +1,7 @@
 import moment from "moment";
 import {SemanticCOLORS, SemanticICONS} from "semantic-ui-react/dist/commonjs/generic";
 import {IBackendItem} from "./models/IBackendItem";
-import {IGoal} from "./models/IGoal";
+import IGoal from "./models/IGoal";
 
 export const healthStrings = ['Healthy', 'Reasonable', 'Poor', 'Unhealthy'];
 export const consumptionSizes = ['Small', 'Medium', 'Large', 'Extra Large'];
