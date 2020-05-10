@@ -181,7 +181,7 @@ export const reqDeleteGoal = (goal: IGoal) => axios.delete(`${API_GOALS}${goal.i
 
 // Answers
 export const reqCreateAnswer = (answer: { goal: string, value: number }) => axios.post(API_ANSWERS, answer);
-export const reqUpdateAnswer = (answerUrl: string, value: number) => axios.patch(answerUrl, value);
+export const reqUpdateAnswer = (answerUrl: string, value: number) => axios.patch(answerUrl, {value});
 
 export function getFoods(cancelToken: CancelTokenSource, search: string | null | undefined, isArchivedVisible: boolean = false) {
     const queryParams = new URLSearchParams();

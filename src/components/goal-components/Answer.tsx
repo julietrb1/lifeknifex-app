@@ -11,15 +11,9 @@ import AnswerPre from "./AnswerPre";
 import AnswerPost from "./AnswerPost";
 import {firstCase} from "../../Utils";
 import IGoal from "../../models/IGoal";
-import {RootState} from "../../redux/rootReducer";
 import {createAnswer, fetchAllGoals, updateAnswer} from "../../features/goals/goalSlice";
 import {useHistory, useLocation, useParams} from 'react-router-dom';
-import {
-    selectAllGoals,
-    selectGoalByUrl,
-    selectGoalsLoaded,
-    selectGoalsLoading
-} from "../../features/goals/goalSelectors";
+import {selectAllGoals, selectGoalsLoaded, selectGoalsLoading} from "../../features/goals/goalSelectors";
 
 const sections = [
     {name: 'Goals', href: '/goals'},
@@ -34,16 +28,24 @@ const Answer: React.FC = () => {
     const goals = useSelector(selectAllGoals);
     const isLoading = useSelector(selectGoalsLoading);
     const isLoaded = useSelector(selectGoalsLoaded);
-    const [currentGoalUrl, setCurrentGoalUrl] = useState('');
-    const currentGoal = useSelector((state: RootState) => selectGoalByUrl(state, currentGoalUrl));
     const [goalIndex, setGoalIndex] = useState(-1);
+    const currentGoal = goals[goalIndex];
     const [done, setDone] = useState(false);
     const [candidateValue, setCandidateValue] = useState(0);
     const isPostMode = new URLSearchParams(search).get('mode') === 'post';
-    const [filteredGoals, setFilteredGoals] = useState<IGoal[]>([]);
+    const [filteredGoals, setFilteredGoals] = useState<IGoal[] | null>(null);
+
     useEffect(() => {
         if (!isLoaded) dispatch(fetchAllGoals());
     }, [isLoaded]);
+
+    useEffect(() => {
+        if (isLoaded && !filteredGoals) filterGoals();
+    }, [goals]);
+
+    useEffect(() => {
+        if (filteredGoals) goToGoal();
+    }, [filteredGoals]);
 
     const PageContent = () => {
         if (done) {
@@ -52,7 +54,7 @@ const Answer: React.FC = () => {
             const loading = isLoading || !filteredGoals;
             return <Form loading={loading} onSubmit={handleFormAction}>
                 <Header>
-                    {currentGoalUrl ?
+                    {currentGoal ?
                         `Did I ${firstCase(currentGoal.question)}?` :
                         'Loading Goal...'}
                     <GoalProgressCount/>
@@ -68,10 +70,10 @@ const Answer: React.FC = () => {
     };
 
     const FormContent = () => {
-        if (isLoading || !currentGoalUrl) {
+        if (isLoading || !currentGoal) {
             return <PlaceholderSet/>;
         } else if (isPostMode || goalId) {
-            return <AnswerPost goal={goals.find(g => g.url === currentGoalUrl)} onAnswer={setCandidateValue}
+            return <AnswerPost goal={currentGoal} onAnswer={setCandidateValue}
                                checkedValue={candidateValue}
                                mode={isPostMode ? 'post' : 'single'}
                                isStart={goalIndex === 0}
@@ -79,12 +81,12 @@ const Answer: React.FC = () => {
                                goalIndex === filteredGoals.length - 1}
                                goBack={() => handleFormAction(-1)}/>;
         } else {
-            return <AnswerPre goal={goals.find(g => g.url === currentGoalUrl)} onAnswer={handlePreAnswer}/>;
+            return <AnswerPre goal={currentGoal} onAnswer={handlePreAnswer}/>;
         }
     };
 
     const filterGoals = () => {
-        if (!filteredGoals.length) {
+        if (!filteredGoals) {
             setFilteredGoals(goals.filter(goal => {
                 const shouldStopPre = !goalId && goal.last_answered !== moment().format(BACKEND_DATE_FORMAT);
                 const shouldStopPost = isPostMode || (goalId && goal.id === Number(goalId));
@@ -94,18 +96,14 @@ const Answer: React.FC = () => {
     };
 
     const goToGoal = (increment: number = 1) => {
-        if (!Object.keys(goals).length) {
+        if (!goals.length || !filteredGoals) {
             throw new Error('No goals');
         }
 
-        filterGoals();
         const newGoalIndex = goalIndex + increment;
-        if (newGoalIndex < Object.values(filteredGoals).length) {
-            const filteredUrl = filteredGoals.find(g => g.url === currentGoalUrl)?.url ?? '';
-            const candidateValue = currentGoal.todays_answer_value || 0;
+        if (newGoalIndex < filteredGoals.length) {
             setGoalIndex(newGoalIndex);
-            setCurrentGoalUrl(filteredUrl);
-            setCandidateValue(candidateValue);
+            return;
         }
 
         if (goalId) {
@@ -120,11 +118,9 @@ const Answer: React.FC = () => {
             return null;
         }
 
-        const currentGoalIndex = (filteredGoals || []).findIndex((goal: any) => goal.url === currentGoalUrl) + 1 ||
-            '--';
 
         const filteredGoalLength = (filteredGoals || []).length || '--';
-        return <Header.Subheader>{currentGoalIndex} / {filteredGoalLength}</Header.Subheader>;
+        return <Header.Subheader>{goalIndex} / {filteredGoalLength}</Header.Subheader>;
     };
 
     const handleFormAction = async (increment: any) => {
@@ -132,6 +128,7 @@ const Answer: React.FC = () => {
         const haveSingleGoal = !!goalId;
         const todaysAnswer = currentGoal.todays_answer;
         if ((haveSingleGoal || isPostMode) && todaysAnswer) {
+            console.log(candidateValue);
             await dispatch(updateAnswer(todaysAnswer, candidateValue));
             if (isPostMode) {
                 goToGoal(parsedIncrement);

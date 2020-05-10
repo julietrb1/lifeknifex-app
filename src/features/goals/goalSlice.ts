@@ -48,8 +48,8 @@ const allGoalsSuccess = (state: IGoalState, {payload}: PayloadAction<IPaginatedR
 const singleAnswerSuccess = (state: IGoalState, {payload}: PayloadAction<IAnswer>) => {
     state.isLoading = false;
     state.error = null;
-    state.goalsByUrl[payload.url].todays_answer = payload.url;
-    state.goalsByUrl[payload.url].todays_answer_value = payload.value;
+    state.goalsByUrl[payload.goal].todays_answer = payload.url;
+    state.goalsByUrl[payload.goal].todays_answer_value = payload.value;
 };
 
 const deletionGoalSuccess = (state: IGoalState, {payload}: PayloadAction<string>) => {
