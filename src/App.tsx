@@ -1,5 +1,5 @@
 import React from 'react';
-import {Route, Router} from "react-router-dom";
+import {BrowserRouter as Router, Route} from "react-router-dom";
 import './App.scss';
 import Nutrition from './components/nutrition-components/Nutrition';
 import Goals from './components/goal-components/Goals';
@@ -11,7 +11,7 @@ import NutritionLog from "./components/nutrition-components/NutritionLog";
 import NutritionLibrary from "./components/nutrition-components/NutritionLibrary";
 import {Container, Divider} from "semantic-ui-react";
 import ModifyConsumption from "./components/nutrition-components/ModifyConsumption";
-import createBrowserHistory from 'history/createBrowserHistory';
+import {createBrowserHistory} from 'history';
 import GoalNewEdit from "./components/goal-components/GoalForm";
 import GoalAnswer from "./components/goal-components/GoalAnswer";
 import FoodForm from "./components/nutrition-components/FoodForm";
@@ -21,7 +21,7 @@ export const history = createBrowserHistory();
 class App extends React.Component {
     render() {
         return (
-            <Router history={history}>
+            <Router>
                 <Container className='body-container'>
                     {/* Home */}
                     <Route exact path="/" component={Home}/>
