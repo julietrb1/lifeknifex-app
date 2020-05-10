@@ -1,23 +1,23 @@
 import React from 'react';
 import {Route, Router} from "react-router-dom";
 import './App.scss';
-import Nutrition from './components/Nutrition/Nutrition';
-import Goals from './components/Goals/Goals';
+import Nutrition from './components/nutrition-components/Nutrition';
+import Goals from './components/goal-components/Goals';
 import Career from './components/Career/Career';
 import Mood from './components/Mood/Mood';
 import Score from './components/Score/Score';
-import Account from './components/Account/Account';
+import Account from './components/account-components/Account';
 import Home from "./components/Home/Home";
-import Login from "./components/Login/Login";
-import Register from "./components/Register/Register";
-import NutritionLog from "./components/NutritionLog/NutritionLog";
-import NutritionLibrary from "./components/NutritionLibrary/NutritionLibrary";
+import Login from "./components/account-components/Login";
+import Register from "./components/account-components/Register";
+import NutritionLog from "./components/nutrition-components/NutritionLog";
+import NutritionLibrary from "./components/nutrition-components/NutritionLibrary";
 import {Container, Divider} from "semantic-ui-react";
-import ModifyConsumption from "./components/ModifyConsumption/ModifyConsumption";
+import ModifyConsumption from "./components/nutrition-components/ModifyConsumption";
 import createBrowserHistory from 'history/createBrowserHistory';
-import GoalNewEdit from "./components/GoalNewEdit/GoalNewEdit";
-import GoalAnswer from "./components/GoalAnswer/GoalAnswer";
-import FoodNewEdit from "./components/FoodNewEdit/FoodNewEdit";
+import GoalNewEdit from "./components/goal-components/GoalForm";
+import GoalAnswer from "./components/goal-components/GoalAnswer";
+import FoodForm from "./components/nutrition-components/FoodForm";
 
 export const history = createBrowserHistory();
 
@@ -33,8 +33,8 @@ class App extends React.Component {
                     <Route exact path="/nutrition" component={Nutrition}/>
                     <Route exact path="/nutrition/library" component={NutritionLibrary}/>
                     <Route exact path="/nutrition/log" component={NutritionLog}/>
-                    <Route exact path="/nutrition/library/new" component={FoodNewEdit}/>
-                    <Route path="/nutrition/library/manage/:foodId" component={FoodNewEdit}/>
+                    <Route exact path="/nutrition/library/new" component={FoodForm}/>
+                    <Route path="/nutrition/library/manage/:foodId" component={FoodForm}/>
                     <Route path="/nutrition/history/:consumptionId" component={ModifyConsumption}/>
 
                     {/* Goals */}
