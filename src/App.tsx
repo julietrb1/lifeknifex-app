@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter as Router, Route} from "react-router-dom";
+import {Route} from "react-router-dom";
 import './App.scss';
 import Nutrition from './components/nutrition-components/Nutrition';
 import Goals from './components/goal-components/Goals';
@@ -20,47 +20,46 @@ export const history = createBrowserHistory();
 class App extends React.Component {
     render() {
         return (
-            <Router>
-                <Container className='body-container'>
-                    {/* Home */}
-                    <Route exact path="/" component={Home}/>
 
-                    {/* Nutrition */}
-                    <Route exact path="/nutrition" component={Nutrition}/>
-                    <Route exact path="/nutrition/library" component={NutritionLibrary}/>
-                    <Route exact path="/nutrition/log" component={ConsumptionForm}/>
-                    <Route exact path="/nutrition/library/new" component={FoodForm}/>
-                    <Route path="/nutrition/library/manage/:foodId" component={FoodForm}/>
-                    <Route path="/nutrition/history/:consumptionId" component={ConsumptionForm}/>
+            <Container className='body-container'>
+                {/* Home */}
+                <Route exact path="/" component={Home}/>
 
-                    {/* Goals */}
-                    <Route exact path="/goals" component={Goals}/>
-                    <Route exact path="/goals/new" component={GoalNewEdit}/>
-                    <Route exact path="/goals/manage/:goalId" component={GoalNewEdit}/>
-                    <Route exact path="/goals/answer/:goalId?" component={Answer}/>
+                {/* Nutrition */}
+                <Route exact path="/nutrition" component={Nutrition}/>
+                <Route exact path="/nutrition/library" component={NutritionLibrary}/>
+                <Route exact path="/nutrition/log" component={ConsumptionForm}/>
+                <Route exact path="/nutrition/library/new" component={FoodForm}/>
+                <Route path="/nutrition/library/manage/:foodId" component={FoodForm}/>
+                <Route path="/nutrition/history/:consumptionId" component={ConsumptionForm}/>
 
-                    {/* Auth */}
-                    <Route exact path="/account" component={Account}/>
-                    <Route exact path="/login" component={Login}/>
-                    <Route exact path="/register" component={Register}/>
+                {/* Goals */}
+                <Route exact path="/goals" component={Goals}/>
+                <Route exact path="/goals/new" component={GoalNewEdit}/>
+                <Route exact path="/goals/manage/:goalId" component={GoalNewEdit}/>
+                <Route exact path="/goals/answer/:goalId?" component={Answer}/>
 
-                    {/* Page content */}
-                    <Divider hidden/>
-                    <div className="footer">
-                        <a href="https://www.djangoproject.com/fundraising/">
-                            <img src="/img/django-hero.png" alt="Django Hero badge"/>
-                        </a>
-                        <a href="http://www.djangoproject.com/">
-                            <img src="https://www.djangoproject.com/m/img/badges/djangopowered126x54_grey.gif"
-                                 alt="Powered by Django." title="Powered by Django."/>
-                        </a>
-                        <p>
-                            <small>Images include content from <a href="https://icons8.com">Icons8</a> used under <a
-                                href="https://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0</a></small>
-                        </p>
-                    </div>
-                </Container>
-            </Router>
+                {/* Auth */}
+                <Route exact path="/account" component={Account}/>
+                <Route exact path="/login" component={Login}/>
+                <Route exact path="/register" component={Register}/>
+
+                {/* Page content */}
+                <Divider hidden/>
+                <div className="footer">
+                    <a href="https://www.djangoproject.com/fundraising/">
+                        <img src="/img/django-hero.png" alt="Django Hero badge"/>
+                    </a>
+                    <a href="http://www.djangoproject.com/">
+                        <img src="https://www.djangoproject.com/m/img/badges/djangopowered126x54_grey.gif"
+                             alt="Powered by Django." title="Powered by Django."/>
+                    </a>
+                    <p>
+                        <small>Images include content from <a href="https://icons8.com">Icons8</a> used under <a
+                            href="https://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0</a></small>
+                    </p>
+                </div>
+            </Container>
         );
     }
 }
