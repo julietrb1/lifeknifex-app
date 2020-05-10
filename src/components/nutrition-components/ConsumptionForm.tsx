@@ -79,7 +79,9 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
     const consumption = useSelector((state: RootState) => selectConsumptionById(state, consumptionId));
     const [draftConsumption, setDraftConsumption] = useState(consumption);
     const {goBack} = useHistory();
-    const isLoading = useSelector(selectFoodsLoading) || useSelector(selectConsumptionsLoading);
+    const foodsLoading = useSelector(selectFoodsLoading);
+    const consumptionsLoading = useSelector(selectConsumptionsLoading);
+    const isLoading = foodsLoading || consumptionsLoading;
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submissionError, setSubmissionError] = useState('');
     const [submissionMessage, setSubmissionMessage] = useState('');
