@@ -15,6 +15,7 @@ export const firstCase = (text: string, isUpper: boolean = false) => `${isUpper 
 
 export const extractError = (err: any) => {
     const unknownErrorMessage = 'Unknown error occurred - please contact support';
+    if (typeof err === 'string') return err;
     if (!err) {
         return [unknownErrorMessage];
     } else if (err.message && !err.response) {
