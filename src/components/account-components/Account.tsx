@@ -2,7 +2,7 @@ import React from 'react';
 import HeaderBar from '../common-components/HeaderBar';
 import BreadcrumbSet from '../common-components/BreadcrumbSet';
 import {Button} from 'semantic-ui-react';
-import {getAccount, logOut} from '../../Backend';
+import {getAccount, logOut} from '../../backend';
 import {useHistory} from 'react-router-dom';
 import axios from "axios";
 

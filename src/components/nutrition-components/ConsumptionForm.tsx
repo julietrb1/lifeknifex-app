@@ -37,7 +37,7 @@ import {
 } from "../../features/consumptions/consumptionSlice";
 import HeaderBar from "../common-components/HeaderBar";
 import BreadcrumbSet from "../common-components/BreadcrumbSet";
-import {getFoods} from "../../Backend";
+import {getFoods} from "../../backend";
 
 interface IConsumptionFormMatchParams {
     consumptionId?: string;

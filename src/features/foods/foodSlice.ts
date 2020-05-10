@@ -3,7 +3,7 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {AppThunk} from "../../redux/store";
 import IFood from "../../models/IFood";
 import {IPaginatedResponse} from "../../models/IPaginatedReponse";
-import {reqCreateFood, reqDeleteFood, reqGetAllFoods, reqGetFood, reqUpdateFood} from "../../Backend";
+import {reqCreateFood, reqDeleteFood, reqGetAllFoods, reqGetFood, reqUpdateFood} from "../../backend";
 
 interface IFoodState extends ICommonState {
     foodsByUrl: { [foodUrl: string]: IFood };

@@ -3,7 +3,7 @@ import HeaderBar from '../common-components/HeaderBar';
 import {Button, Divider, Form, InputOnChangeData, Message} from 'semantic-ui-react';
 import {extractError} from '../../Utils';
 import RequestComponent from '../common-components/RequestComponent';
-import {logIn} from '../../Backend';
+import {logIn} from '../../backend';
 import {RouteComponentProps} from "react-router";
 
 interface ILoginMatchParams {

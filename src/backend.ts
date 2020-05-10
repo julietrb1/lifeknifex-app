@@ -175,18 +175,6 @@ export const reqDeleteGoal = (goal: IGoal) => axios.delete(`${API_GOALS}${goal.i
 export const reqCreateAnswer = (answer: {goal: string, value: number}) => axios.post(API_ANSWERS, answer);
 export const reqUpdateAnswer = (answer: IAnswer) => axios.patch(`${API_ANSWERS}${answer.id}/`, answer);
 
-export function updateConsumption(cancelToken: CancelTokenSource, consumption: any) {
-    return axios
-        .put(`${API_CONSUMPTIONS}${consumption.id}/`, consumption, {cancelToken: cancelToken.token})
-        .then(res => res.data);
-}
-
-export function deleteConsumption(cancelToken: CancelTokenSource, consumptionId: number) {
-    return axios
-        .delete(`${API_CONSUMPTIONS}${consumptionId}/`, {cancelToken: cancelToken.token})
-        .then(res => res.data);
-}
-
 export function getFoods(cancelToken: CancelTokenSource, search: string | null | undefined, isArchivedVisible: boolean = false) {
     const queryParams = new URLSearchParams();
     if (search && search.length) {
@@ -198,17 +186,5 @@ export function getFoods(cancelToken: CancelTokenSource, search: string | null |
     const url = `${API_FOODS}?${queryParams}`;
     return axios
         .get(url, {cancelToken: cancelToken.token})
-        .then(res => res.data);
-}
-
-export function getFood(cancelToken: CancelTokenSource, foodId: number) {
-    return axios
-        .get(`${API_FOODS}${foodId}/`, {cancelToken: cancelToken.token})
-        .then(res => res.data);
-}
-
-export function createFood(cancelToken: CancelTokenSource, food: any) {
-    return axios
-        .post(API_FOODS, food, {cancelToken: cancelToken.token})
         .then(res => res.data);
 }

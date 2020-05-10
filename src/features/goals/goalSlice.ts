@@ -4,12 +4,14 @@ import {AppThunk} from "../../redux/store";
 import IGoal from "../../models/IGoal";
 import {IPaginatedResponse} from "../../models/IPaginatedReponse";
 import {
-    reqCreateGoal, reqCreateAnswer,
+    reqCreateAnswer,
+    reqCreateGoal,
     reqDeleteGoal,
+    reqGetAllGoals,
     reqGetGoal,
-    reqUpdateGoal,
-    reqUpdateAnswer, reqGetAllGoals
-} from "../../Backend";
+    reqUpdateAnswer,
+    reqUpdateGoal
+} from "../../backend";
 import IAnswer from "../../models/IAnswer";
 
 interface IGoalState extends ICommonState {

@@ -9,7 +9,7 @@ import {
     reqGetAllConsumptions,
     reqGetConsumption,
     reqUpdateConsumption
-} from "../../Backend";
+} from "../../backend";
 
 interface IConsumptionState extends ICommonState {
     consumptionsById: { [consumptionUrl: string]: IConsumption };

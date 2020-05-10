@@ -2,7 +2,7 @@ import React from 'react';
 import HeaderBar from "../common-components/HeaderBar";
 import {Button, Divider, Form, InputOnChangeData, Message} from "semantic-ui-react";
 import {extractError} from "../../Utils";
-import {getFeature, register} from '../../Backend';
+import {getFeature, register} from '../../backend';
 import RequestComponent from "../common-components/RequestComponent";
 import {API_FEATURE_REGISTRATION_ENABLED} from '../../constants';
 import {RouteComponentProps} from "react-router";
