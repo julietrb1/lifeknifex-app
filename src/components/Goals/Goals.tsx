@@ -1,8 +1,7 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import HeaderBar from "../HeaderBar/HeaderBar";
 import BreadcrumbSet from "../common/BreadcrumbSet/BreadcrumbSet";
-import {connect} from "react-redux";
-import {goalsFetchAll} from "../../actions/goals";
+import {useDispatch, useSelector} from "react-redux";
 import {Button, Card, Divider, Header, Icon, Statistic} from "semantic-ui-react";
 import {COLOR_GOALS} from "../../constants";
 import PlaceholderSet from "../common/PlaceholderSet/PlaceholderSet";
@@ -13,62 +12,54 @@ import GoalsEmpty from "./GoalsEmpty/GoalsEmpty";
 
 import './Goals.scss';
 import CommonStatistic from "../common/CommonStatistic";
-import {IGoalsStoreState} from "../../reducers/goals";
-import {MyThunkDispatch} from "../../redux/store";
-import {IPaginatedResponse} from "../../models/IPaginatedReponse";
-import {IGoal} from "../../models/IGoal";
+import IGoal from "../../models/IGoal";
+import {
+    selectAllGoals,
+    selectGoalResponse,
+    selectGoalsLoaded,
+    selectGoalsLoading
+} from "../../features/goals/goalSelectors";
+import {fetchAllGoals} from "../../features/goals/goalSlice";
 
 const sections = [
     {name: 'Goals'}
 ];
 
-interface IGoalsStateProps {
-    goalsResponse: IPaginatedResponse<IGoal>,
-    goals: IGoalsStoreState,
-    isLoading: boolean
-}
+const Goals: React.FC = () => {
+    const dispatch = useDispatch();
+    const goals = useSelector(selectAllGoals);
+    const goalsResponse = useSelector(selectGoalResponse);
+    const isLoading = useSelector(selectGoalsLoading);
+    const isLoaded = useSelector(selectGoalsLoaded);
 
-interface IGoalsDispatchProps {
-    fetchGoals: () => void;
-}
+    useEffect(() => {
+        if (!isLoaded) dispatch(fetchAllGoals());
+    });
 
+    const DashboardContent = () => <div>
+        <Statistic.Group>
+            <CommonStatistic count={Number(goalsResponse?.count)} label='Goals'/>
+            <CommonStatistic count={getGoalToAnswerCount()} label='To answer'/>
+        </Statistic.Group>
+    </div>;
 
-type Props = IGoalsStateProps & IGoalsDispatchProps;
+    const getGoalToAnswerCount = () => Object.values(goals).filter(goal => !goal.todays_answer).length;
 
-class Goals extends React.Component<Props> {
-
-    componentDidMount() {
-        if (!this.props.goalsResponse.results) {
-            this.props.fetchGoals();
+    const GoalsContent = () => {
+        if (isLoading) {
+            return <PlaceholderSet/>;
+        } else if (Object.keys(goals).length) {
+            return <Card.Group stackable>
+                {Object.values(goals).map(GoalCard)}
+            </Card.Group>;
+        } else {
+            return <GoalsEmpty/>;
         }
-    }
+    };
 
-    render() {
-        return <div>
-            <BreadcrumbSet sections={sections}/>
-            <HeaderBar title="Goals" icon='goals'/>
-
-            <Divider horizontal>
-                <Header as='h4'>Dashboard</Header>
-            </Divider>
-            <this.DashboardContent/>
-
-            <Divider hidden/>
-
-            <Divider horizontal>
-                <Header as='h4'>Goal Library</Header>
-            </Divider>
-            <div className='goal-actions'>
-                <NewButton/>
-                <this.AnsweringButton/>
-            </div>
-            <this.GoalsContent/>
-        </div>;
-    }
-
-    AnsweringButton = () => {
-        const anyAnswered = Object.values(this.props.goals).some(goal => !!goal.todays_answer);
-        const allAnswered = Object.values(this.props.goals).every(goal => !!goal.todays_answer);
+    const AnsweringButton = () => {
+        const anyAnswered = Object.values(goals).some(goal => !!goal.todays_answer);
+        const allAnswered = Object.values(goals).every(goal => !!goal.todays_answer);
         let url, text;
         if (allAnswered) {
             url = '/goals/answer?mode=post';
@@ -93,29 +84,27 @@ class Goals extends React.Component<Props> {
         </Button>;
     };
 
-    DashboardContent = () => <div>
-        <Statistic.Group>
-            <CommonStatistic count={Number(this.props.goalsResponse.count)} label='Goals'/>
-            <CommonStatistic count={this.getGoalToAnswerCount()} label='To answer'/>
-        </Statistic.Group>
+    return <div>
+        <BreadcrumbSet sections={sections}/>
+        <HeaderBar title="Goals" icon='goals'/>
+
+        <Divider horizontal>
+            <Header as='h4'>Dashboard</Header>
+        </Divider>
+        <DashboardContent/>
+
+        <Divider hidden/>
+
+        <Divider horizontal>
+            <Header as='h4'>Goal Library</Header>
+        </Divider>
+        <div className='goal-actions'>
+            <NewButton/>
+            <AnsweringButton/>
+        </div>
+        <GoalsContent/>
     </div>;
-
-    getGoalToAnswerCount() {
-        return Object.values(this.props.goals).filter(goal => !goal.todays_answer).length;
-    }
-
-    GoalsContent = () => {
-        if (this.props.isLoading) {
-            return <PlaceholderSet/>;
-        } else if (Object.keys(this.props.goals).length) {
-            return <Card.Group stackable>
-                {Object.values(this.props.goals).map(GoalCard)}
-            </Card.Group>;
-        } else {
-            return <GoalsEmpty/>;
-        }
-    };
-}
+};
 
 function getGoalMeta(goal: IGoal) {
     const {test, frequency} = goal;
@@ -198,15 +187,4 @@ const LastAnswered = (goal: IGoal) => {
     }
 };
 
-const mapStateToProps = (state: any) => ({
-    goals: state.goals,
-    hasErrored: state.goalsHasErrored,
-    isLoading: state.goalsIsLoading,
-    goalsResponse: state.goalsResponse
-});
-
-const mapDispatchToProps = (dispatch: MyThunkDispatch) => ({
-    fetchGoals: () => dispatch(goalsFetchAll()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Goals);
+export default Goals;
