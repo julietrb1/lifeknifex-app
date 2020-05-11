@@ -22,7 +22,7 @@ const Home: React.FC = () => {
             <Card color={constants.COLOR_NUTRITION}>
                 <Card.Content>
                     <Image src='/img/undraw_pizza_sharing.svg'/>
-                    <Card.Header>Nutrition</Card.Header>
+                    <Card.Header as='h3'>Nutrition</Card.Header>
                     <Card.Meta>{betaBadge}</Card.Meta>
                     <Card.Description>
                         Logging what you eat and drink is the first step to becoming healthier, little by little.
@@ -53,7 +53,7 @@ const Home: React.FC = () => {
             <Card color={constants.COLOR_GOALS}>
                 <Card.Content>
                     <Image src='/img/undraw_i_can_fly_7egl.svg'/>
-                    <Card.Header>Goals</Card.Header>
+                    <Card.Header as='h3'>Goals</Card.Header>
                     <Card.Meta>{alphaBadge}</Card.Meta>
                     <Card.Description>
                         If you have an aspiration to achieve something big in life, start here. Every bit counts.
@@ -72,7 +72,7 @@ const Home: React.FC = () => {
             <Card color={constants.COLOR_CAREER}>
                 <Card.Content>
                     <Image src='/img/undraw_career_progress_ivdb.svg'/>
-                    <Card.Header>Career</Card.Header>
+                    <Card.Header as='h3'>Career</Card.Header>
                     <Card.Description>
                         If you don&apos;t track how well you&apos;re doing in your job, how will you see
                         improvement? Start here.
@@ -86,7 +86,7 @@ const Home: React.FC = () => {
             <Card color={constants.COLOR_MOOD}>
                 <Card.Content>
                     <Image src='/img/undraw_mindfulness_scgo.svg'/>
-                    <Card.Header>Mood</Card.Header>
+                    <Card.Header as='h3'>Mood</Card.Header>
                     <Card.Description>
                         If there&apos;s one thing that counts more than emotions, it&apos;s your mood. Don&apos;t
                         let it run you over.
@@ -100,7 +100,7 @@ const Home: React.FC = () => {
             <Card color={constants.COLOR_SCORE}>
                 <Card.Content>
                     <Image src='/img/undraw_checking_boxes_2ibd.svg'/>
-                    <Card.Header>Score</Card.Header>
+                    <Card.Header as='h3'>Score</Card.Header>
                     <Card.Description>
                         There&apos;s no reason why organisation shouldn&apos;t be fun! Keep track of your progress
                         and success here.
@@ -114,7 +114,7 @@ const Home: React.FC = () => {
             <Card color={constants.COLOR_ACCOUNT}>
                 <Card.Content>
                     <Image src='/img/undraw_security_o890.svg'/>
-                    <Card.Header>Account</Card.Header>
+                    <Card.Header as='h3'>Account</Card.Header>
                     <Card.Meta>{alphaBadge}</Card.Meta>
                     <Card.Description>
                         Need to log out, or manage your account? Get all of your paperwork and maintenance done
