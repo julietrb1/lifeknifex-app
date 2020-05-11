@@ -11,13 +11,13 @@ const routeUrl = '/nutrition/library';
 let store: MockStoreEnhanced<RootState>;
 const emptyFoodsMessage = 'You don\'t have any foods yet.';
 
-function addFoodToStore(foodName: string) {
+function addFoodToStore(foodName: string, isArchived = false) {
     store.getState().foodState.foodsByUrl[''] = {
         id: 1,
         url: '',
         name: foodName,
         health_index: 1,
-        is_archived: false,
+        is_archived: isArchived,
         icon: ''
     };
 }
@@ -91,5 +91,14 @@ describe('<NutritionLibrary/>', () => {
         renderNode(routeUrl, store);
         fireEvent.click(screen.getByRole('checkbox'));
         await waitFor(() => screen.getByRole('heading', {name: 'No archived foods for you!'}));
+    });
+
+    it('should show archived foods', async () => {
+        const foodName = 'My food';
+        addFoodToStore(foodName, true)
+        renderNode(routeUrl, store);
+        await waitFor(() => screen.getByRole('heading', {name: emptyFoodsMessage}));
+        fireEvent.click(screen.getByRole('checkbox'));
+        await waitFor(() => screen.getByRole('heading', {name: foodName}));
     });
 });
