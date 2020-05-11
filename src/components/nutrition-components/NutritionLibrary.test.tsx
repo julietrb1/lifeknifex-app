@@ -1,43 +1,19 @@
 import React from "react";
-import {fireEvent, render, screen, waitFor} from "@testing-library/react";
+import {fireEvent, screen, waitFor} from "@testing-library/react";
 import * as backend from '../../backend';
-import {Provider} from "react-redux";
-import configureStore, {MockStoreEnhanced} from 'redux-mock-store';
-import {MemoryRouter as Router} from 'react-router-dom';
-import thunk from 'redux-thunk'
-import App from "../../App";
+import {MockStoreEnhanced} from 'redux-mock-store';
 import {RootState} from "../../redux/rootReducer";
+import {generateMockStore, renderNode} from "../../testUtils";
 
 jest.mock('./../../backend');
-const mockedBackend = backend as jest.Mocked<typeof backend>;
-const mockStore = configureStore<RootState>([thunk]);
+
+const routeUrl = '/nutrition/library';
 let store: MockStoreEnhanced<RootState>;
-const generateInitialStore = (): RootState => ({
-    foodState: {
-        isLoading: false,
-        foodsByUrl: {},
-        foodResponse: null,
-        error: null
-    }, consumptionState: {
-        consumptionsById: {},
-        consumptionResponse: null,
-        isLoading: false,
-        error: null
-    }, goalState: {
-        error: null,
-        isLoading: false,
-        goalResponse: null,
-        goalsByUrl: {}
-    }
-});
-
 const emptyFoodsMessage = 'You don\'t have any foods yet.';
-
-const renderNode = () => render(<Provider store={store}><Router initialEntries={['/nutrition/library']}><App/></Router></Provider>);
 
 describe('<NutritionLibrary/>', () => {
     beforeEach(() => {
-        store = mockStore(generateInitialStore());
+        store = generateMockStore();
     });
 
     afterEach(() => {
@@ -45,7 +21,7 @@ describe('<NutritionLibrary/>', () => {
     });
 
     it('should show empty food list', async () => {
-        renderNode();
+        renderNode(routeUrl, store);
         await waitFor(() => screen.getByRole('heading', {name: emptyFoodsMessage}));
         expect(backend.reqGetAllFoods).toHaveBeenCalledTimes(1);
     });
@@ -60,13 +36,13 @@ describe('<NutritionLibrary/>', () => {
             is_archived: false,
             icon: ''
         };
-        renderNode();
+        renderNode(routeUrl, store);
         await waitFor(() => screen.getByRole('heading', {name: foodName}));
     });
 
     it('should not perform any requests when loaded', async () => {
         store.getState().foodState.foodResponse = {};
-        renderNode();
+        renderNode(routeUrl, store);
         await waitFor(() => screen.getByRole('heading', {name: emptyFoodsMessage}));
         expect(backend.reqGetAllFoods).not.toHaveBeenCalled();
     });
@@ -82,7 +58,7 @@ describe('<NutritionLibrary/>', () => {
             icon: ''
         };
 
-        renderNode();
+        renderNode(routeUrl, store);
         await waitFor(() => screen.getByRole('heading', {name: foodName}));
         fireEvent.click(screen.getByRole('button', {name: 'Log'}));
         await waitFor(() => screen.getByRole('heading', {name: 'Log Consumption'}));
