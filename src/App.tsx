@@ -2,7 +2,7 @@ import React from 'react';
 import {Route} from "react-router-dom";
 import './App.scss';
 import Nutrition from './components/nutrition-components/Nutrition';
-import Goals from './components/goal-components/Goals';
+import GoalList from './components/goal-components/GoalList';
 import Account from './components/account-components/Account';
 import Home from "./components/Home/Home";
 import Login from "./components/account-components/Login";
@@ -34,7 +34,7 @@ class App extends React.Component {
                 <Route path="/nutrition/history/:consumptionId" component={ConsumptionForm}/>
 
                 {/* Goals */}
-                <Route exact path="/goals" component={Goals}/>
+                <Route exact path="/goals" component={GoalList}/>
                 <Route exact path="/goals/new" component={GoalNewEdit}/>
                 <Route exact path="/goals/manage/:goalId" component={GoalNewEdit}/>
                 <Route exact path="/goals/answer/:goalId?" component={Answer}/>

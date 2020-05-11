@@ -25,7 +25,7 @@ const sections = [
     {name: 'Goals'}
 ];
 
-const Goals: React.FC = () => {
+const GoalList: React.FC = () => {
     const dispatch = useDispatch();
     const goals = useSelector(selectAllGoals);
     const goalsResponse = useSelector(selectGoalResponse);
@@ -187,4 +187,4 @@ const LastAnswered = (goal: IGoal) => {
     }
 };
 
-export default Goals;
+export default GoalList;
