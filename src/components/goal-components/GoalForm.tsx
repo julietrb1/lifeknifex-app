@@ -64,7 +64,7 @@ const GoalForm: React.FC = () => {
     return (
         <div>
             <BreadcrumbSet sections={sections}/>
-            <HeaderBar title={`${actionWord} Goal`} icon='draftGoals'/>
+            <HeaderBar title={`${actionWord} Goal`} icon='goals'/>
             <Form onSubmit={handleGoalSubmit} loading={isLoading}>
                 <Form.Field required>
                     <label>Question</label>
