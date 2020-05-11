@@ -79,4 +79,11 @@ describe('<NutritionLibrary/>', () => {
         fireEvent.click(screen.getByRole('button', {name: 'New Food'}));
         await waitFor(() => screen.getByRole('heading', {name: 'New Food'}));
     });
+
+    it('should navigate to edit food form', async () => {
+        addFoodToStore('My food');
+        renderNode(routeUrl, store);
+        fireEvent.click(screen.getByRole('button', {name: 'Edit'}));
+        await waitFor(() => screen.getByRole('heading', {name: 'Edit Food'}));
+    });
 });
