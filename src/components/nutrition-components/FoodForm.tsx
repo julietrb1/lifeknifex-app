@@ -10,6 +10,8 @@ import {RootState} from "../../redux/rootReducer";
 import {selectFoodById} from "../../features/foods/foodSelectors";
 import IFood from "../../models/IFood";
 import {createFood, fetchFood, updateFood} from "../../features/foods/foodSlice";
+import BreadcrumbSet from "../common-components/BreadcrumbSet";
+import HeaderBar from "../common-components/HeaderBar";
 
 const URL_NUTRITION_LIBRARY = '/nutrition/library';
 
@@ -47,7 +49,15 @@ const FoodForm: React.FC = () => {
 
     const toggleArchived = () => setDraftFood({...draftFood, is_archived: !draftFood.is_archived});
 
+    const actionWord = foodId ? 'Edit' : 'New';
+    const sections = [
+        {name: 'Nutrition', href: '/nutrition'},
+        {name: actionWord}
+    ];
+
     return <div>
+        <BreadcrumbSet sections={sections}/>
+        <HeaderBar title={`${actionWord} Food`} icon='nutrition'/>
         <Form onSubmit={handleSave} loading={isLoading}
               error={!!submissionError}>
             <ErrorMessage header='Problem While Saving Food' content={submissionError}/>
