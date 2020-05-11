@@ -1,10 +1,23 @@
 import axios, {AxiosError, CancelTokenSource} from 'axios';
-import {API, LOCAL_STORAGE_JWT_ACCESS, LOCAL_STORAGE_JWT_REFRESH} from "./constants";
+import {LOCAL_STORAGE_JWT_ACCESS, LOCAL_STORAGE_JWT_REFRESH} from "./constants";
 import {history} from './App';
 import IConsumption from "./models/IConsumption";
 import IFood from "./models/IFood";
 import IGoal from "./models/IGoal";
 import {extractError} from "./Utils";
+
+let API = 'http://localhost:8000/';
+if (document.location.hostname === 'app.lifeknifex.com') {
+    const prodUrl = process.env.REACT_APP_BACKEND_URL_PROD;
+    if (!prodUrl) throw Error('In production with no REACT_APP_BACKEND_URL_PROD environment variable');
+    API = prodUrl;
+}
+
+if (document.location.hostname === 'lifeknifex-app.herokuapp.com') {
+    const ciUrl = process.env.REACT_APP_BACKEND_URL;
+    if (!ciUrl) throw Error('In CI with no REACT_APP_BACKEND_URL_PROD environment variable');
+    API = ciUrl;
+}
 
 const API_FEATURES = `${API}features/`;
 const API_CONSUMPTIONS = `${API}consumptions/`;
@@ -157,6 +170,9 @@ const handleReq = async (requestFunc: () => any) => {
         throw Error(extractError(e));
     }
 };
+
+// Base
+export const reqGetBase = () => axios.get(API);
 
 // Consumptions
 export const reqGetConsumption = (consumptionId: number) => axios.get(`${API_CONSUMPTIONS}${consumptionId}/`);
