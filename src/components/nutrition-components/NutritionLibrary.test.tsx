@@ -63,4 +63,10 @@ describe('<NutritionLibrary/>', () => {
         fireEvent.click(screen.getByRole('button', {name: 'Log'}));
         await waitFor(() => screen.getByRole('heading', {name: 'Log Consumption'}));
     });
+
+    it('should navigate to FoodForm when Let\'s Create One clicked', async () => {
+        renderNode(routeUrl, store);
+        fireEvent.click(screen.getByRole('button', {name: 'Let\'s Create One'}));
+        await waitFor(() => screen.getByRole('heading', {name: 'New Food'}));
+    });
 });
