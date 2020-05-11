@@ -86,4 +86,10 @@ describe('<NutritionLibrary/>', () => {
         fireEvent.click(screen.getByRole('button', {name: 'Edit'}));
         await waitFor(() => screen.getByRole('heading', {name: 'Edit Food'}));
     });
+
+    it('should show an empty archived message', async () => {
+        renderNode(routeUrl, store);
+        fireEvent.click(screen.getByRole('checkbox'));
+        await waitFor(() => screen.getByRole('heading', {name: 'No archived foods for you!'}));
+    });
 });
