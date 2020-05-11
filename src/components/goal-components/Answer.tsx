@@ -118,9 +118,8 @@ const Answer: React.FC = () => {
             return null;
         }
 
-
-        const filteredGoalLength = (filteredGoals || []).length || '--';
-        return <Header.Subheader>{goalIndex} / {filteredGoalLength}</Header.Subheader>;
+        const filteredGoalLength = filteredGoals?.length || '--';
+        return <Header.Subheader>{goalIndex + 1} / {filteredGoalLength}</Header.Subheader>;
     };
 
     const handleFormAction = async (increment: any) => {
@@ -129,7 +128,7 @@ const Answer: React.FC = () => {
         const todaysAnswer = currentGoal.todays_answer;
         if ((haveSingleGoal || isPostMode) && todaysAnswer) {
             console.log(candidateValue);
-            await dispatch(updateAnswer(todaysAnswer, candidateValue));
+            await dispatch(updateAnswer(currentGoal, candidateValue));
             if (isPostMode) {
                 goToGoal(parsedIncrement);
             } else {

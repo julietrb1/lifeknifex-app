@@ -50,6 +50,7 @@ const singleAnswerSuccess = (state: IGoalState, {payload}: PayloadAction<IAnswer
     state.error = null;
     state.goalsByUrl[payload.goal].todays_answer = payload.url;
     state.goalsByUrl[payload.goal].todays_answer_value = payload.value;
+    state.goalsByUrl[payload.goal].last_answered = payload.date;
 };
 
 const deletionGoalSuccess = (state: IGoalState, {payload}: PayloadAction<string>) => {
@@ -146,25 +147,24 @@ export const deleteGoal = (goal: IGoal): AppThunk => async dispatch => {
     }
 };
 
-export const updateAnswer = (answerUrl: string, value: number): AppThunk => async dispatch => {
+export const updateAnswer = (goal: IGoal, value: number): AppThunk => async dispatch => {
     try {
         dispatch(updateAnswerStart());
-        const {data} = await reqUpdateAnswer(answerUrl, value);
+        const {data} = await reqUpdateAnswer(goal, value);
         dispatch(updateAnswerSuccess(data));
     } catch (e) {
         dispatch(updateAnswerFailure(e.toString()));
     }
 };
 
-export const createAnswer = (goal: any, value: number): AppThunk => async dispatch => {
+export const createAnswer = (goal: IGoal, value: number): AppThunk => async dispatch => {
     try {
         dispatch(createAnswerStart());
-        const {data} = await reqCreateAnswer({
-            goal: goal.url,
-            value: value
-        });
+        const {data} = await reqCreateAnswer(goal, value);
         dispatch(createAnswerSuccess(data));
+        return data;
     } catch (e) {
         dispatch(createAnswerFailure(e.toString()));
+        throw(e);
     }
 };

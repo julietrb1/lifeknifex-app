@@ -150,7 +150,7 @@ export function logOut() {
     });
 }
 
-const handleRequestExceptions = async (requestFunc: () => any) => {
+const handleReq = async (requestFunc: () => any) => {
     try {
         return await requestFunc();
     } catch (e) {
@@ -161,7 +161,7 @@ const handleRequestExceptions = async (requestFunc: () => any) => {
 // Consumptions
 export const reqGetConsumption = (consumptionId: number) => axios.get(`${API_CONSUMPTIONS}${consumptionId}/`);
 export const reqGetAllConsumptions = (search?: string) => axios.get(API_CONSUMPTIONS, {params: {search}});
-export const reqCreateConsumption = (consumption: IConsumption) => handleRequestExceptions(() => axios.post(API_CONSUMPTIONS, consumption));
+export const reqCreateConsumption = (consumption: IConsumption) => handleReq(() => axios.post(API_CONSUMPTIONS, consumption));
 export const reqUpdateConsumption = (consumption: IConsumption) => axios.patch(`${API_CONSUMPTIONS}${consumption.id}/`, consumption);
 export const reqDeleteConsumption = (consumption: IConsumption) => axios.delete(`${API_CONSUMPTIONS}${consumption.id}/`);
 
@@ -180,8 +180,8 @@ export const reqUpdateGoal = (goal: IGoal) => axios.patch(`${API_GOALS}${goal.id
 export const reqDeleteGoal = (goal: IGoal) => axios.delete(`${API_GOALS}${goal.id}/`);
 
 // Answers
-export const reqCreateAnswer = (answer: { goal: string, value: number }) => axios.post(API_ANSWERS, answer);
-export const reqUpdateAnswer = (answerUrl: string, value: number) => axios.patch(answerUrl, {value});
+export const reqCreateAnswer = (goal: IGoal, value: number) => axios.post(API_ANSWERS, {goal: goal.url, value});
+export const reqUpdateAnswer = (goal: IGoal, value: number) => axios.patch(String(goal.todays_answer), {value});
 
 export function getFoods(cancelToken: CancelTokenSource, search: string | null | undefined, isArchivedVisible: boolean = false) {
     const queryParams = new URLSearchParams();
