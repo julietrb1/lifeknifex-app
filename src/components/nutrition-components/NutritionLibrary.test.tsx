@@ -11,6 +11,17 @@ const routeUrl = '/nutrition/library';
 let store: MockStoreEnhanced<RootState>;
 const emptyFoodsMessage = 'You don\'t have any foods yet.';
 
+function addFoodToStore(foodName: string) {
+    store.getState().foodState.foodsByUrl[''] = {
+        id: 1,
+        url: '',
+        name: foodName,
+        health_index: 1,
+        is_archived: false,
+        icon: ''
+    };
+}
+
 describe('<NutritionLibrary/>', () => {
     beforeEach(() => {
         store = generateMockStore();
@@ -49,24 +60,23 @@ describe('<NutritionLibrary/>', () => {
 
     it('should navigate to Log Consumption when Log clicked', async () => {
         const foodName = 'My food';
-        store.getState().foodState.foodsByUrl[''] = {
-            id: 1,
-            url: '',
-            name: foodName,
-            health_index: 1,
-            is_archived: false,
-            icon: ''
-        };
-
+        addFoodToStore(foodName);
         renderNode(routeUrl, store);
         await waitFor(() => screen.getByRole('heading', {name: foodName}));
         fireEvent.click(screen.getByRole('button', {name: 'Log'}));
         await waitFor(() => screen.getByRole('heading', {name: 'Log Consumption'}));
     });
 
-    it('should navigate to FoodForm when Let\'s Create One clicked', async () => {
+    it('should navigate to new food form with no foods', async () => {
         renderNode(routeUrl, store);
         fireEvent.click(screen.getByRole('button', {name: 'Let\'s Create One'}));
+        await waitFor(() => screen.getByRole('heading', {name: 'New Food'}));
+    });
+
+    it('should navigate to new food form with foods', async () => {
+        addFoodToStore('My food');
+        renderNode(routeUrl, store);
+        fireEvent.click(screen.getByRole('button', {name: 'New Food'}));
         await waitFor(() => screen.getByRole('heading', {name: 'New Food'}));
     });
 });
