@@ -17,6 +17,7 @@ import {
     selectFoodsLoading
 } from "../../features/foods/foodSelectors";
 import {fetchAllFoods} from "../../features/foods/foodSlice";
+import {RootState} from "../../redux/rootReducer";
 
 const sections = [
     {name: 'Nutrition', href: '/nutrition'},
@@ -26,9 +27,9 @@ const sections = [
 const NutritionLibrary: React.FC = () => {
     const dispatch = useDispatch();
     const isLoading = useSelector(selectFoodsLoading);
-    const foods = useSelector(selectAllFoods);
-    const foodResponse = useSelector(selectFoodResponse);
     const [isArchivedVisible, setIsArchivedVisible] = React.useState(false);
+    const foods = useSelector((state: RootState) => selectAllFoods(state, isArchivedVisible));
+    const foodResponse = useSelector(selectFoodResponse);
     const areFoodsLoaded = useSelector(selectFoodsLoaded);
 
     useEffect(() => {
@@ -95,11 +96,10 @@ const NutritionLibrary: React.FC = () => {
         <BreadcrumbSet sections={sections}/>
         <HeaderBar title='Food Library' icon='nutrition'/>
         <Divider hidden/>
-        <p>{isArchivedVisible}</p>
         <Checkbox
             toggle
             label='Show archived'
-            onChange={() => setIsArchivedVisible(!isArchivedVisible)}
+            onChange={() => setIsArchivedVisible(prevState => !prevState)}
             checked={isArchivedVisible}/>
         <NewButton/>
         <Divider hidden/>
