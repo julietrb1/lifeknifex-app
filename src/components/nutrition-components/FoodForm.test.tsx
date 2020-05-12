@@ -6,6 +6,7 @@ import {RootState} from "../../redux/rootReducer";
 import {generateAxiosRequest, generateFood, generateMockStore, renderNode} from "../../testUtils";
 import userEvent from "@testing-library/user-event";
 import IFood from "../../models/IFood";
+import {IPaginatedResponse} from "../../models/IPaginatedReponse";
 
 const mockBackend = backend as jest.Mocked<typeof backend>;
 
@@ -19,6 +20,7 @@ let store: MockStoreEnhanced<RootState>;
 describe('<FoodForm/>', () => {
     beforeEach(() => {
         store = generateMockStore();
+        mockBackend.reqGetAllFoods.mockResolvedValue(generateAxiosRequest<IPaginatedResponse<IFood>>({}));
     });
 
     afterEach(() => {
@@ -45,6 +47,26 @@ describe('<FoodForm/>', () => {
         await userEvent.type(screen.getByLabelText('Name'), food.name);
         await userEvent.click(screen.getByLabelText('Healthy'));
         await userEvent.click(screen.getByRole('button', {name: 'Save Food'}));
-        await waitFor(() => screen.getByText(`Food "${food}" saved.`));
+        await waitFor(() => screen.getByText(`Food "${food.name}" saved`));
+    });
+
+    it('should show error with missing name', async () => {
+        renderNode(newRouteUrl, store);
+        await waitFor(() => screen.getByRole('heading', {name: newFoodHeading}));
+        await userEvent.click(screen.getByLabelText('Healthy'));
+        await userEvent.click(screen.getByRole('button', {name: 'Save Food'}));
+        expect(backend.reqCreateFood).not.toHaveBeenCalled();
+        await waitFor(() => screen.getByRole('heading', {name: newFoodHeading}));
+        await waitFor(() => screen.getByText(`Food requires a name`));
+    });
+
+    it('should show error with missing quality', async () => {
+        renderNode(newRouteUrl, store);
+        await waitFor(() => screen.getByRole('heading', {name: newFoodHeading}));
+        await userEvent.type(screen.getByLabelText('Name'), 'My food');
+        await userEvent.click(screen.getByRole('button', {name: 'Save Food'}));
+        expect(backend.reqCreateFood).not.toHaveBeenCalled();
+        await waitFor(() => screen.getByRole('heading', {name: newFoodHeading}));
+        await waitFor(() => screen.getByText(`Food requires a quality`));
     });
 });

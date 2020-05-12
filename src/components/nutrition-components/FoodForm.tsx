@@ -3,7 +3,6 @@ import './FoodForm.scss';
 import {Link, useHistory, useParams} from 'react-router-dom';
 import {healthStrings} from '../../Utils';
 import {Button, Confirm, Divider, Dropdown, Form, Radio} from 'semantic-ui-react';
-import ErrorMessage from '../common-components/ErrorMessage';
 import {APP_TITLE, foodIcons} from '../../constants';
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../redux/rootReducer";
@@ -26,16 +25,36 @@ const FoodForm: React.FC = () => {
     const {isLoading} = useSelector((state: RootState) => state.foodState);
     const food: IFood | undefined = useSelector((state: RootState) => selectFoodById(state, foodId));
     const [draftFood, setDraftFood] = useState<IFood>(food || {} as IFood);
-    const [submissionError, setSubmissionError] = useState('');
+    const [errorOnFood, setErrorOnFood] = useState(false);
+    const [errorOnHealthIndex, setErrorOnHealthIndex] = useState(false);
 
     useEffect(() => {
         if (!food) fetchFood(foodId);
     });
 
     const handleSave = async () => {
-        if (foodId) await dispatch(updateFood(draftFood));
-        else await dispatch(createFood(draftFood));
-        snackbar.enqueueSnackbar(`Food "${draftFood.name}" saved.`, {variant: "success"});
+        if (!draftFood.name) {
+            setErrorOnFood(true);
+            snackbar.enqueueSnackbar('Food requires a name', {variant: "error"});
+            return;
+        }
+        setErrorOnFood(false);
+
+        if (!draftFood.health_index) {
+            setErrorOnHealthIndex(true);
+            snackbar.enqueueSnackbar('Food requires a quality', {variant: "error"});
+            return;
+        }
+        setErrorOnHealthIndex(false);
+
+        const submitFunction = foodId ? updateFood : createFood;
+        try {
+            await dispatch(submitFunction(draftFood));
+        } catch (e) {
+            snackbar.enqueueSnackbar(`Error when saving: ${e.message}`, {variant: "error"});
+            return;
+        }
+        snackbar.enqueueSnackbar(`Food "${draftFood.name}" saved`, {variant: "success"});
         if (history.length > 1) history.goBack();
         else history.push('/nutrition/library');
     };
@@ -63,32 +82,32 @@ const FoodForm: React.FC = () => {
     return <div>
         <BreadcrumbSet sections={sections}/>
         <HeaderBar title={`${actionWord} Food`} icon='nutrition'/>
-        <Form onSubmit={handleSave} loading={isLoading}
-              error={!!submissionError}>
-            <ErrorMessage header='Problem While Saving Food' content={submissionError}/>
-            <Form.Field>
+        <Form onSubmit={handleSave} loading={isLoading}>
+            <Form.Field error={errorOnFood}>
                 <label htmlFor='name'>Name</label>
                 <Form.Input id='name'
                             autoFocus value={food?.name}
                             onChange={e => setDraftFood({...draftFood, name: e.target.value})}/>
             </Form.Field>
-            <Form.Field>
-                <label>Quality</label>
+            <Form.Field error={errorOnHealthIndex}>
+                <Form.Field>
+                    <label>Quality</label>
+                </Form.Field>
+                {
+                    healthStrings.map((label: string, index: number) =>
+                        <Form.Field key={label}>
+                            <Radio //TODO: Fix needing to manually create a label with associated ID for accessibility
+                                label={<label htmlFor={`radio_${label}`}>{label}</label>}
+                                id={`radio_${label}`}
+                                name='healthRadios'
+                                value={index + 1}
+                                checked={draftFood?.health_index === index + 1}
+                                onChange={(e, d) => setDraftFood({...draftFood, health_index: d.value as number})}
+                            />
+                        </Form.Field>
+                    )
+                }
             </Form.Field>
-            {
-                healthStrings.map((label: string, index: number) =>
-                    <Form.Field key={label}>
-                        <Radio //TODO: Fix needing to manually create a label with associated ID for accessibility
-                            label={<label htmlFor={`radio_${label}`}>{label}</label>}
-                            id={`radio_${label}`}
-                            name='healthRadios'
-                            value={index + 1}
-                            checked={draftFood?.health_index === index + 1}
-                            onChange={(e, d) => setDraftFood({...draftFood, health_index: d.value as number})}
-                        />
-                    </Form.Field>
-                )
-            }
             <Form.Field>
                 <label>Icon</label>
                 <Dropdown search clearable

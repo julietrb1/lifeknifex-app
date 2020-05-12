@@ -52,7 +52,7 @@ describe('<NutritionLibrary/>', () => {
         addFoodToStore(store, foodName);
         renderNode(routeUrl, store);
         await waitFor(() => screen.getByRole('heading', {name: foodName}));
-        fireEvent.click(screen.getByRole('button', {name: 'Log'}));
+        await fireEvent.click(screen.getByRole('button', {name: 'Log'}));
         await waitFor(() => screen.getByRole('heading', {name: 'Log Consumption'}));
     });
 
