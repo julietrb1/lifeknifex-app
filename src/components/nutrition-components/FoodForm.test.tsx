@@ -8,8 +8,8 @@ import {
     generateAxiosResponse,
     generateFood,
     generateMockStore,
-    generatePaginatedAxiosResponse,
-    renderNode
+    renderNode,
+    setUpMockBackend
 } from "../../testUtils";
 import userEvent from "@testing-library/user-event";
 import IFood from "../../models/IFood";
@@ -25,8 +25,7 @@ let store: MockStoreEnhanced<RootState>;
 describe('<FoodForm/>', () => {
     beforeEach(() => {
         store = generateMockStore();
-        mockBackend.reqGetAllFoods.mockResolvedValue(generatePaginatedAxiosResponse<IFood>([]));
-        mockBackend.reqGetFood.mockResolvedValue(generateAxiosResponse<IFood>({} as IFood));
+        setUpMockBackend(mockBackend);
     });
 
     afterEach(() => {
@@ -39,8 +38,8 @@ describe('<FoodForm/>', () => {
         const newFood = {...food, name: 'My food 2'};
         mockBackend.reqUpdateFood.mockResolvedValue(generateAxiosResponse<IFood>(newFood));
         renderNode(`/nutrition/library/manage/${food.id}`, store);
-        await waitFor(() => (screen.getByDisplayValue(food.name) as HTMLInputElement).value);
-        expect((screen.getByLabelText('Healthy') as HTMLInputElement).value).toEqual(String(food.health_index));
+        expect((screen.getByDisplayValue(food.name) as HTMLInputElement).value).toEqual(food.name);
+        expect((screen.getByLabelText('Healthy') as HTMLInputElement).checked).toBeTruthy();
         await waitFor(() => screen.getByRole('heading', {name: editFoodHeading}));
         await userEvent.clear(screen.getByLabelText('Name'));
         await userEvent.type(screen.getByLabelText('Name'), newFood.name);

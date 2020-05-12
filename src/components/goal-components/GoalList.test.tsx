@@ -3,8 +3,7 @@ import {fireEvent, screen, waitFor} from "@testing-library/react";
 import * as backend from '../../backend';
 import {MockStoreEnhanced} from 'redux-mock-store';
 import {RootState} from "../../redux/rootReducer";
-import {generateMockStore, generatePaginatedAxiosResponse, renderNode} from "../../testUtils";
-import IFood from "../../models/IFood";
+import {generateMockStore, renderNode, setUpMockBackend} from "../../testUtils";
 
 jest.mock('./../../backend');
 const mockBackend = backend as jest.Mocked<typeof backend>;
@@ -15,7 +14,7 @@ const emptyGoalsMessage = 'You don\'t have any goals yet.';
 describe('<Goals/>', () => {
     beforeEach(() => {
         store = generateMockStore();
-        mockBackend.reqGetAllFoods.mockResolvedValue(generatePaginatedAxiosResponse<IFood>([]));
+        setUpMockBackend(mockBackend);
     });
 
     afterEach(() => {

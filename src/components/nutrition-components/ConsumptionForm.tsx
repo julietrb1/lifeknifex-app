@@ -37,6 +37,7 @@ import HeaderBar from "../common-components/HeaderBar";
 import BreadcrumbSet from "../common-components/BreadcrumbSet";
 import {healthStrings, useDebounce} from "../../Utils";
 import {getFoods} from "../../backend";
+import {useSnackbar} from "notistack";
 
 interface IConsumptionFormMatchParams {
     consumptionId?: string;
@@ -69,7 +70,9 @@ const quantities = [
 
 const ConsumptionForm: React.FC = () => {
     const cancelToken = axios.CancelToken.source();
+    const {enqueueSnackbar} = useSnackbar();
     const dispatch = useDispatch();
+    const history = useHistory();
     const params = useParams<IConsumptionFormMatchParams>();
     const consumptionId = Number(params.consumptionId);
     const consumptionLoaded = useSelector((state: RootState) => selectConsumptionLoadedById(state, consumptionId));
@@ -138,9 +141,10 @@ const ConsumptionForm: React.FC = () => {
 
     const HourField = () => {
         if (consumptionId) {
-            return <Input disabled value={moment(draftConsumption.date).format(TIME_FORMAT_STRING)}/>;
+            return <Input id='when-input' disabled value={moment(draftConsumption.date).format(TIME_FORMAT_STRING)}/>;
         } else {
             return <Dropdown
+                id='when-input'
                 selection
                 options={availableHours}
                 onChange={handleHourChange}
@@ -161,7 +165,9 @@ const ConsumptionForm: React.FC = () => {
 
         if (consumptionId) {
             await dispatch(updateConsumption(draftConsumption));
-            goBack();
+            enqueueSnackbar(`Consumption of "${draftConsumption.food_name}" saved`, {variant: 'success'});
+            if (history.length > 1) history.goBack();
+            else history.push('/nutrition');
 
         } else {
             try {
@@ -169,8 +175,8 @@ const ConsumptionForm: React.FC = () => {
                 setSubmissionError('');
                 setAvailableHours(generateHours());
                 setDraftConsumption(generateBlankConsumption());
-                setSubmissionMessage(`Well done! Your consumption of ${currentFoodSearch} at ${moment(draftConsumption.date).format(TIME_FORMAT_STRING)} has been logged.`);
-                setCurrentFoodSearch('')
+                setCurrentFoodSearch('');
+                enqueueSnackbar(`Well done! Consumption of "${currentFoodSearch}" logged.`, {variant: 'success'});
             } catch (e) {
                 setSubmissionError(e.message);
             }
@@ -198,11 +204,13 @@ const ConsumptionForm: React.FC = () => {
 
     const foodField = consumptionId ?
         <Input
+            id='food-input'
             value={draftConsumption.food_name}
             disabled={true}
         />
         :
         <Search
+            id='food-input'
             loading={isSearchLoading}
             onResultSelect={handleFoodChange}
             onSearchChange={handleSearchChange}
@@ -220,11 +228,11 @@ const ConsumptionForm: React.FC = () => {
             <Message error header='Problem While Logging' list={[submissionError]}/>
             <SubmissionMessage/>
             <Form.Field>
-                <label>Food</label>
+                <label htmlFor='food-input'>Food</label>
                 {foodField}
             </Form.Field>
             <Form.Field>
-                <label>When</label>
+                <label htmlFor='when-input'>When</label>
                 <HourField/>
             </Form.Field>
             <Form.Field>
@@ -233,7 +241,8 @@ const ConsumptionForm: React.FC = () => {
             {quantities.map(qty =>
                 <Form.Field key={qty.value}>
                     <Radio
-                        label={qty.text}
+                        label={<label htmlFor={`radio_${qty.value}`}>{qty.text}</label>}
+                        id={`radio_${qty.value}`}
                         name='quantity'
                         value={qty.value}
                         checked={draftConsumption.quantity === qty.value}

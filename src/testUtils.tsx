@@ -10,6 +10,10 @@ import IFood from "./models/IFood";
 import {AxiosResponse} from "axios";
 import {SnackbarProvider} from "notistack";
 import {IPaginatedResponse} from "./models/IPaginatedReponse";
+import moment from "moment";
+import {BACKEND_DATE_FORMAT} from "./constants";
+import IConsumption from "./models/IConsumption";
+import * as backend from "./backend";
 
 const mockStore = configureStore<RootState>([thunk]);
 const generateInitialStore = (): RootState => ({
@@ -67,14 +71,14 @@ export const addFoodToStore = (store: MockStoreEnhanced<RootState>, foodName: st
 };
 
 export const addConsumptionToStore = (store: MockStoreEnhanced<RootState>, food: IFood, isArchived = false) => {
-    const consumption = {
+    const consumption: IConsumption = {
         id: 1,
         url: '',
         food: food.url,
         food_icon: '',
         food_name: food.name,
         quantity: 1,
-        date: '2020-05-12T00:00:00Z'
+        date: moment().set('minute', 0).set('second', 0).format(BACKEND_DATE_FORMAT)
     };
 
     store.getState().consumptionState.consumptionsById[consumption.id] = consumption;
@@ -88,3 +92,10 @@ export const renderNode = (routeUrl: string, store: MockStoreEnhanced<RootState>
     <SnackbarProvider maxSnack={1}><Provider store={store}><Router
         initialEntries={[routeUrl]}><App/></Router></Provider></SnackbarProvider>
 );
+
+export const setUpMockBackend = (mockBackend: jest.Mocked<typeof backend>) => {
+    mockBackend.reqGetAllFoods.mockResolvedValue(generatePaginatedAxiosResponse<IFood>([]));
+    mockBackend.reqGetFood.mockResolvedValue(generateAxiosResponse<IFood>({} as IFood));
+    mockBackend.reqGetAllConsumptions.mockResolvedValue(generatePaginatedAxiosResponse<IConsumption>([]));
+    mockBackend.reqGetConsumption.mockResolvedValue(generateAxiosResponse<IConsumption>({} as IConsumption));
+};

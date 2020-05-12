@@ -3,14 +3,7 @@ import {fireEvent, screen, waitFor} from "@testing-library/react";
 import * as backend from '../../backend';
 import {MockStoreEnhanced} from 'redux-mock-store';
 import {RootState} from "../../redux/rootReducer";
-import {
-    addFoodToStore,
-    generateAxiosResponse,
-    generateMockStore,
-    generatePaginatedAxiosResponse,
-    renderNode
-} from "../../testUtils";
-import IFood from "../../models/IFood";
+import {addFoodToStore, generateMockStore, renderNode, setUpMockBackend} from "../../testUtils";
 
 jest.mock('./../../backend');
 const routeUrl = '/nutrition/library';
@@ -21,8 +14,7 @@ const mockBackend = backend as jest.Mocked<typeof backend>;
 describe('<NutritionLibrary/>', () => {
     beforeEach(() => {
         store = generateMockStore();
-        mockBackend.reqGetAllFoods.mockResolvedValue(generatePaginatedAxiosResponse<IFood>([]));
-        mockBackend.reqGetFood.mockResolvedValue(generateAxiosResponse<IFood>({} as IFood));
+        setUpMockBackend(mockBackend);
     });
 
     afterEach(() => {
@@ -45,7 +37,7 @@ describe('<NutritionLibrary/>', () => {
         store.getState().foodState.foodResponse = {};
         renderNode(routeUrl, store);
         await waitFor(() => screen.getByRole('heading', {name: emptyFoodsMessage}));
-        expect(backend.reqGetAllFoods).not.toHaveBeenCalled();
+        expect(mockBackend.reqGetAllFoods).not.toHaveBeenCalled();
     });
 
     it('should navigate to Log Consumption when Log clicked', async () => {
