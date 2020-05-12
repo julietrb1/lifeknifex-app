@@ -28,6 +28,11 @@ const generateInitialStore = (): RootState => ({
     }
 });
 
+const generateResponse = (results: any[]) => ({
+    count: results.length,
+    results
+});
+
 export const addFoodToStore = (store: MockStoreEnhanced<RootState>, foodName: string, isArchived = false) => {
     const food = {
         id: 1,
@@ -37,7 +42,9 @@ export const addFoodToStore = (store: MockStoreEnhanced<RootState>, foodName: st
         is_archived: isArchived,
         icon: ''
     };
+
     store.getState().foodState.foodsByUrl[1] = food;
+    store.getState().foodState.foodResponse = generateResponse([food]);
     return food;
 };
 
@@ -52,6 +59,7 @@ export const addConsumptionToStore = (store: MockStoreEnhanced<RootState>, food:
         date: '2020-05-12T00:00:00Z'
     };
     store.getState().consumptionState.consumptionsById[''] = consumption;
+    store.getState().consumptionState.consumptionResponse = generateResponse([consumption]);
     return consumption;
 };
 

@@ -42,6 +42,11 @@ const deletionFoodSuccess = (state: IFoodState, {payload}: PayloadAction<string>
     delete state.foodsByUrl[payload];
 };
 
+const creationFoodSuccess = (state: IFoodState, action: PayloadAction<IFood>) => {
+    singleFoodSuccess(state, action);
+    if (typeof state.foodResponse?.count === 'number') state.foodResponse.count++;
+};
+
 const foodSlice = createSlice({
     name: 'foods', initialState: foodsInitialState, reducers: {
         getAllFoodsStart: startLoading,
@@ -51,14 +56,14 @@ const foodSlice = createSlice({
         getFoodSuccess: singleFoodSuccess,
         getFoodFailure: loadingFailed,
         createFoodStart: startLoading,
-        createFoodSuccess: singleFoodSuccess,
+        createFoodSuccess: creationFoodSuccess,
         createFoodFailure: loadingFailed,
         updateFoodStart: startLoading,
         updateFoodSuccess: singleFoodSuccess,
         updateFoodFailure: loadingFailed,
         deleteFoodStart: startLoading,
         deleteFoodSuccess: deletionFoodSuccess,
-        deleteFoodFailure: loadingFailed,
+        deleteFoodFailure: loadingFailed
     }
 });
 

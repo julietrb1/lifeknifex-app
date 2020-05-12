@@ -23,8 +23,14 @@ describe('<NutritionList/>', () => {
 
     it('should show empty consumption list', async () => {
         renderNode(routeUrl, store);
+        addFoodToStore(store, 'My food');
         await waitFor(() => screen.getByRole('heading', {name: emptyConsumptionMessage}));
+    });
+
+    it('should request when not loaded', async () => {
+        renderNode(routeUrl, store);
         expect(backend.reqGetAllConsumptions).toHaveBeenCalledTimes(1);
+        expect(backend.reqGetAllFoods).toHaveBeenCalledTimes(1);
     });
 
     it('should show consumptions', async () => {
@@ -36,10 +42,11 @@ describe('<NutritionList/>', () => {
     });
 
     it('should not perform any requests when loaded', async () => {
-        store.getState().consumptionState.consumptionResponse = {};
+        const food = addFoodToStore(store, 'My food');
+        addConsumptionToStore(store, food);
         renderNode(routeUrl, store);
-        await waitFor(() => screen.getByRole('heading', {name: emptyConsumptionMessage}));
         expect(backend.reqGetAllFoods).not.toHaveBeenCalled();
+        expect(backend.reqGetAllConsumptions).not.toHaveBeenCalled();
     });
 
     it('should navigate when Log clicked with food and without consumptions', async () => {
@@ -56,4 +63,39 @@ describe('<NutritionList/>', () => {
         fireEvent.click(screen.getByRole('button', {name: 'New Food'}));
         await waitFor(() => screen.getByRole('heading', {name: 'New Food'}));
     });
+
+    it('changes food empty message to consumption list empty after adding', async () => {
+        renderNode(routeUrl, store);
+        await waitFor(() => screen.getByRole('heading', {name: emptyFoodMessage}));
+        addFoodToStore(store, 'My food');
+    });
+
+    // it('should navigate to new food form with foods', async () => {
+    //     addFoodToStore(store, 'My food');
+    //     renderNode(routeUrl, store);
+    //     fireEvent.click(screen.getByRole('button', {name: 'New Food'}));
+    //     await waitFor(() => screen.getByRole('heading', {name: 'New Food'}));
+    // });
+    //
+    // it('should navigate to edit food form', async () => {
+    //     addFoodToStore(store, 'My food');
+    //     renderNode(routeUrl, store);
+    //     fireEvent.click(screen.getByRole('button', {name: 'Edit'}));
+    //     await waitFor(() => screen.getByRole('heading', {name: 'Edit Food'}));
+    // });
+    //
+    // it('should show an empty archived message', async () => {
+    //     renderNode(routeUrl, store);
+    //     fireEvent.click(screen.getByRole('checkbox'));
+    //     await waitFor(() => screen.getByRole('heading', {name: 'No archived foods for you!'}));
+    // });
+    //
+    // it('should show archived foods', async () => {
+    //     const foodName = 'My food';
+    //     addFoodToStore(store, foodName, true)
+    //     renderNode(routeUrl, store);
+    //     await waitFor(() => screen.getByRole('heading', {name: emptyConsumptionMessage}));
+    //     fireEvent.click(screen.getByRole('checkbox'));
+    //     await waitFor(() => screen.getByRole('heading', {name: foodName}));
+    // });
 });
