@@ -6,7 +6,7 @@ import {Button, Divider, Icon} from 'semantic-ui-react';
 import NutritionHistoryEmpty from './NutritionHistoryEmpty';
 import {Link} from 'react-router-dom';
 import {COLOR_NUTRITION} from "../../constants";
-import './Nutrition.scss';
+import './NutritionList.scss';
 import {useDispatch, useSelector} from "react-redux";
 import PlaceholderSet from "../common-components/PlaceholderSet";
 import {fetchAllConsumptions} from "../../features/consumptions/consumptionSlice";
@@ -20,7 +20,7 @@ const sections = [
     {name: 'Nutrition'}
 ];
 
-const Nutrition: React.FC = () => {
+const NutritionList: React.FC = () => {
     const dispatch = useDispatch();
     const isLoaded = useSelector(selectConsumptionsLoaded);
     const consumptions = useSelector(selectAllConsumptions);
@@ -84,4 +84,4 @@ const Nutrition: React.FC = () => {
     </div>;
 };
 
-export default Nutrition;
+export default NutritionList;

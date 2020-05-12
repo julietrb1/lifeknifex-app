@@ -1,7 +1,7 @@
 import React from 'react';
 import {Route} from "react-router-dom";
 import './App.scss';
-import Nutrition from './components/nutrition-components/Nutrition';
+import NutritionList from './components/nutrition-components/NutritionList';
 import GoalList from './components/goal-components/GoalList';
 import Account from './components/account-components/Account';
 import Home from "./components/Home/Home";
@@ -26,7 +26,7 @@ class App extends React.Component {
                 <Route exact path="/" component={Home}/>
 
                 {/* Nutrition */}
-                <Route exact path="/nutrition" component={Nutrition}/>
+                <Route exact path="/nutrition" component={NutritionList}/>
                 <Route exact path="/nutrition/library" component={NutritionLibrary}/>
                 <Route exact path="/nutrition/log" component={ConsumptionForm}/>
                 <Route exact path="/nutrition/library/new" component={FoodForm}/>
