@@ -2,7 +2,6 @@ import React from 'react';
 import {Button, Icon, Image, Segment} from "semantic-ui-react";
 import {Link} from "react-router-dom";
 import {COLOR_GOALS} from "../../constants";
-// import PropTypes from 'prop-types';
 
 const GoalsEmpty = () =>
     <Segment textAlign='center' placeholder>
@@ -15,7 +14,5 @@ const GoalsEmpty = () =>
             </Button.Content>
         </Button>
     </Segment>;
-
-GoalsEmpty.propTypes = {};
 
 export default GoalsEmpty;

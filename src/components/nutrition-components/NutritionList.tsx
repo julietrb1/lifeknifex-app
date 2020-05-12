@@ -15,6 +15,9 @@ import {
     selectConsumptionsLoaded,
     selectConsumptionsLoading
 } from "../../features/consumptions/consumptionSelectors";
+import {selectFoodCount, selectFoodsLoaded, selectFoodsLoading} from "../../features/foods/foodSelectors";
+import {fetchAllFoods} from "../../features/foods/foodSlice";
+import NutritionHistoryNoFood from "./NutritionHistoryNoFood";
 
 const sections = [
     {name: 'Nutrition'}
@@ -24,21 +27,28 @@ const NutritionList: React.FC = () => {
     const dispatch = useDispatch();
     const isLoaded = useSelector(selectConsumptionsLoaded);
     const consumptions = useSelector(selectAllConsumptions);
-    const isLoading = useSelector(selectConsumptionsLoading);
+    const isLoading = useSelector(selectConsumptionsLoading)
+    const areFoodsLoading = useSelector(selectFoodsLoading);
+    const areFoodsLoaded = useSelector(selectFoodsLoaded);
+    const totalFoodCount = useSelector(selectFoodCount);
     useEffect(() => {
-        if (!isLoaded && !isLoading) {
-            dispatch(fetchAllConsumptions());
-        }
+        if (!isLoaded && !isLoading) dispatch(fetchAllConsumptions());
     }, [isLoaded, isLoading]);
 
+    useEffect(() => {
+        if (!areFoodsLoaded && !areFoodsLoading) dispatch(fetchAllFoods());
+    }, [areFoodsLoaded, areFoodsLoading]);
+
     const pageContent = () => {
-        if (!isLoading && consumptions.length) {
-            return <ConsumptionList consumptionItems={consumptions}/>;
-        } else if (isLoading) {
+        if (isLoading || areFoodsLoading) {
             return <div>
                 <Divider hidden/>
                 <PlaceholderSet/>
             </div>;
+        } else if (totalFoodCount && consumptions.length) {
+            return <ConsumptionList consumptionItems={consumptions}/>;
+        } else if (!totalFoodCount) {
+            return <NutritionHistoryNoFood/>;
         } else {
             return <NutritionHistoryEmpty/>;
         }
