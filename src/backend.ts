@@ -1,6 +1,6 @@
 import axios, {AxiosError, CancelTokenSource} from 'axios';
 import {LOCAL_STORAGE_JWT_ACCESS, LOCAL_STORAGE_JWT_REFRESH} from "./constants";
-import {history} from './App';
+import history from './history';
 import IConsumption from "./models/IConsumption";
 import IFood from "./models/IFood";
 import IGoal from "./models/IGoal";
@@ -38,7 +38,9 @@ const processQueue = (error: Error | null, token: string | null) => {
     failedQueue.forEach(prom => {
         if (error) {
             prom.reject(error);
+            console.error('e1');
         } else {
+            console.error('e2');
             prom.resolve(token);
         }
     });
@@ -46,12 +48,18 @@ const processQueue = (error: Error | null, token: string | null) => {
     failedQueue = [];
 };
 
+function clearAndLogOut(reject: (reason?: any) => void) {
+    clearAccessToken();
+    clearRefreshToken();
+    history.replace('/login');
+    return reject('No refresh token');
+}
+
 axios.interceptors.response.use(function (response) {
     return response;
 }, function (error: AxiosError) {
     const originalRequest = error.config;
-
-    if (!error.response || error.response.status !== 401 || (originalRequest as any)._retry || originalRequest.url?.endsWith('/token/')) {
+    if (!error.response || error.response.status !== 401 || (originalRequest as any)._retry || originalRequest.url?.includes('/token/')) {
         return Promise.reject(error);
     }
 
@@ -72,12 +80,10 @@ axios.interceptors.response.use(function (response) {
     const refreshToken = getRefreshToken();
     return new Promise(function (resolve, reject) {
         if (!refreshToken) {
-            history.replace('/login');
-            return reject('No refresh token');
+            return clearAndLogOut(reject);
         }
         axios.post(`${API_TOKEN}refresh/`, {refresh: refreshToken})
             .then(({data}) => {
-
                 const accessToken = data.access;
                 setAccessToken(accessToken);
                 originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
@@ -86,8 +92,7 @@ axios.interceptors.response.use(function (response) {
             })
             .catch((err) => {
                 processQueue(err, null);
-                history.replace('/login');
-                return reject('No refresh token');
+                return clearAndLogOut(reject);
             })
             .then(() => {
                 isRefreshing = false;
@@ -178,14 +183,14 @@ export const reqGetBase = () => axios.get(API);
 
 // Consumptions
 export const reqGetConsumption = (consumptionId: number) => axios.get<IConsumption>(`${API_CONSUMPTIONS}${consumptionId}/`);
-export const reqGetAllConsumptions = (search?: string) => axios.get<IPaginatedResponse<IConsumption>>(API_CONSUMPTIONS, {params: {search}});
+export const reqGetAllConsumptions = (search?: string) => handleReq(() => axios.get<IPaginatedResponse<IConsumption>>(API_CONSUMPTIONS, {params: {search}}));
 export const reqCreateConsumption = (consumption: IConsumption) => handleReq(() => axios.post<IConsumption>(API_CONSUMPTIONS, consumption));
 export const reqUpdateConsumption = (consumption: IConsumption) => axios.patch<IConsumption>(`${API_CONSUMPTIONS}${consumption.id}/`, consumption);
 export const reqDeleteConsumption = (consumption: IConsumption) => axios.delete(`${API_CONSUMPTIONS}${consumption.id}/`);
 
 // Foods
 export const reqGetFood = (foodId: number) => axios.get<IFood>(`${API_FOODS}${foodId}/`);
-export const reqGetAllFoods = (search?: string) => axios.get<IPaginatedResponse<IFood>>(API_FOODS, {params: {search}});
+export const reqGetAllFoods = (search?: string) => handleReq(() => axios.get<IPaginatedResponse<IFood>>(API_FOODS, {params: {search}}));
 export const reqCreateFood = (food: IFood) => axios.post<IFood>(API_FOODS, food);
 export const reqUpdateFood = (food: IFood) => axios.patch<IFood>(`${API_FOODS}${food.id}/`, food);
 export const reqDeleteFood = (food: IFood) => axios.delete(`${API_FOODS}${food.id}/`);

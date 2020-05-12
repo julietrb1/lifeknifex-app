@@ -34,7 +34,7 @@ const FoodForm: React.FC = () => {
     const [errorOnHealthIndex, setErrorOnHealthIndex] = useState(false);
 
     useEffect(() => {
-        if (!food) dispatch(fetchFood(foodId));
+        if (foodId && !food) dispatch(fetchFood(foodId));
     }, [foodId]);
 
     useEffect(() => {

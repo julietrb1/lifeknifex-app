@@ -4,7 +4,7 @@ import {AppThunk} from "../../redux/store";
 import IFood from "../../models/IFood";
 import {IPaginatedResponse} from "../../models/IPaginatedReponse";
 import {reqCreateFood, reqDeleteFood, reqGetAllFoods, reqGetFood, reqUpdateFood} from "../../backend";
-import {extractError} from "../../Utils";
+import {handleStoreError} from "../../Utils";
 
 interface IFoodState extends ICommonState {
     foodsById: { [foodUrl: number]: IFood };
@@ -86,7 +86,7 @@ export const fetchAllFoods = (search?: string): AppThunk => async dispatch => {
         return data;
     } catch (e) {
         dispatch(getAllFoodsFailure(e.message));
-        throw(Error(extractError(e)));
+        handleStoreError(e);
     }
 };
 
@@ -98,7 +98,7 @@ export const fetchFood = (foodId: number): AppThunk => async dispatch => {
         return data;
     } catch (e) {
         dispatch(getFoodFailure(e.message));
-        throw(Error(extractError(e)));
+        handleStoreError(e);
     }
 };
 
@@ -110,7 +110,7 @@ export const createFood = (food: IFood): AppThunk => async dispatch => {
         return data;
     } catch (e) {
         dispatch(createFoodFailure(e.message));
-        throw(Error(extractError(e)));
+        handleStoreError(e);
     }
 };
 
@@ -122,7 +122,7 @@ export const updateFood = (food: IFood): AppThunk => async dispatch => {
         return data;
     } catch (e) {
         dispatch(updateFoodFailure(e.message));
-        throw(Error(extractError(e)));
+        handleStoreError(e);
     }
 };
 
@@ -133,6 +133,6 @@ export const deleteFood = (food: IFood): AppThunk => async dispatch => {
         dispatch(deleteFoodSuccess(data));
     } catch (e) {
         dispatch(deleteFoodFailure(e.message));
-        throw(Error(extractError(e)));
+        handleStoreError(e);
     }
 };

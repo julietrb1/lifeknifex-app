@@ -10,6 +10,7 @@ import {
     reqGetConsumption,
     reqUpdateConsumption
 } from "../../backend";
+import {handleStoreError} from "../../Utils";
 
 interface IConsumptionState extends ICommonState {
     consumptionsById: { [consumptionId: number]: IConsumption | null };
@@ -30,6 +31,7 @@ const loadingFailed = (state: IConsumptionState, {payload}: PayloadAction<string
 };
 
 const failureGetConsumption = (state: IConsumptionState, {payload}: PayloadAction<number>) => {
+    state.isLoading = false;
     state.consumptionsById[payload] = null;
 }
 
@@ -89,6 +91,7 @@ export const fetchAllConsumptions = (search?: string): AppThunk => async dispatc
         dispatch(getAllConsumptionsSuccess(data));
     } catch (e) {
         dispatch(getAllConsumptionsFailure(e.message));
+        handleStoreError(e);
     }
 };
 
@@ -99,6 +102,7 @@ export const fetchConsumption = (consumptionId: number): AppThunk => async dispa
         dispatch(getConsumptionSuccess(data));
     } catch (e) {
         dispatch(getConsumptionFailure(consumptionId));
+        handleStoreError(e);
     }
 };
 
@@ -109,8 +113,8 @@ export const createConsumption = (consumption: IConsumption): AppThunk => async 
         dispatch(createConsumptionSuccess(data));
         return data;
     } catch (e) {
-        // dispatch(createConsumptionFailure(e.message)); // TODO: Consider scope of failure logic
-        throw(e);
+        dispatch(createConsumptionFailure(e.message)); // TODO: Consider scope of failure logic
+        handleStoreError(e);
     }
 };
 
@@ -120,7 +124,7 @@ export const updateConsumption = (consumption: IConsumption): AppThunk => async 
         const {data} = await reqUpdateConsumption(consumption);
         dispatch(updateConsumptionSuccess(data));
     } catch (e) {
-        dispatch(updateConsumptionFailure(e.message));
+        handleStoreError(e);
     }
 };
 
@@ -130,6 +134,6 @@ export const deleteConsumption = (consumption: IConsumption): AppThunk => async 
         const {data} = await reqDeleteConsumption(consumption);
         dispatch(deleteConsumptionSuccess(data.id));
     } catch (e) {
-        dispatch(deleteConsumptionFailure(e.message));
+        handleStoreError(e);
     }
 };

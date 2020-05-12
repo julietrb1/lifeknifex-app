@@ -13,6 +13,10 @@ export const firstCase = (text: string, isUpper: boolean = false) => `${isUpper 
     text.charAt(0).toUpperCase() :
     text.charAt(0).toLowerCase()}${text.slice(1)}`;
 
+export const handleStoreError = (e: any) => {
+    if (!e.toString().includes('No refresh token')) throw(Error(extractError(e)));
+}
+
 export const extractError = (err: any) => {
     const unknownErrorMessage = 'Unknown error occurred - please contact support';
     if (typeof err === 'string') return err;
