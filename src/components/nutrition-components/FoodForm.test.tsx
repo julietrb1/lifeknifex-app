@@ -36,4 +36,15 @@ describe('<FoodForm/>', () => {
         await waitFor(() => screen.getByRole('heading', {name: foodLibraryHeading}));
         expect(backend.reqCreateFood).toHaveBeenCalledWith({name: food.name, health_index: 1});
     });
+
+    it('should show a success snackbar after saving', async () => {
+        const food = generateFood('My food');
+        mockBackend.reqCreateFood.mockResolvedValue(generateAxiosRequest<IFood>(food));
+        renderNode(newRouteUrl, store);
+        await waitFor(() => screen.getByRole('heading', {name: newFoodHeading}));
+        await userEvent.type(screen.getByLabelText('Name'), food.name);
+        await userEvent.click(screen.getByLabelText('Healthy'));
+        await userEvent.click(screen.getByRole('button', {name: 'Save Food'}));
+        await waitFor(() => screen.getByText(`Food "${food}" saved.`));
+    });
 });

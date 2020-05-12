@@ -12,11 +12,13 @@ import IFood from "../../models/IFood";
 import {createFood, fetchFood, updateFood} from "../../features/foods/foodSlice";
 import BreadcrumbSet from "../common-components/BreadcrumbSet";
 import HeaderBar from "../common-components/HeaderBar";
+import {useSnackbar} from "notistack";
 
 const URL_NUTRITION_LIBRARY = '/nutrition/library';
 
 const FoodForm: React.FC = () => {
     const dispatch = useDispatch();
+    const snackbar = useSnackbar();
     const {foodId} = useParams();
     const history = useHistory();
     const [isArchiveVisible, setIsArchiveVisible] = useState(false);
@@ -33,6 +35,7 @@ const FoodForm: React.FC = () => {
     const handleSave = async () => {
         if (foodId) await dispatch(updateFood(draftFood));
         else await dispatch(createFood(draftFood));
+        snackbar.enqueueSnackbar(`Food "${draftFood.name}" saved.`, {variant: "success"});
         if (history.length > 1) history.goBack();
         else history.push('/nutrition/library');
     };

@@ -8,6 +8,7 @@ import App from "./App";
 import React from "react";
 import IFood from "./models/IFood";
 import {AxiosResponse} from "axios";
+import {SnackbarProvider} from "notistack";
 
 const mockStore = configureStore<RootState>([thunk]);
 const generateInitialStore = (): RootState => ({
@@ -76,5 +77,7 @@ export const addConsumptionToStore = (store: MockStoreEnhanced<RootState>, food:
 
 export const generateMockStore = () => mockStore(generateInitialStore());
 
-export const renderNode = (routeUrl: string, store: MockStoreEnhanced<RootState>) => render(<Provider
-    store={store}><Router initialEntries={[routeUrl]}><App/></Router></Provider>);
+export const renderNode = (routeUrl: string, store: MockStoreEnhanced<RootState>) => render(
+    <SnackbarProvider maxSnack={1}><Provider store={store}><Router
+        initialEntries={[routeUrl]}><App/></Router></Provider></SnackbarProvider>
+);
