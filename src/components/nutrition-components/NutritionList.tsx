@@ -26,10 +26,10 @@ const NutritionList: React.FC = () => {
     const consumptions = useSelector(selectAllConsumptions);
     const isLoading = useSelector(selectConsumptionsLoading);
     useEffect(() => {
-        if (!isLoaded) {
+        if (!isLoaded && !isLoading) {
             dispatch(fetchAllConsumptions());
         }
-    });
+    }, [isLoaded, isLoading]);
 
     const pageContent = () => {
         if (!isLoading && consumptions.length) {

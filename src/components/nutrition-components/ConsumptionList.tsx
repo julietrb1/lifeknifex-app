@@ -40,7 +40,7 @@ const ConsumptionList: React.FC<IConsumptionListProps> = (props) => {
                             <Card key={item.id} as={Link} to={`/nutrition/history/${item.id}`} color={COLOR_NUTRITION}>
                                 <Card.Content>
                                     <FoodImage icon={item.food_icon}/>
-                                    <Card.Header>{item.food_name}</Card.Header>
+                                    <Card.Header as='h3'>{item.food_name}</Card.Header>
                                     <Card.Meta><Label
                                         size='small'>{consumptionSizes[item.quantity - 1]}</Label>&emsp;{getDate(item).format(TIME_FORMAT_STRING)}
                                     </Card.Meta>

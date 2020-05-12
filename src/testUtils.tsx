@@ -6,6 +6,7 @@ import {Provider} from "react-redux";
 import {MemoryRouter as Router} from "react-router";
 import App from "./App";
 import React from "react";
+import IFood from "./models/IFood";
 
 const mockStore = configureStore<RootState>([thunk]);
 const generateInitialStore = (): RootState => ({
@@ -28,14 +29,30 @@ const generateInitialStore = (): RootState => ({
 });
 
 export const addFoodToStore = (store: MockStoreEnhanced<RootState>, foodName: string, isArchived = false) => {
-    store.getState().foodState.foodsByUrl[''] = {
+    const food = {
         id: 1,
-        url: '',
+        url: `/foods/${foodName}`,
         name: foodName,
         health_index: 1,
         is_archived: isArchived,
         icon: ''
     };
+    store.getState().foodState.foodsByUrl[1] = food;
+    return food;
+};
+
+export const addConsumptionToStore = (store: MockStoreEnhanced<RootState>, food: IFood, isArchived = false) => {
+    const consumption = {
+        id: 1,
+        url: '',
+        food: food.url,
+        food_icon: '',
+        food_name: food.name,
+        quantity: 1,
+        date: '2020-05-12T00:00:00Z'
+    };
+    store.getState().consumptionState.consumptionsById[''] = consumption;
+    return consumption;
 };
 
 export const generateMockStore = () => mockStore(generateInitialStore());
