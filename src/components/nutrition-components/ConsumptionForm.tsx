@@ -36,7 +36,7 @@ import {
 import HeaderBar from "../common-components/HeaderBar";
 import BreadcrumbSet from "../common-components/BreadcrumbSet";
 import {healthStrings, useDebounce} from "../../Utils";
-import {getFoods} from "../../backend";
+import {reqGetAllFoods} from "../../backend";
 import {useSnackbar} from "notistack";
 
 interface IConsumptionFormMatchParams {
@@ -104,7 +104,7 @@ const ConsumptionForm: React.FC = () => {
         {name: consumptionId ? 'Edit' : 'Log Consumption'}
     ];
 
-    const [foodResults, setFoodResults] = useState<IFood[]>();
+    const [foodResults, setFoodResults] = useState<any[]>();
 
     useEffect(() => {
         if (consumptionId && !consumptionLoaded && !consumption && !isSubmitting && !isLoading) {
@@ -121,9 +121,9 @@ const ConsumptionForm: React.FC = () => {
             if (!debouncedCurrentFoodSearch) return;
             if (isSearchLoading) cancelToken.cancel('New search requested');
             else setIsSearchLoading(true);
-            const foods = await getFoods(cancelToken, debouncedCurrentFoodSearch);
+            const foods = await reqGetAllFoods(debouncedCurrentFoodSearch);
             setIsSearchLoading(false);
-            setFoodResults(foods.results.map((food: any) => ({
+            setFoodResults(foods.data.results?.map((food: IFood) => ({ //TODO: Avoid using backend directly
                 title: food.name,
                 id: food.id,
                 description: healthStrings[food.health_index - 1],

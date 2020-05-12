@@ -5,6 +5,8 @@ import IConsumption from "./models/IConsumption";
 import IFood from "./models/IFood";
 import IGoal from "./models/IGoal";
 import {extractError} from "./Utils";
+import {IPaginatedResponse} from "./models/IPaginatedReponse";
+import IAnswer from "./models/IAnswer";
 
 let API = 'http://localhost:8000/';
 if (document.location.hostname === 'app.lifeknifex.com') {
@@ -175,40 +177,29 @@ const handleReq = async (requestFunc: () => any) => {
 export const reqGetBase = () => axios.get(API);
 
 // Consumptions
-export const reqGetConsumption = (consumptionId: number) => axios.get(`${API_CONSUMPTIONS}${consumptionId}/`);
-export const reqGetAllConsumptions = (search?: string) => axios.get(API_CONSUMPTIONS, {params: {search}});
-export const reqCreateConsumption = (consumption: IConsumption) => handleReq(() => axios.post(API_CONSUMPTIONS, consumption));
-export const reqUpdateConsumption = (consumption: IConsumption) => axios.patch(`${API_CONSUMPTIONS}${consumption.id}/`, consumption);
+export const reqGetConsumption = (consumptionId: number) => axios.get<IConsumption>(`${API_CONSUMPTIONS}${consumptionId}/`);
+export const reqGetAllConsumptions = (search?: string) => axios.get<IPaginatedResponse<IConsumption>>(API_CONSUMPTIONS, {params: {search}});
+export const reqCreateConsumption = (consumption: IConsumption) => handleReq(() => axios.post<IConsumption>(API_CONSUMPTIONS, consumption));
+export const reqUpdateConsumption = (consumption: IConsumption) => axios.patch<IConsumption>(`${API_CONSUMPTIONS}${consumption.id}/`, consumption);
 export const reqDeleteConsumption = (consumption: IConsumption) => axios.delete(`${API_CONSUMPTIONS}${consumption.id}/`);
 
 // Foods
-export const reqGetFood = (foodId: number) => axios.get(`${API_FOODS}${foodId}/`);
-export const reqGetAllFoods = (search?: string) => axios.get(API_FOODS, {params: {search}});
-export const reqCreateFood = (food: IFood) => axios.post(API_FOODS, food);
-export const reqUpdateFood = (food: IFood) => axios.patch(`${API_FOODS}${food.id}/`, food);
+export const reqGetFood = (foodId: number) => axios.get<IFood>(`${API_FOODS}${foodId}/`);
+export const reqGetAllFoods = (search?: string) => axios.get<IPaginatedResponse<IFood>>(API_FOODS, {params: {search}});
+export const reqCreateFood = (food: IFood) => axios.post<IFood>(API_FOODS, food);
+export const reqUpdateFood = (food: IFood) => axios.patch<IFood>(`${API_FOODS}${food.id}/`, food);
 export const reqDeleteFood = (food: IFood) => axios.delete(`${API_FOODS}${food.id}/`);
 
 // Goals
-export const reqGetGoal = (goalId: number) => axios.get(`${API_GOALS}${goalId}/`);
-export const reqGetAllGoals = (search?: string) => axios.get(API_GOALS, {params: {search}});
-export const reqCreateGoal = (goal: IGoal) => axios.post(API_GOALS, goal);
-export const reqUpdateGoal = (goal: IGoal) => axios.patch(`${API_GOALS}${goal.id}/`, goal);
+export const reqGetGoal = (goalId: number) => axios.get<IGoal>(`${API_GOALS}${goalId}/`);
+export const reqGetAllGoals = (search?: string) => axios.get<IPaginatedResponse<IGoal>>(API_GOALS, {params: {search}});
+export const reqCreateGoal = (goal: IGoal) => axios.post<IGoal>(API_GOALS, goal);
+export const reqUpdateGoal = (goal: IGoal) => axios.patch<IGoal>(`${API_GOALS}${goal.id}/`, goal);
 export const reqDeleteGoal = (goal: IGoal) => axios.delete(`${API_GOALS}${goal.id}/`);
 
 // Answers
-export const reqCreateAnswer = (goal: IGoal, value: number) => axios.post(API_ANSWERS, {goal: goal.url, value});
-export const reqUpdateAnswer = (goal: IGoal, value: number) => axios.patch(String(goal.todays_answer), {value});
-
-export function getFoods(cancelToken: CancelTokenSource, search: string | null | undefined, isArchivedVisible: boolean = false) {
-    const queryParams = new URLSearchParams();
-    if (search && search.length) {
-        queryParams.append('search', search);
-    }
-
-    queryParams.append('is_archived', String(isArchivedVisible));
-
-    const url = `${API_FOODS}?${queryParams}`;
-    return axios
-        .get(url, {cancelToken: cancelToken.token})
-        .then(res => res.data);
-}
+export const reqCreateAnswer = (goal: IGoal, value: number) => axios.post<IAnswer>(API_ANSWERS, {
+    goal: goal.url,
+    value
+});
+export const reqUpdateAnswer = (goal: IGoal, value: number) => axios.patch<IAnswer>(String(goal.todays_answer), {value});

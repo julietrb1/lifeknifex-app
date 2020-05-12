@@ -70,7 +70,7 @@ export const addFoodToStore = (store: MockStoreEnhanced<RootState>, foodName: st
     return food;
 };
 
-export const addConsumptionToStore = (store: MockStoreEnhanced<RootState>, food: IFood, isArchived = false) => {
+export const generateConsumption = (food: IFood) => {
     const consumption: IConsumption = {
         id: 1,
         url: '',
@@ -80,6 +80,11 @@ export const addConsumptionToStore = (store: MockStoreEnhanced<RootState>, food:
         quantity: 1,
         date: moment().set('minute', 0).set('second', 0).format(BACKEND_DATE_FORMAT)
     };
+    return consumption;
+};
+
+export const addConsumptionToStore = (store: MockStoreEnhanced<RootState>, food: IFood, isArchived = false) => {
+    const consumption = generateConsumption(food);
 
     store.getState().consumptionState.consumptionsById[consumption.id] = consumption;
     store.getState().consumptionState.consumptionResponse = generateResponse([consumption]);

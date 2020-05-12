@@ -7,7 +7,9 @@ import {
     addConsumptionToStore,
     addFoodToStore,
     generateAxiosResponse,
+    generateConsumption,
     generateMockStore,
+    generatePaginatedAxiosResponse,
     renderNode,
     setUpMockBackend
 } from "../../testUtils";
@@ -59,18 +61,24 @@ describe('<ConsumptionForm/>', () => {
         expect(backend.reqUpdateConsumption).toHaveBeenCalledWith(newConsumption);
     });
 
-    // it('should save a new food and go to library', async () => {
-    //     const food = generateFood('My food');
-    //     mockBackend.reqCreateFood.mockResolvedValue(generateAxiosResponse<IFood>(food));
-    //     renderNode(logConsumptionUrl, store);
-    //     await waitFor(() => screen.getByRole('heading', {name: newFoodHeading}));
-    //     await userEvent.type(screen.getByLabelText('Name'), food.name);
-    //     await userEvent.click(screen.getByLabelText('Healthy'));
-    //     await userEvent.click(screen.getByRole('button', {name: 'Save Food'}));
-    //     await waitFor(() => screen.getByRole('heading', {name: foodLibraryHeading}));
-    //     expect(backend.reqCreateFood).toHaveBeenCalledWith({name: food.name, health_index: 1, icon: ''});
-    //     await waitFor(() => screen.getByText(`Food "${food.name}" saved`));
-    // });
+    it('should save new nutrition', async () => {
+        const food = addFoodToStore(store, 'My food');
+        mockBackend.reqGetAllFoods.mockResolvedValue(generatePaginatedAxiosResponse<IFood>([food]));
+        mockBackend.reqGetFood.mockResolvedValue(generateAxiosResponse<IFood>(food));
+        const consumption = generateConsumption(food);
+        mockBackend.reqCreateConsumption.mockResolvedValue(generateAxiosResponse<IConsumption>(consumption));
+
+        renderNode(logConsumptionUrl, store);
+        await waitFor(() => screen.getByRole('heading', {name: logConsumptionHeading}));
+        await userEvent.click(screen.getByLabelText('Food'));
+        await userEvent.type(screen.getByLabelText('Food'), food.name.substr(0, 2));
+        await waitFor(() => screen.getByText(food.name));
+        await userEvent.click(screen.getByText(food.name));
+        await userEvent.click(screen.getByRole('button', {name: 'Submit Log'}));
+        await waitFor(() => screen.getByText(`Well done! Consumption of "${food.name}" logged.`));
+        await waitFor(() => screen.getByRole('heading', {name: logConsumptionHeading}));
+        expect(backend.reqCreateConsumption).toHaveBeenCalled(); // TODO: Check parameters of backend call
+    });
     //
     // it('should show a success snackbar after saving', async () => {
     //     const food = generateFood('My food');
