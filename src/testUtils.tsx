@@ -14,6 +14,7 @@ import moment from "moment";
 import {BACKEND_DATE_FORMAT} from "./constants";
 import IConsumption from "./models/IConsumption";
 import * as backend from "./backend";
+import IGoal from "./models/IGoal";
 
 const mockStore = configureStore<RootState>([thunk]);
 const generateInitialStore = (): RootState => ({
@@ -103,4 +104,6 @@ export const setUpMockBackend = (mockBackend: jest.Mocked<typeof backend>) => {
     mockBackend.reqGetFood.mockResolvedValue(generateAxiosResponse<IFood>({} as IFood));
     mockBackend.reqGetAllConsumptions.mockResolvedValue(generatePaginatedAxiosResponse<IConsumption>([]));
     mockBackend.reqGetConsumption.mockResolvedValue(generateAxiosResponse<IConsumption>({} as IConsumption));
+    mockBackend.reqGetAllGoals.mockResolvedValue(generatePaginatedAxiosResponse<IGoal>([]));
+    mockBackend.reqGetGoal.mockResolvedValue(generateAxiosResponse<IGoal>({} as IGoal));
 };
