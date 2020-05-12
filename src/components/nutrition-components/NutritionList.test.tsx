@@ -33,4 +33,11 @@ describe('<NutritionList/>', () => {
         renderNode(routeUrl, store);
         await waitFor(() => screen.getByRole('heading', {name: foodName}));
     });
+
+    it('should not perform any requests when loaded', async () => {
+        store.getState().consumptionState.consumptionResponse = {};
+        renderNode(routeUrl, store);
+        await waitFor(() => screen.getByRole('heading', {name: emptyConsumptionMessage}));
+        expect(backend.reqGetAllFoods).not.toHaveBeenCalled();
+    });
 });
