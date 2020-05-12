@@ -15,7 +15,7 @@ const mockStore = configureStore<RootState>([thunk]);
 const generateInitialStore = (): RootState => ({
     foodState: {
         isLoading: false,
-        foodsByUrl: {},
+        foodsById: {},
         foodResponse: null,
         error: null
     }, consumptionState: {
@@ -61,7 +61,7 @@ export const generateFood = (foodName: string, isArchived = false): IFood => ({
 export const addFoodToStore = (store: MockStoreEnhanced<RootState>, foodName: string, isArchived = false) => {
     const food = generateFood(foodName, isArchived);
 
-    store.getState().foodState.foodsByUrl[1] = food;
+    store.getState().foodState.foodsById[1] = food;
     store.getState().foodState.foodResponse = generateResponse([food]);
     return food;
 };
@@ -76,7 +76,8 @@ export const addConsumptionToStore = (store: MockStoreEnhanced<RootState>, food:
         quantity: 1,
         date: '2020-05-12T00:00:00Z'
     };
-    store.getState().consumptionState.consumptionsById[''] = consumption;
+
+    store.getState().consumptionState.consumptionsById[consumption.id] = consumption;
     store.getState().consumptionState.consumptionResponse = generateResponse([consumption]);
     return consumption;
 };

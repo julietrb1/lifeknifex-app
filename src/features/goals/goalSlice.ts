@@ -103,7 +103,7 @@ export const fetchAllGoals = (search?: string): AppThunk => async dispatch => {
         const {data} = await reqGetAllGoals(search);
         dispatch(getAllGoalsSuccess(data));
     } catch (e) {
-        dispatch(getAllGoalsFailure(e.toString()));
+        dispatch(getAllGoalsFailure(e.message));
     }
 };
 
@@ -113,7 +113,7 @@ export const fetchGoal = (goalId: number): AppThunk => async dispatch => {
         const {data} = await reqGetGoal(goalId);
         dispatch(getGoalSuccess(data));
     } catch (e) {
-        dispatch(getGoalFailure(e.toString()));
+        dispatch(getGoalFailure(e.message));
     }
 };
 
@@ -123,7 +123,7 @@ export const createGoal = (goal: IGoal): AppThunk => async dispatch => {
         const {data} = await reqCreateGoal(goal);
         dispatch(createGoalSuccess(data));
     } catch (e) {
-        dispatch(createGoalFailure(e.toString()));
+        dispatch(createGoalFailure(e.message));
     }
 };
 
@@ -133,7 +133,7 @@ export const updateGoal = (goal: IGoal): AppThunk => async dispatch => {
         const {data} = await reqUpdateGoal(goal);
         dispatch(updateGoalSuccess(data));
     } catch (e) {
-        dispatch(updateGoalFailure(e.toString()));
+        dispatch(updateGoalFailure(e.message));
     }
 };
 
@@ -143,7 +143,7 @@ export const deleteGoal = (goal: IGoal): AppThunk => async dispatch => {
         const {data} = await reqDeleteGoal(goal);
         dispatch(deleteGoalSuccess(data));
     } catch (e) {
-        dispatch(deleteGoalFailure(e.toString()));
+        dispatch(deleteGoalFailure(e.message));
     }
 };
 
@@ -153,7 +153,7 @@ export const updateAnswer = (goal: IGoal, value: number): AppThunk => async disp
         const {data} = await reqUpdateAnswer(goal, value);
         dispatch(updateAnswerSuccess(data));
     } catch (e) {
-        dispatch(updateAnswerFailure(e.toString()));
+        dispatch(updateAnswerFailure(e.message));
     }
 };
 
@@ -164,7 +164,7 @@ export const createAnswer = (goal: IGoal, value: number): AppThunk => async disp
         dispatch(createAnswerSuccess(data));
         return data;
     } catch (e) {
-        dispatch(createAnswerFailure(e.toString()));
+        dispatch(createAnswerFailure(e.message));
         throw(e);
     }
 };

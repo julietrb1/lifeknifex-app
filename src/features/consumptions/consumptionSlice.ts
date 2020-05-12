@@ -12,7 +12,7 @@ import {
 } from "../../backend";
 
 interface IConsumptionState extends ICommonState {
-    consumptionsById: { [consumptionUrl: string]: IConsumption };
+    consumptionsById: { [consumptionId: number]: IConsumption | null };
     consumptionResponse: IPaginatedResponse<IConsumption> | null;
 }
 
@@ -24,25 +24,29 @@ const startLoading = (state: IConsumptionState) => {
     state.isLoading = true;
 };
 
-const loadingFailed = (state: IConsumptionState, action: PayloadAction<string>) => {
+const loadingFailed = (state: IConsumptionState, {payload}: PayloadAction<string>) => {
     state.isLoading = false;
-    state.error = action.payload;
+    state.error = payload;
 };
+
+const failureGetConsumption = (state: IConsumptionState, {payload}: PayloadAction<number>) => {
+    state.consumptionsById[payload] = null;
+}
 
 const singleConsumptionSuccess = (state: IConsumptionState, {payload}: PayloadAction<IConsumption>) => {
     state.isLoading = false;
     state.error = null;
-    state.consumptionsById[payload.url] = payload;
+    state.consumptionsById[payload.id] = payload;
 };
 
 const allConsumptionSuccess = (state: IConsumptionState, {payload}: PayloadAction<IPaginatedResponse<IConsumption>>) => {
     state.isLoading = false;
     state.error = null;
-    payload.results?.forEach(c => state.consumptionsById[c.url] = c);
+    payload.results?.forEach(c => state.consumptionsById[c.id] = c);
     state.consumptionResponse = payload;
 };
 
-const deletionConsumptionSuccess = (state: IConsumptionState, {payload}: PayloadAction<string>) => {
+const deletionConsumptionSuccess = (state: IConsumptionState, {payload}: PayloadAction<number>) => {
     state.isLoading = false;
     state.error = null;
     delete state.consumptionsById[payload];
@@ -55,7 +59,7 @@ const consumptionSlice = createSlice({
         getAllConsumptionsFailure: loadingFailed,
         getConsumptionStart: startLoading,
         getConsumptionSuccess: singleConsumptionSuccess,
-        getConsumptionFailure: loadingFailed,
+        getConsumptionFailure: failureGetConsumption,
         createConsumptionStart: startLoading,
         createConsumptionSuccess: singleConsumptionSuccess,
         createConsumptionFailure: loadingFailed,
@@ -84,7 +88,7 @@ export const fetchAllConsumptions = (search?: string): AppThunk => async dispatc
         const {data} = await reqGetAllConsumptions(search);
         dispatch(getAllConsumptionsSuccess(data));
     } catch (e) {
-        dispatch(getAllConsumptionsFailure(e.toString()));
+        dispatch(getAllConsumptionsFailure(e.message));
     }
 };
 
@@ -94,7 +98,7 @@ export const fetchConsumption = (consumptionId: number): AppThunk => async dispa
         const {data} = await reqGetConsumption(consumptionId);
         dispatch(getConsumptionSuccess(data));
     } catch (e) {
-        dispatch(getConsumptionFailure(e.toString()));
+        dispatch(getConsumptionFailure(consumptionId));
     }
 };
 
@@ -105,7 +109,7 @@ export const createConsumption = (consumption: IConsumption): AppThunk => async 
         dispatch(createConsumptionSuccess(data));
         return data;
     } catch (e) {
-        // dispatch(createConsumptionFailure(e.toString())); // TODO: Consider scope of failure logic
+        // dispatch(createConsumptionFailure(e.message)); // TODO: Consider scope of failure logic
         throw(e);
     }
 };
@@ -116,7 +120,7 @@ export const updateConsumption = (consumption: IConsumption): AppThunk => async 
         const {data} = await reqUpdateConsumption(consumption);
         dispatch(updateConsumptionSuccess(data));
     } catch (e) {
-        dispatch(updateConsumptionFailure(e.toString()));
+        dispatch(updateConsumptionFailure(e.message));
     }
 };
 
@@ -124,8 +128,8 @@ export const deleteConsumption = (consumption: IConsumption): AppThunk => async 
     try {
         dispatch(deleteConsumptionStart());
         const {data} = await reqDeleteConsumption(consumption);
-        dispatch(deleteConsumptionSuccess(data));
+        dispatch(deleteConsumptionSuccess(data.id));
     } catch (e) {
-        dispatch(deleteConsumptionFailure(e.toString()));
+        dispatch(deleteConsumptionFailure(e.message));
     }
 };

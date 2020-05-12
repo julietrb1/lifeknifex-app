@@ -6,8 +6,7 @@ import {Button, Confirm, Divider, Dropdown, Form, Radio} from 'semantic-ui-react
 import {APP_TITLE, foodIcons} from '../../constants';
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../redux/rootReducer";
-import {selectFoodById} from "../../features/foods/foodSelectors";
-import IFood from "../../models/IFood";
+import {selectFoodById, selectFoodsLoading} from "../../features/foods/foodSelectors";
 import {createFood, fetchFood, updateFood} from "../../features/foods/foodSlice";
 import BreadcrumbSet from "../common-components/BreadcrumbSet";
 import HeaderBar from "../common-components/HeaderBar";
@@ -22,9 +21,12 @@ const FoodForm: React.FC = () => {
     const history = useHistory();
     const [isArchiveVisible, setIsArchiveVisible] = useState(false);
     const [isUnarchiveVisible, setIsUnarchiveVisible] = useState(false);
-    const {isLoading} = useSelector((state: RootState) => state.foodState);
-    const food: IFood | undefined = useSelector((state: RootState) => selectFoodById(state, Number(foodId)));
-    const [draftFood, setDraftFood] = useState<IFood>(food || {name: '', health_index: 0, icon: ''} as IFood);
+    const isLoading = useSelector(selectFoodsLoading);
+    const food = useSelector((state: RootState) => selectFoodById(state, Number(foodId)));
+
+    const generateBlankFood = () => ({name: '', health_index: 0, icon: ''});
+
+    const [draftFood, setDraftFood] = useState(food || generateBlankFood());
     const [errorOnFood, setErrorOnFood] = useState(false);
     const [errorOnHealthIndex, setErrorOnHealthIndex] = useState(false);
 
@@ -33,7 +35,7 @@ const FoodForm: React.FC = () => {
     }, [foodId]);
 
     useEffect(() => {
-        if (food) setDraftFood(food);
+        if (food) setDraftFood(food); //TODO: Figure out why setDraftFood has to be explicitly called
     }, [food]);
 
     const handleSave = async () => {

@@ -102,12 +102,11 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
 
     const [foodResults, setFoodResults] = useState<IFood[]>();
 
-
     useEffect(() => {
         if (consumptionId && !consumptionLoaded && !consumption && !isSubmitting && !isLoading) {
             dispatch(fetchConsumption(consumptionId));
         }
-    }, [consumptionId, consumptionLoaded, consumption, isSubmitting, isLoading, dispatch, goBack, availableHours, currentFoodSearch]);
+    }, [consumptionId, consumptionLoaded, consumption, isSubmitting, isLoading]);
 
     useEffect(() => {
         (async () => {
@@ -133,7 +132,6 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
         null;
 
     const HourField = () => {
-        const {consumptionId} = useParams();
         if (consumptionId) {
             return <Input disabled value={moment(draftConsumption.date).format(TIME_FORMAT_STRING)}/>;
         } else {
@@ -195,7 +193,7 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
 
     const foodField = consumptionId ?
         <Input
-            value={currentFoodSearch}
+            value={consumption?.food_name}
             disabled={true}
         />
         :

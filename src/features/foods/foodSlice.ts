@@ -7,12 +7,12 @@ import {reqCreateFood, reqDeleteFood, reqGetAllFoods, reqGetFood, reqUpdateFood}
 import {extractError} from "../../Utils";
 
 interface IFoodState extends ICommonState {
-    foodsByUrl: { [foodUrl: string]: IFood };
+    foodsById: { [foodUrl: number]: IFood };
     foodResponse: IPaginatedResponse<IFood> | null;
 }
 
 const foodsInitialState: IFoodState = {
-    error: null, isLoading: false, foodsByUrl: {}, foodResponse: null
+    error: null, isLoading: false, foodsById: {}, foodResponse: null
 };
 
 const startLoading = (state: IFoodState) => {
@@ -27,20 +27,20 @@ const loadingFailed = (state: IFoodState, action: PayloadAction<string>) => {
 const singleFoodSuccess = (state: IFoodState, {payload}: PayloadAction<IFood>) => {
     state.isLoading = false;
     state.error = null;
-    state.foodsByUrl[payload.url] = payload;
+    state.foodsById[payload.id] = payload;
 };
 
 const allFoodsSuccess = (state: IFoodState, {payload}: PayloadAction<IPaginatedResponse<IFood>>) => {
     state.isLoading = false;
     state.error = null;
-    payload.results?.forEach(c => state.foodsByUrl[c.url] = c);
+    payload.results?.forEach(c => state.foodsById[c.id] = c);
     state.foodResponse = payload;
 };
 
-const deletionFoodSuccess = (state: IFoodState, {payload}: PayloadAction<string>) => {
+const deletionFoodSuccess = (state: IFoodState, {payload}: PayloadAction<number>) => {
     state.isLoading = false;
     state.error = null;
-    delete state.foodsByUrl[payload];
+    delete state.foodsById[payload];
 };
 
 const creationFoodSuccess = (state: IFoodState, action: PayloadAction<IFood>) => {
@@ -85,7 +85,7 @@ export const fetchAllFoods = (search?: string): AppThunk => async dispatch => {
         dispatch(getAllFoodsSuccess(data));
         return data;
     } catch (e) {
-        dispatch(getAllFoodsFailure(e.toString()));
+        dispatch(getAllFoodsFailure(e.message));
         throw(Error(extractError(e)));
     }
 };
@@ -97,7 +97,7 @@ export const fetchFood = (foodId: number): AppThunk => async dispatch => {
         dispatch(getFoodSuccess(data));
         return data;
     } catch (e) {
-        dispatch(getFoodFailure(e.toString()));
+        dispatch(getFoodFailure(e.message));
         throw(Error(extractError(e)));
     }
 };
@@ -109,7 +109,7 @@ export const createFood = (food: IFood): AppThunk => async dispatch => {
         dispatch(createFoodSuccess(data));
         return data;
     } catch (e) {
-        dispatch(createFoodFailure(e.toString()));
+        dispatch(createFoodFailure(e.message));
         throw(Error(extractError(e)));
     }
 };
@@ -121,7 +121,7 @@ export const updateFood = (food: IFood): AppThunk => async dispatch => {
         dispatch(updateFoodSuccess(data));
         return data;
     } catch (e) {
-        dispatch(updateFoodFailure(e.toString()));
+        dispatch(updateFoodFailure(e.message));
         throw(Error(extractError(e)));
     }
 };
@@ -132,7 +132,7 @@ export const deleteFood = (food: IFood): AppThunk => async dispatch => {
         const {data} = await reqDeleteFood(food);
         dispatch(deleteFoodSuccess(data));
     } catch (e) {
-        dispatch(deleteFoodFailure(e.toString()));
+        dispatch(deleteFoodFailure(e.message));
         throw(Error(extractError(e)));
     }
 };

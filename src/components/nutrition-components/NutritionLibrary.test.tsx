@@ -36,17 +36,9 @@ describe('<NutritionLibrary/>', () => {
     });
 
     it('should show foods', async () => {
-        const foodName = 'My food';
-        store.getState().foodState.foodsByUrl[''] = {
-            id: 1,
-            url: '',
-            name: foodName,
-            health_index: 1,
-            is_archived: false,
-            icon: ''
-        };
+        const food = addFoodToStore(store, 'My food');
         renderNode(routeUrl, store);
-        await waitFor(() => screen.getByRole('heading', {name: foodName}));
+        await waitFor(() => screen.getByRole('heading', {name: food.name}));
     });
 
     it('should not perform any requests when loaded', async () => {
