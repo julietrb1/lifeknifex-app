@@ -14,18 +14,21 @@ import {useSnackbar} from "notistack";
 
 const URL_NUTRITION_LIBRARY = '/nutrition/library';
 
+interface IFoodFormParams {
+    foodId?: string;
+}
+
 const FoodForm: React.FC = () => {
     const dispatch = useDispatch();
     const snackbar = useSnackbar();
-    const {foodId} = useParams();
+    const params = useParams<IFoodFormParams>();
+    const foodId = Number(params.foodId);
     const history = useHistory();
     const [isArchiveVisible, setIsArchiveVisible] = useState(false);
     const [isUnarchiveVisible, setIsUnarchiveVisible] = useState(false);
     const isLoading = useSelector(selectFoodsLoading);
-    const food = useSelector((state: RootState) => selectFoodById(state, Number(foodId)));
-
+    const food = useSelector((state: RootState) => selectFoodById(state, foodId));
     const generateBlankFood = () => ({name: '', health_index: 0, icon: ''});
-
     const [draftFood, setDraftFood] = useState(food || generateBlankFood());
     const [errorOnFood, setErrorOnFood] = useState(false);
     const [errorOnHealthIndex, setErrorOnHealthIndex] = useState(false);
@@ -35,7 +38,7 @@ const FoodForm: React.FC = () => {
     }, [foodId]);
 
     useEffect(() => {
-        if (food) setDraftFood(food); //TODO: Figure out why setDraftFood has to be explicitly called
+        if (food) setDraftFood(food);
     }, [food]);
 
     const handleSave = async () => {

@@ -67,10 +67,11 @@ const quantities = [
     {text: 'Extra Large', value: 4}
 ];
 
-const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
+const ConsumptionForm: React.FC = () => {
     const cancelToken = axios.CancelToken.source();
     const dispatch = useDispatch();
-    const {consumptionId} = useParams();
+    const params = useParams<IConsumptionFormMatchParams>();
+    const consumptionId = Number(params.consumptionId);
     const consumptionLoaded = useSelector((state: RootState) => selectConsumptionLoadedById(state, consumptionId));
     const consumption = useSelector((state: RootState) => selectConsumptionById(state, consumptionId));
     const [availableHours, setAvailableHours] = useState<{ text: string, value: string, key: number }[]>(generateHours());
@@ -107,6 +108,10 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
             dispatch(fetchConsumption(consumptionId));
         }
     }, [consumptionId, consumptionLoaded, consumption, isSubmitting, isLoading]);
+
+    useEffect(() => {
+        if (consumption) setDraftConsumption(consumption);
+    }, [consumption]);
 
     useEffect(() => {
         (async () => {
@@ -193,7 +198,7 @@ const ConsumptionForm: React.FC<IConsumptionFormMatchParams> = () => {
 
     const foodField = consumptionId ?
         <Input
-            value={consumption?.food_name}
+            value={draftConsumption.food_name}
             disabled={true}
         />
         :
