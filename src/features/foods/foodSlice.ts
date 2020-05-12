@@ -82,6 +82,7 @@ export const fetchAllFoods = (search?: string): AppThunk => async dispatch => {
         dispatch(getAllFoodsStart());
         const {data} = await reqGetAllFoods(search);
         dispatch(getAllFoodsSuccess(data));
+        return data;
     } catch (e) {
         dispatch(getAllFoodsFailure(e.toString()));
     }
@@ -92,6 +93,7 @@ export const fetchFood = (foodId: number): AppThunk => async dispatch => {
         dispatch(getFoodStart());
         const {data} = await reqGetFood(foodId);
         dispatch(getFoodSuccess(data));
+        return data;
     } catch (e) {
         dispatch(getFoodFailure(e.toString()));
     }
@@ -102,6 +104,7 @@ export const createFood = (food: IFood): AppThunk => async dispatch => {
         dispatch(createFoodStart());
         const {data} = await reqCreateFood(food);
         dispatch(createFoodSuccess(data));
+        return data;
     } catch (e) {
         dispatch(createFoodFailure(e.toString()));
     }
@@ -112,6 +115,7 @@ export const updateFood = (food: IFood): AppThunk => async dispatch => {
         dispatch(updateFoodStart());
         const {data} = await reqUpdateFood(food);
         dispatch(updateFoodSuccess(data));
+        return data;
     } catch (e) {
         dispatch(updateFoodFailure(e.toString()));
     }

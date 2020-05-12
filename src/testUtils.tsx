@@ -7,6 +7,7 @@ import {MemoryRouter as Router} from "react-router";
 import App from "./App";
 import React from "react";
 import IFood from "./models/IFood";
+import {AxiosResponse} from "axios";
 
 const mockStore = configureStore<RootState>([thunk]);
 const generateInitialStore = (): RootState => ({
@@ -33,15 +34,25 @@ const generateResponse = (results: any[]) => ({
     results
 });
 
+export const generateAxiosRequest = <T extends unknown>(data: T): AxiosResponse<T> => ({
+    data,
+    status: 200,
+    statusText: "OK",
+    config: {},
+    headers: {}
+});
+
+export const generateFood = (foodName: string, isArchived = false) => ({
+    id: 1,
+    url: `/foods/${foodName}`,
+    name: foodName,
+    health_index: 1,
+    is_archived: isArchived,
+    icon: ''
+});
+
 export const addFoodToStore = (store: MockStoreEnhanced<RootState>, foodName: string, isArchived = false) => {
-    const food = {
-        id: 1,
-        url: `/foods/${foodName}`,
-        name: foodName,
-        health_index: 1,
-        is_archived: isArchived,
-        icon: ''
-    };
+    const food = generateFood(foodName, isArchived);
 
     store.getState().foodState.foodsByUrl[1] = food;
     store.getState().foodState.foodResponse = generateResponse([food]);

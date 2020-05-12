@@ -30,9 +30,11 @@ const FoodForm: React.FC = () => {
         if (!food) fetchFood(foodId);
     });
 
-    const handleSave = () => {
-        if (foodId) dispatch(updateFood(draftFood));
-        else dispatch(createFood(draftFood));
+    const handleSave = async () => {
+        if (foodId) await dispatch(updateFood(draftFood));
+        else await dispatch(createFood(draftFood));
+        if (history.length > 1) history.goBack();
+        else history.push('/nutrition/library');
     };
 
     const SetArchivedButton = () => {
@@ -62,8 +64,9 @@ const FoodForm: React.FC = () => {
               error={!!submissionError}>
             <ErrorMessage header='Problem While Saving Food' content={submissionError}/>
             <Form.Field>
-                <label>Name</label>
-                <Form.Input autoFocus value={food?.name}
+                <label htmlFor='name'>Name</label>
+                <Form.Input id='name'
+                            autoFocus value={food?.name}
                             onChange={e => setDraftFood({...draftFood, name: e.target.value})}/>
             </Form.Field>
             <Form.Field>
@@ -72,8 +75,9 @@ const FoodForm: React.FC = () => {
             {
                 healthStrings.map((label: string, index: number) =>
                     <Form.Field key={label}>
-                        <Radio
-                            label={label}
+                        <Radio //TODO: Fix needing to manually create a label with associated ID for accessibility
+                            label={<label htmlFor={`radio_${label}`}>{label}</label>}
+                            id={`radio_${label}`}
                             name='healthRadios'
                             value={index + 1}
                             checked={draftFood?.health_index === index + 1}

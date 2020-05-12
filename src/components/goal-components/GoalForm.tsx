@@ -51,13 +51,13 @@ const GoalForm: React.FC = () => {
         start_date: moment(date).format(BACKEND_DATE_FORMAT)
     });
 
-    const handleGoalSubmit = () => {
+    const handleGoalSubmit = async () => {
         draftGoal.question = draftGoal.question.replace(/(\?+)$/g, '');
         draftGoal.question = draftGoal.question.replace(/^((Did I)|(Have I))\s+/gi, '');
         draftGoal.question = firstCase(draftGoal.question, true);
 
-        if (draftGoal.id) dispatch(updateGoal(draftGoal));
-        else dispatch(createGoal(draftGoal));
+        if (draftGoal.id) await dispatch(updateGoal(draftGoal));
+        else await dispatch(createGoal(draftGoal));
         goBack();
     };
 
