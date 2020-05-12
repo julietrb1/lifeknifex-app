@@ -9,6 +9,7 @@ import React from "react";
 import IFood from "./models/IFood";
 import {AxiosResponse} from "axios";
 import {SnackbarProvider} from "notistack";
+import {IPaginatedResponse} from "./models/IPaginatedReponse";
 
 const mockStore = configureStore<RootState>([thunk]);
 const generateInitialStore = (): RootState => ({
@@ -35,12 +36,17 @@ const generateResponse = (results: any[]) => ({
     results
 });
 
-export const generateAxiosRequest = <T extends unknown>(data: T): AxiosResponse<T> => ({
+export const generateAxiosResponse = <T extends unknown>(data: T): AxiosResponse<T> => ({
     data,
     status: 200,
     statusText: "OK",
     config: {},
     headers: {}
+});
+
+export const generatePaginatedAxiosResponse = <T extends any>(data: T[]): AxiosResponse<IPaginatedResponse<T>> => generateAxiosResponse({
+    count: data.length,
+    results: data
 });
 
 export const generateFood = (foodName: string, isArchived = false) => ({

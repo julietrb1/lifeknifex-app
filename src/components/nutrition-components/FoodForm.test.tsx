@@ -3,15 +3,18 @@ import {screen, waitFor} from "@testing-library/react";
 import * as backend from '../../backend';
 import {MockStoreEnhanced} from 'redux-mock-store';
 import {RootState} from "../../redux/rootReducer";
-import {generateAxiosRequest, generateFood, generateMockStore, renderNode} from "../../testUtils";
+import {
+    generateAxiosResponse,
+    generateFood,
+    generateMockStore,
+    generatePaginatedAxiosResponse,
+    renderNode
+} from "../../testUtils";
 import userEvent from "@testing-library/user-event";
 import IFood from "../../models/IFood";
-import {IPaginatedResponse} from "../../models/IPaginatedReponse";
-
-const mockBackend = backend as jest.Mocked<typeof backend>;
 
 jest.mock('./../../backend');
-
+const mockBackend = backend as jest.Mocked<typeof backend>;
 const newRouteUrl = '/nutrition/library/new';
 const newFoodHeading = 'New Food';
 const foodLibraryHeading = 'Food Library';
@@ -20,7 +23,7 @@ let store: MockStoreEnhanced<RootState>;
 describe('<FoodForm/>', () => {
     beforeEach(() => {
         store = generateMockStore();
-        mockBackend.reqGetAllFoods.mockResolvedValue(generateAxiosRequest<IPaginatedResponse<IFood>>({}));
+        mockBackend.reqGetAllFoods.mockResolvedValue(generatePaginatedAxiosResponse<IFood>([]));
     });
 
     afterEach(() => {
@@ -29,7 +32,7 @@ describe('<FoodForm/>', () => {
 
     it('should save a new food and go to library', async () => {
         const food = generateFood('My food');
-        mockBackend.reqCreateFood.mockResolvedValue(generateAxiosRequest<IFood>(food));
+        mockBackend.reqCreateFood.mockResolvedValue(generateAxiosResponse<IFood>(food));
         renderNode(newRouteUrl, store);
         await waitFor(() => screen.getByRole('heading', {name: newFoodHeading}));
         await userEvent.type(screen.getByLabelText('Name'), food.name);
@@ -41,7 +44,7 @@ describe('<FoodForm/>', () => {
 
     it('should show a success snackbar after saving', async () => {
         const food = generateFood('My food');
-        mockBackend.reqCreateFood.mockResolvedValue(generateAxiosRequest<IFood>(food));
+        mockBackend.reqCreateFood.mockResolvedValue(generateAxiosResponse<IFood>(food));
         renderNode(newRouteUrl, store);
         await waitFor(() => screen.getByRole('heading', {name: newFoodHeading}));
         await userEvent.type(screen.getByLabelText('Name'), food.name);

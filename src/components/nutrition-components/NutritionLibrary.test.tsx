@@ -3,17 +3,19 @@ import {fireEvent, screen, waitFor} from "@testing-library/react";
 import * as backend from '../../backend';
 import {MockStoreEnhanced} from 'redux-mock-store';
 import {RootState} from "../../redux/rootReducer";
-import {addFoodToStore, generateMockStore, renderNode} from "../../testUtils";
+import {addFoodToStore, generateMockStore, generatePaginatedAxiosResponse, renderNode} from "../../testUtils";
+import IFood from "../../models/IFood";
 
 jest.mock('./../../backend');
-
 const routeUrl = '/nutrition/library';
 let store: MockStoreEnhanced<RootState>;
 const emptyFoodsMessage = 'You don\'t have any foods yet.';
+const mockBackend = backend as jest.Mocked<typeof backend>;
 
 describe('<NutritionLibrary/>', () => {
     beforeEach(() => {
         store = generateMockStore();
+        mockBackend.reqGetAllFoods.mockResolvedValue(generatePaginatedAxiosResponse<IFood>([]));
     });
 
     afterEach(() => {
