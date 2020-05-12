@@ -49,7 +49,7 @@ export const generatePaginatedAxiosResponse = <T extends any>(data: T[]): AxiosR
     results: data
 });
 
-export const generateFood = (foodName: string, isArchived = false) => ({
+export const generateFood = (foodName: string, isArchived = false): IFood => ({
     id: 1,
     url: `/foods/${foodName}`,
     name: foodName,

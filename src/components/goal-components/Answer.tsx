@@ -127,7 +127,6 @@ const Answer: React.FC = () => {
         const haveSingleGoal = !!goalId;
         const todaysAnswer = currentGoal.todays_answer;
         if ((haveSingleGoal || isPostMode) && todaysAnswer) {
-            console.log(candidateValue);
             await dispatch(updateAnswer(currentGoal, candidateValue));
             if (isPostMode) {
                 goToGoal(parsedIncrement);

@@ -23,14 +23,18 @@ const FoodForm: React.FC = () => {
     const [isArchiveVisible, setIsArchiveVisible] = useState(false);
     const [isUnarchiveVisible, setIsUnarchiveVisible] = useState(false);
     const {isLoading} = useSelector((state: RootState) => state.foodState);
-    const food: IFood | undefined = useSelector((state: RootState) => selectFoodById(state, foodId));
-    const [draftFood, setDraftFood] = useState<IFood>(food || {} as IFood);
+    const food: IFood | undefined = useSelector((state: RootState) => selectFoodById(state, Number(foodId)));
+    const [draftFood, setDraftFood] = useState<IFood>(food || {name: '', health_index: 0, icon: ''} as IFood);
     const [errorOnFood, setErrorOnFood] = useState(false);
     const [errorOnHealthIndex, setErrorOnHealthIndex] = useState(false);
 
     useEffect(() => {
-        if (!food) fetchFood(foodId);
-    });
+        if (!food) dispatch(fetchFood(foodId));
+    }, [foodId]);
+
+    useEffect(() => {
+        if (food) setDraftFood(food);
+    }, [food]);
 
     const handleSave = async () => {
         if (!draftFood.name) {
@@ -86,7 +90,7 @@ const FoodForm: React.FC = () => {
             <Form.Field error={errorOnFood}>
                 <label htmlFor='name'>Name</label>
                 <Form.Input id='name'
-                            autoFocus value={food?.name}
+                            autoFocus value={draftFood.name}
                             onChange={e => setDraftFood({...draftFood, name: e.target.value})}/>
             </Form.Field>
             <Form.Field error={errorOnHealthIndex}>

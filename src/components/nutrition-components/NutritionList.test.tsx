@@ -6,6 +6,7 @@ import {RootState} from "../../redux/rootReducer";
 import {
     addConsumptionToStore,
     addFoodToStore,
+    generateAxiosResponse,
     generateMockStore,
     generatePaginatedAxiosResponse,
     renderNode
@@ -23,6 +24,7 @@ describe('<NutritionList/>', () => {
     beforeEach(() => {
         store = generateMockStore();
         mockBackend.reqGetAllFoods.mockResolvedValue(generatePaginatedAxiosResponse<IFood>([]));
+        mockBackend.reqGetFood.mockResolvedValue(generateAxiosResponse<IFood>({} as IFood));
     });
 
     afterEach(() => {

@@ -3,7 +3,13 @@ import {fireEvent, screen, waitFor} from "@testing-library/react";
 import * as backend from '../../backend';
 import {MockStoreEnhanced} from 'redux-mock-store';
 import {RootState} from "../../redux/rootReducer";
-import {addFoodToStore, generateMockStore, generatePaginatedAxiosResponse, renderNode} from "../../testUtils";
+import {
+    addFoodToStore,
+    generateAxiosResponse,
+    generateMockStore,
+    generatePaginatedAxiosResponse,
+    renderNode
+} from "../../testUtils";
 import IFood from "../../models/IFood";
 
 jest.mock('./../../backend');
@@ -16,6 +22,7 @@ describe('<NutritionLibrary/>', () => {
     beforeEach(() => {
         store = generateMockStore();
         mockBackend.reqGetAllFoods.mockResolvedValue(generatePaginatedAxiosResponse<IFood>([]));
+        mockBackend.reqGetFood.mockResolvedValue(generateAxiosResponse<IFood>({} as IFood));
     });
 
     afterEach(() => {
