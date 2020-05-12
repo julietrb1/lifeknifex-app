@@ -3,24 +3,13 @@ import {fireEvent, screen, waitFor} from "@testing-library/react";
 import * as backend from '../../backend';
 import {MockStoreEnhanced} from 'redux-mock-store';
 import {RootState} from "../../redux/rootReducer";
-import {generateMockStore, renderNode} from "../../testUtils";
+import {addFoodToStore, generateMockStore, renderNode} from "../../testUtils";
 
 jest.mock('./../../backend');
 
 const routeUrl = '/nutrition/library';
 let store: MockStoreEnhanced<RootState>;
 const emptyFoodsMessage = 'You don\'t have any foods yet.';
-
-function addFoodToStore(foodName: string, isArchived = false) {
-    store.getState().foodState.foodsByUrl[''] = {
-        id: 1,
-        url: '',
-        name: foodName,
-        health_index: 1,
-        is_archived: isArchived,
-        icon: ''
-    };
-}
 
 describe('<NutritionLibrary/>', () => {
     beforeEach(() => {
@@ -60,7 +49,7 @@ describe('<NutritionLibrary/>', () => {
 
     it('should navigate to Log Consumption when Log clicked', async () => {
         const foodName = 'My food';
-        addFoodToStore(foodName);
+        addFoodToStore(store, foodName);
         renderNode(routeUrl, store);
         await waitFor(() => screen.getByRole('heading', {name: foodName}));
         fireEvent.click(screen.getByRole('button', {name: 'Log'}));
@@ -74,14 +63,14 @@ describe('<NutritionLibrary/>', () => {
     });
 
     it('should navigate to new food form with foods', async () => {
-        addFoodToStore('My food');
+        addFoodToStore(store, 'My food');
         renderNode(routeUrl, store);
         fireEvent.click(screen.getByRole('button', {name: 'New Food'}));
         await waitFor(() => screen.getByRole('heading', {name: 'New Food'}));
     });
 
     it('should navigate to edit food form', async () => {
-        addFoodToStore('My food');
+        addFoodToStore(store, 'My food');
         renderNode(routeUrl, store);
         fireEvent.click(screen.getByRole('button', {name: 'Edit'}));
         await waitFor(() => screen.getByRole('heading', {name: 'Edit Food'}));
@@ -95,7 +84,7 @@ describe('<NutritionLibrary/>', () => {
 
     it('should show archived foods', async () => {
         const foodName = 'My food';
-        addFoodToStore(foodName, true)
+        addFoodToStore(store, foodName, true)
         renderNode(routeUrl, store);
         await waitFor(() => screen.getByRole('heading', {name: emptyFoodsMessage}));
         fireEvent.click(screen.getByRole('checkbox'));

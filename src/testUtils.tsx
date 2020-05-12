@@ -27,6 +27,17 @@ const generateInitialStore = (): RootState => ({
     }
 });
 
+export const addFoodToStore = (store: MockStoreEnhanced<RootState>, foodName: string, isArchived = false) => {
+    store.getState().foodState.foodsByUrl[''] = {
+        id: 1,
+        url: '',
+        name: foodName,
+        health_index: 1,
+        is_archived: isArchived,
+        icon: ''
+    };
+};
+
 export const generateMockStore = () => mockStore(generateInitialStore());
 
 export const renderNode = (routeUrl: string, store: MockStoreEnhanced<RootState>) => render(<Provider
