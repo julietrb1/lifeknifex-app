@@ -70,9 +70,9 @@ const GoalForm: React.FC = () => {
                     <label>Question</label>
                     <Input type='text' onChange={e => setDraftGoal({...draftGoal, question: e.target.value})}
                            placeholder='Get to bed on time last night'
-                           value={draftGoal.question} label={{basic: true, content: '?'}}
+                           value={draftGoal.question}
                            labelPosition='right'>
-                        <Label>Did I</Label>
+                        <Label basic>Did I</Label>
                         <input/>
                         <Label>?</Label>
                     </Input>
