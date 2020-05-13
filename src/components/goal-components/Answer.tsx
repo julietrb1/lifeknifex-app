@@ -31,11 +31,16 @@ const Answer: React.FC = () => {
     const isLoaded = useSelector(selectGoalsLoaded);
     const [goalIndex, setGoalIndex] = useState(-1);
     const currentGoal = goals[goalIndex];
+    console.log(currentGoal?.todays_answer_value);
     const [done, setDone] = useState(false);
-    const [candidateValue, setCandidateValue] = useState(0);
+    const [candidateValue, setCandidateValue] = useState(currentGoal?.todays_answer_value ?? 0);
     const isPostMode = new URLSearchParams(search).get('mode') === 'post';
     const [filteredGoals, setFilteredGoals] = useState<IGoal[] | null>(null);
     const {enqueueSnackbar} = useSnackbar();
+
+    useEffect(() => {
+        if (currentGoal) setCandidateValue(currentGoal.todays_answer_value ?? 0); // TODO: Remove this code smell - should be using props for re-render instead of manually setting state
+    }, [currentGoal]);
 
     useEffect(() => {
         if (!isLoaded) dispatch(fetchAllGoals());
