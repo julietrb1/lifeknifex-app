@@ -8,7 +8,11 @@ import IAnswer from "./models/IAnswer";
 import qs from 'querystring';
 import IAccount from "./models/IAccount";
 
-const API = process.env['REACT_APP_BACKEND_URL'] ?? 'http://localhost:8000/';
+let API = 'http://localhost:8000/';
+const ciUrl = process.env['REACT_APP_BACKEND_URL'];
+const prodUrl = process.env['REACT_APP_BACKEND_URL_PROD'];
+if (prodUrl && document.location.hostname === 'lifeknifex.com') API = prodUrl;
+if (ciUrl && document.location.hostname === 'lifeknifex-app.herokuapp.com') API = ciUrl;
 
 const API_FEATURES = `${API}features/`;
 const API_CONSUMPTIONS = `${API}consumptions/`;
