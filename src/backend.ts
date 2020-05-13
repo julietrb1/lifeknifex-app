@@ -1,12 +1,12 @@
-import axios, {AxiosError, CancelTokenSource} from 'axios';
-import {LOCAL_STORAGE_JWT_ACCESS, LOCAL_STORAGE_JWT_REFRESH} from "./constants";
-import history from './history';
+import axios, {CancelTokenSource} from 'axios';
+import {XSRF_COOKIE_NAME, XSRF_HEADER_NAME} from "./constants";
 import IConsumption from "./models/IConsumption";
 import IFood from "./models/IFood";
 import IGoal from "./models/IGoal";
-import {extractError} from "./Utils";
 import {IPaginatedResponse} from "./models/IPaginatedReponse";
 import IAnswer from "./models/IAnswer";
+import qs from 'querystring';
+import IAccount from "./models/IAccount";
 
 let API = 'http://localhost:8000/';
 if (document.location.hostname === 'app.lifeknifex.com') {
@@ -26,104 +26,13 @@ const API_CONSUMPTIONS = `${API}consumptions/`;
 const API_FOODS = `${API}foods/`;
 const API_GOALS = `${API}goals/`;
 const API_ANSWERS = `${API}answers/`;
-const API_TOKEN = `${API}token/`;
+const API_AUTH_LOGIN = `${API}api-auth/login/`
+const API_AUTH_LOGOUT = `${API}api-auth/logout/`
+const API_ACCOUNT = `${API}account/`
 
-axios.defaults.headers.common['Authorization'] = `Bearer ${getAccessToken()}`;
-
-// for multiple requests
-let isRefreshing = false;
-let failedQueue: { resolve: (value: any) => void; reject: (reason?: any) => void; }[] = [];
-
-const processQueue = (error: Error | null, token: string | null) => {
-    failedQueue.forEach(prom => {
-        if (error) {
-            prom.reject(error);
-            console.error('e1');
-        } else {
-            console.error('e2');
-            prom.resolve(token);
-        }
-    });
-
-    failedQueue = [];
-};
-
-function clearAndLogOut(reject: (reason?: any) => void) {
-    clearAccessToken();
-    clearRefreshToken();
-    history.replace('/login');
-    return reject('No refresh token');
-}
-
-axios.interceptors.response.use(function (response) {
-    return response;
-}, function (error: AxiosError) {
-    const originalRequest = error.config;
-    if (!error.response || error.response.status !== 401 || (originalRequest as any)._retry || originalRequest.url?.includes('/token/')) {
-        return Promise.reject(error);
-    }
-
-    if (isRefreshing) {
-        return new Promise(function (resolve, reject) {
-            failedQueue.push({resolve, reject});
-        }).then(accessToken => {
-            originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
-            return axios(originalRequest);
-        }).catch(err => {
-            return err;
-        });
-    }
-
-    (originalRequest as any)._retry = true;
-    isRefreshing = true;
-
-    const refreshToken = getRefreshToken();
-    return new Promise(function (resolve, reject) {
-        if (!refreshToken) {
-            return clearAndLogOut(reject);
-        }
-        axios.post(`${API_TOKEN}refresh/`, {refresh: refreshToken})
-            .then(({data}) => {
-                const accessToken = data.access;
-                setAccessToken(accessToken);
-                originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
-                processQueue(null, accessToken);
-                resolve(axios(originalRequest));
-            })
-            .catch((err) => {
-                processQueue(err, null);
-                return clearAndLogOut(reject);
-            })
-            .then(() => {
-                isRefreshing = false;
-            });
-    });
-});
-
-function getAccessToken() {
-    return window.localStorage.getItem(LOCAL_STORAGE_JWT_ACCESS);
-}
-
-function setAccessToken(newAccessToken: string) {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
-    window.localStorage.setItem(LOCAL_STORAGE_JWT_ACCESS, newAccessToken);
-}
-
-function getRefreshToken() {
-    return window.localStorage.getItem(LOCAL_STORAGE_JWT_REFRESH);
-}
-
-function setRefreshToken(newRefreshToken: string) {
-    window.localStorage.setItem(LOCAL_STORAGE_JWT_REFRESH, newRefreshToken);
-}
-
-function clearAccessToken() {
-    window.localStorage.removeItem(LOCAL_STORAGE_JWT_ACCESS);
-}
-
-function clearRefreshToken() {
-    window.localStorage.removeItem(LOCAL_STORAGE_JWT_REFRESH);
-}
+axios.defaults.xsrfCookieName = XSRF_COOKIE_NAME;
+axios.defaults.xsrfHeaderName = XSRF_HEADER_NAME;
+axios.defaults.withCredentials = true;
 
 // FEATURES
 
@@ -132,65 +41,19 @@ export function getFeature(cancelToken: CancelTokenSource, featureName: string) 
         .then(res => res.data);
 }
 
-// AUTH
-
-export async function logIn(cancelToken: CancelTokenSource, username: string, password: string) {
-    const res = await axios
-        .post(`${API_TOKEN}`, {
-            username: username,
-            password: password
-        }, {cancelToken: cancelToken.token});
-    setAccessToken(res.data.access);
-    setRefreshToken(res.data.refresh);
-    return res.data;
-}
-
-export function register(cancelToken: CancelTokenSource, username: string, password: string) {
-    // TODO: Implement this properly
-    return new Promise((resolve) => resolve());
-    // return axios
-    //     .post(`${API_AUTH}register/`, {
-    //         username: username,
-    //         password: password
-    //     }, {cancelToken: cancelToken.token});
-}
-
-export function getAccount(cancelToken: CancelTokenSource) {
-    return axios
-        .get(API, {cancelToken: cancelToken.token})
-        .then(res => res.data)
-        .catch(() => null);
-}
-
-export function logOut() {
-    return new Promise((resolve) => {
-        clearAccessToken();
-        clearRefreshToken();
-        resolve();
-    });
-}
-
-const handleReq = async (requestFunc: () => any) => {
-    try {
-        return await requestFunc();
-    } catch (e) {
-        throw Error(extractError(e));
-    }
-};
-
 // Base
 export const reqGetBase = () => axios.get(API);
 
 // Consumptions
 export const reqGetConsumption = (consumptionId: number) => axios.get<IConsumption>(`${API_CONSUMPTIONS}${consumptionId}/`);
-export const reqGetAllConsumptions = (search?: string) => handleReq(() => axios.get<IPaginatedResponse<IConsumption>>(API_CONSUMPTIONS, {params: {search}}));
-export const reqCreateConsumption = (consumption: IConsumption) => handleReq(() => axios.post<IConsumption>(API_CONSUMPTIONS, consumption));
+export const reqGetAllConsumptions = (search?: string) => axios.get<IPaginatedResponse<IConsumption>>(API_CONSUMPTIONS, {params: {search}});
+export const reqCreateConsumption = (consumption: IConsumption) => axios.post<IConsumption>(API_CONSUMPTIONS, consumption);
 export const reqUpdateConsumption = (consumption: IConsumption) => axios.patch<IConsumption>(`${API_CONSUMPTIONS}${consumption.id}/`, consumption);
 export const reqDeleteConsumption = (consumption: IConsumption) => axios.delete(`${API_CONSUMPTIONS}${consumption.id}/`);
 
 // Foods
 export const reqGetFood = (foodId: number) => axios.get<IFood>(`${API_FOODS}${foodId}/`);
-export const reqGetAllFoods = (search?: string) => handleReq(() => axios.get<IPaginatedResponse<IFood>>(API_FOODS, {params: {search}}));
+export const reqGetAllFoods = (search?: string) => axios.get<IPaginatedResponse<IFood>>(API_FOODS, {params: {search}});
 export const reqCreateFood = (food: IFood) => axios.post<IFood>(API_FOODS, food);
 export const reqUpdateFood = (food: IFood) => axios.patch<IFood>(`${API_FOODS}${food.id}/`, food);
 export const reqDeleteFood = (food: IFood) => axios.delete(`${API_FOODS}${food.id}/`);
@@ -208,3 +71,19 @@ export const reqCreateAnswer = (goal: IGoal, value: number) => axios.post<IAnswe
     value
 });
 export const reqUpdateAnswer = (goal: IGoal, value: number) => axios.patch<IAnswer>(String(goal.todays_answer), {value});
+
+// Account
+export const reqLogInGet = () => axios
+    .get(`${API_AUTH_LOGIN}`);
+export const reqLogInPost = (username: string, password: string) => axios
+    .post(`${API_AUTH_LOGIN}`, qs.stringify({
+        username: username,
+        password: password
+    }), {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    });
+export const reqLogOut = () => axios
+    .get(`${API_AUTH_LOGOUT}`);
+export const reqGetAccount = () => axios.get<IAccount>(API_ACCOUNT);

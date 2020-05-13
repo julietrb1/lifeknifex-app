@@ -6,7 +6,7 @@ import {RootState} from "../../redux/rootReducer";
 const routeUrl = '/';
 let store: MockStoreEnhanced<RootState>;
 
-describe('<Home/>', () => {
+describe('Home', () => {
     beforeEach(() => {
         store = generateMockStore();
     });

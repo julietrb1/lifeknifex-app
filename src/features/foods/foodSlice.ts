@@ -81,9 +81,9 @@ export default foodSlice.reducer;
 export const fetchAllFoods = (search?: string): AppThunk => async dispatch => {
     try {
         dispatch(getAllFoodsStart());
-        const {data} = await reqGetAllFoods(search);
-        dispatch(getAllFoodsSuccess(data));
-        return data;
+        const response = await reqGetAllFoods(search);
+        dispatch(getAllFoodsSuccess(response.data));
+        return response.data;
     } catch (e) {
         dispatch(getAllFoodsFailure(e.message));
         handleStoreError(e);

@@ -12,7 +12,7 @@ let store: MockStoreEnhanced<RootState>;
 const emptyConsumptionMessage = 'You haven\'t logged any consumption yet.';
 const emptyFoodMessage = 'You need some food to log.';
 
-describe('<NutritionList/>', () => {
+describe('NutritionList', () => {
     beforeEach(() => {
         store = generateMockStore();
         setUpMockBackend(mockBackend);

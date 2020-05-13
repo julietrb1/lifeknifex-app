@@ -1,8 +1,7 @@
 import React from 'react';
 import HeaderBar from "../common-components/HeaderBar";
 import {Button, Divider, Form, InputOnChangeData, Message} from "semantic-ui-react";
-import {extractError} from "../../Utils";
-import {getFeature, register} from '../../backend';
+import {getFeature} from '../../backend';
 import RequestComponent from "../common-components/RequestComponent";
 import {API_FEATURE_REGISTRATION_ENABLED} from '../../constants';
 import {RouteComponentProps} from "react-router";
@@ -51,14 +50,14 @@ class Register extends RequestComponent<RouteComponentProps, IRegisterState> {
 
         this.setState({submitting: true});
 
-        register(this.cancelToken, this.state.username, this.state.password)
-            .then(() => this.props.history.replace('/'))
-            .catch(err => {
-                this.setState({
-                    submitting: false,
-                    submissionErrors: extractError(err)
-                });
-            });
+        // register(this.cancelToken, this.state.username, this.state.password)
+        //     .then(() => this.props.history.replace('/'))
+        //     .catch(err => {
+        //         this.setState({
+        //             submitting: false,
+        //             submissionErrors: extractError(err)
+        //         });
+        //     });
     };
 
     handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>, {value}: InputOnChangeData) => {

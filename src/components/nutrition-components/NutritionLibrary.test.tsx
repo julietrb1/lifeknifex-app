@@ -11,7 +11,7 @@ let store: MockStoreEnhanced<RootState>;
 const emptyFoodsMessage = 'You don\'t have any foods yet.';
 const mockBackend = backend as jest.Mocked<typeof backend>;
 
-describe('<NutritionLibrary/>', () => {
+describe('NutritionLibrary', () => {
     beforeEach(() => {
         store = generateMockStore();
         setUpMockBackend(mockBackend);

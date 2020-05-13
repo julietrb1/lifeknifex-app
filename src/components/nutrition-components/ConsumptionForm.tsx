@@ -10,7 +10,6 @@ import {
     DropdownProps,
     Form,
     Input,
-    Message,
     Radio,
     Search,
     SearchProps
@@ -35,7 +34,7 @@ import {
 } from "../../features/consumptions/consumptionSlice";
 import HeaderBar from "../common-components/HeaderBar";
 import BreadcrumbSet from "../common-components/BreadcrumbSet";
-import {healthStrings, useDebounce} from "../../Utils";
+import {extractError, healthStrings, useDebounce} from "../../Utils";
 import {reqGetAllFoods} from "../../backend";
 import {useSnackbar} from "notistack";
 
@@ -93,8 +92,6 @@ const ConsumptionForm: React.FC = () => {
     const consumptionsLoading = useSelector(selectConsumptionsLoading);
     const isLoading = foodsLoading || consumptionsLoading;
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [submissionError, setSubmissionError] = useState('');
-    const [submissionMessage, setSubmissionMessage] = useState('');
     const [currentFoodSearch, setCurrentFoodSearch] = useState('');
     const debouncedCurrentFoodSearch = useDebounce(currentFoodSearch, 500);
     const [isDeleteVisible, setIsDeleteVisible] = useState(false);
@@ -133,12 +130,6 @@ const ConsumptionForm: React.FC = () => {
         })();
     }, [debouncedCurrentFoodSearch]);
 
-    const SubmissionMessage = () => submissionMessage ?
-        <Message header='Consumption Logged'
-                 content={submissionMessage}
-                 onDismiss={() => setSubmissionMessage('')}/> :
-        null;
-
     const HourField = () => {
         if (consumptionId) {
             return <Input id='when-input' disabled value={moment(draftConsumption.date).format(TIME_FORMAT_STRING)}/>;
@@ -160,25 +151,27 @@ const ConsumptionForm: React.FC = () => {
 
     const handleFormSubmit = async () => {
         if (isLoading) return;
-        setSubmissionMessage('');
         setIsSubmitting(true);
 
         if (consumptionId) {
-            await dispatch(updateConsumption(draftConsumption));
-            enqueueSnackbar(`Consumption of "${draftConsumption.food_name}" saved`, {variant: 'success'});
-            if (history.length > 1) history.goBack();
-            else history.push('/nutrition');
+            try {
+                await dispatch(updateConsumption(draftConsumption));
+                enqueueSnackbar(`Consumption of "${draftConsumption.food_name}" saved`, {variant: 'success'});
+                if (history.length > 1) history.goBack();
+                else history.push('/nutrition');
+            } catch (e) {
+                enqueueSnackbar(`Error saving consumption: ${extractError(e)}`, {variant: "error"});
+            }
 
         } else {
             try {
                 await dispatch(createConsumption(draftConsumption));
-                setSubmissionError('');
                 setAvailableHours(generateHours());
                 setDraftConsumption(generateBlankConsumption());
                 setCurrentFoodSearch('');
                 enqueueSnackbar(`Well done! Consumption of "${currentFoodSearch}" logged.`, {variant: 'success'});
             } catch (e) {
-                setSubmissionError(e.message);
+                enqueueSnackbar(`Error logging consumption: ${extractError(e)}`, {variant: "error"});
             }
         }
     }
@@ -216,17 +209,15 @@ const ConsumptionForm: React.FC = () => {
             onSearchChange={handleSearchChange}
             results={foodResults}
             value={currentFoodSearch}
+            autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false"
         />;
 
     return <div>
         <BreadcrumbSet sections={sections}/>
         <HeaderBar title={consumptionId ? 'Edit Consumption' : 'Log Consumption'} icon='nutrition'/>
         <Form
-            error={!!submissionError}
             loading={isLoading}
             onSubmit={handleFormSubmit}>
-            <Message error header='Problem While Logging' list={[submissionError]}/>
-            <SubmissionMessage/>
             <Form.Field>
                 <label htmlFor='food-input'>Food</label>
                 {foodField}

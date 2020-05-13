@@ -18,7 +18,14 @@ import IGoal from "./models/IGoal";
 
 const mockStore = configureStore<RootState>([thunk]);
 const generateInitialStore = (): RootState => ({
-    foodState: {
+    authState: {
+        isAuthenticated: true,
+        loginError: '',
+        isLoggingIn: false,
+        account: {
+            username: 'testuser'
+        }
+    }, foodState: {
         isLoading: false,
         foodsById: {},
         foodResponse: null,

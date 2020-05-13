@@ -1,114 +1,72 @@
 import React from 'react';
 import HeaderBar from '../common-components/HeaderBar';
-import {Button, Divider, Form, InputOnChangeData, Message} from 'semantic-ui-react';
-import {extractError} from '../../Utils';
-import RequestComponent from '../common-components/RequestComponent';
-import {logIn} from '../../backend';
-import {RouteComponentProps} from "react-router";
+import {Button, Divider, Form} from 'semantic-ui-react';
+import {logIn} from '../../features/auth/authSlice';
+import {selectIsAuthenticated, selectIsLoggingIn, selectLoginError} from "../../features/auth/authSelectors";
+import {useDispatch, useSelector} from "react-redux";
+import {useSnackbar} from "notistack";
+import {Redirect, useLocation} from 'react-router-dom';
 
-interface ILoginMatchParams {
+const Login: React.FC = () => {
+    const [username, setUsername] = React.useState('');
+    const [password, setPassword] = React.useState('');
+    const [usernameError, setUsernameError] = React.useState(false);
+    const [passwordError, setPasswordError] = React.useState(false);
+    const isLoggingIn = useSelector(selectIsLoggingIn);
+    const loginError = useSelector(selectLoginError);
+    const isAuthenticated = useSelector(selectIsAuthenticated);
+    const {enqueueSnackbar} = useSnackbar();
+    const dispatch = useDispatch();
+    const location = useLocation<LocationState>();
 
-}
-
-export interface ILoginState {
-    username: string;
-    password: string;
-    loggingIn: boolean;
-    submissionError: string;
-    isRegistrationEnabled: boolean;
-    usernameError: boolean;
-    passwordError: boolean;
-}
-
-class Login extends RequestComponent<RouteComponentProps<ILoginMatchParams>, ILoginState> {
-    state = {
-        username: '',
-        password: '',
-        loggingIn: false,
-        submissionError: '',
-        isRegistrationEnabled: false,
-        usernameError: false,
-        passwordError: false
-    };
-
-    componentDidMount() {
-        // TODO: Implement check for registration enabled
-        // this.checkRegistrationEnabled();
-        // ensureLoggedIn()
-        //     .then(() => this.props.history.replace('/'))
-        //     .catch(() => console.debug('Not logged in'));
+    type LocationState = {
+        from: Location
     }
 
-    performLogin = async () => {
-        if (this.state.loggingIn) {
+    if (isAuthenticated) return <Redirect to={location.state?.from || {from: {pathname: '/'}}}/>
+
+    const performLogin = async () => {
+        if (isLoggingIn) return;
+
+        setUsernameError(!username);
+        setPasswordError(!password);
+
+        if (!username || !password) {
+            enqueueSnackbar('Username and password required', {variant: "error"});
             return;
         }
 
-        this.setState({usernameError: !this.state.username});
-        this.setState({passwordError: !this.state.password});
-
-        if (!this.state.username ||
-            !this.state.password) {
-            this.setState({submissionError: 'Username and password required'});
-            return;
-        }
-
-        this.setState({loggingIn: true});
-        try {
-            const account = await logIn(this.cancelToken, this.state.username, this.state.password);
-            if (account) this.props.history.replace('/');
-        } catch (e) {
-            this.setState({
-                loggingIn: false,
-                submissionError: extractError(e)
-            });
-        }
-    }
-
-    handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>, {value}: InputOnChangeData) => {
-        this.setState({username: value});
+        dispatch(logIn(username, password));
     };
 
-    handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>, {value}: InputOnChangeData) => {
-        this.setState({password: value});
-    };
-
-    render() {
         return <div className="login">
             <HeaderBar title="Log In" icon='account'/>
             <Divider hidden/>
-            <Form error={!!this.state.submissionError} onSubmit={this.performLogin} loading={this.state.loggingIn}>
-                <Message
-                    error
-                    header='Logging In Failed'
-                    content={this.state.submissionError}/>
+            <Form error={!!loginError} onSubmit={performLogin} loading={isLoggingIn}>
                 <Form.Field required>
                     <label>Username</label>
-                    <Form.Input error={this.state.usernameError} name='username' onChange={this.handleUsernameChange}
-                                value={this.state.username}/>
+                    <Form.Input error={usernameError} name='username' onChange={e => setUsername(e.target.value)}
+                                value={username}/>
                 </Form.Field>
                 <Form.Field required>
                     <label>Password</label>
-                    <Form.Input error={this.state.passwordError} name='password' type='password'
-                                onChange={this.handlePasswordChange} value={this.state.password}/>
+                    <Form.Input error={passwordError} name='password' type='password'
+                                onChange={e => setPassword(e.target.value)} value={password}/>
                 </Form.Field>
                 <Button primary type="submit">Log In</Button>
-                <this.RegistrationButton/>
             </Form>
         </div>;
-    }
 
-    RegistrationButton = () => this.state.isRegistrationEnabled ?
-        <Button
-            type='button'
-            onClick={() => this.props.history.replace('/register')}
-            basic
-        >
-            No account? Register now.
-        </Button>
-        : null;
+    // RegistrationButton = () => this.state.isRegistrationEnabled ?
+    //     <Button
+    //         type='button'
+    //         onClick={() => this.props.history.replace('/register')}
+    //         basic
+    //     >
+    //         No account? Register now.
+    //     </Button>
+    //     : null;
 
-    // TODO: Implement check for registration enabled
     // checkRegistrationEnabled() {
     //     getFeature(this.cancelToken, API_FEATURE_REGISTRATION_ENABLED)
     //         .then(isRegistrationEnabled => this.setState({isRegistrationEnabled}));

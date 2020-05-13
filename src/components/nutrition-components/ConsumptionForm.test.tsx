@@ -28,7 +28,7 @@ const editConsumptionHeading = 'Edit Consumption';
 const nutritionHeading = 'Nutrition';
 let store: MockStoreEnhanced<RootState>;
 
-describe('<ConsumptionForm/>', () => {
+describe('ConsumptionForm', () => {
     beforeEach(() => {
         store = generateMockStore();
         setUpMockBackend(mockBackend);

@@ -60,7 +60,7 @@ const FoodForm: React.FC = () => {
         try {
             await dispatch(submitFunction(draftFood));
         } catch (e) {
-            snackbar.enqueueSnackbar(`Error when saving: ${e.message}`, {variant: "error"});
+            if (e.message) snackbar.enqueueSnackbar(`Error when saving: ${e.message}`, {variant: "error"});
             return;
         }
         snackbar.enqueueSnackbar(`Food "${draftFood.name}" saved`, {variant: "success"});

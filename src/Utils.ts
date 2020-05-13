@@ -2,6 +2,7 @@ import moment from "moment";
 import {SemanticCOLORS, SemanticICONS} from "semantic-ui-react/dist/commonjs/generic";
 import IGoal from "./models/IGoal";
 import {useEffect, useState} from "react";
+import {ERROR_MSG_SESSION_EXPIRED} from "./constants";
 
 export const healthStrings = ['Healthy', 'Reasonable', 'Poor', 'Unhealthy'];
 export const consumptionSizes = ['Small', 'Medium', 'Large', 'Extra Large'];
@@ -14,7 +15,7 @@ export const firstCase = (text: string, isUpper: boolean = false) => `${isUpper 
     text.charAt(0).toLowerCase()}${text.slice(1)}`;
 
 export const handleStoreError = (e: any) => {
-    if (!e.toString().includes('No refresh token')) throw(Error(extractError(e)));
+    if (e?.message !== ERROR_MSG_SESSION_EXPIRED) throw(Error(extractError(e)));
 }
 
 export const extractError = (err: any) => {
@@ -105,3 +106,16 @@ export function getAnswerName(goal: IGoal) {
             return null;
     }
 }
+
+export const getCookie = (name: string): string | null => {
+    const nameLenPlus = (name.length + 1);
+    return document.cookie
+        .split(';')
+        .map(c => c.trim())
+        .filter(cookie => {
+            return cookie.substring(0, nameLenPlus) === `${name}=`;
+        })
+        .map(cookie => {
+            return decodeURIComponent(cookie.substring(nameLenPlus));
+        })[0] || null;
+};

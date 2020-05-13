@@ -11,7 +11,7 @@ const routeUrl = '/goals';
 let store: MockStoreEnhanced<RootState>;
 const emptyGoalsMessage = 'You don\'t have any goals yet.';
 
-describe('<Goals/>', () => {
+describe('Goals', () => {
     beforeEach(() => {
         store = generateMockStore();
         setUpMockBackend(mockBackend);
