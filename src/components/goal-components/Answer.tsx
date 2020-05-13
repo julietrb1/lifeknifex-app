@@ -9,11 +9,12 @@ import {BACKEND_DATE_FORMAT} from "../../constants";
 import AnswerEmpty from "./AnswerEmpty";
 import AnswerPre from "./AnswerPre";
 import AnswerPost from "./AnswerPost";
-import {firstCase} from "../../Utils";
+import {extractError, firstCase} from "../../Utils";
 import IGoal from "../../models/IGoal";
 import {createAnswer, fetchAllGoals, updateAnswer} from "../../features/goals/goalSlice";
 import {useHistory, useLocation, useParams} from 'react-router-dom';
 import {selectAllGoals, selectGoalsLoaded, selectGoalsLoading} from "../../features/goals/goalSelectors";
+import {useSnackbar} from "notistack";
 
 const sections = [
     {name: 'Goals', href: '/goals'},
@@ -34,6 +35,7 @@ const Answer: React.FC = () => {
     const [candidateValue, setCandidateValue] = useState(0);
     const isPostMode = new URLSearchParams(search).get('mode') === 'post';
     const [filteredGoals, setFilteredGoals] = useState<IGoal[] | null>(null);
+    const {enqueueSnackbar} = useSnackbar();
 
     useEffect(() => {
         if (!isLoaded) dispatch(fetchAllGoals());
@@ -52,7 +54,7 @@ const Answer: React.FC = () => {
             return <AnswerEmpty/>;
         } else {
             const loading = isLoading || !filteredGoals;
-            return <Form loading={loading} onSubmit={handleFormAction}>
+            return <Form loading={loading} onSubmit={handleSubmit}>
                 <Header>
                     {currentGoal ?
                         `Did I ${firstCase(currentGoal.question)}?` :
@@ -79,7 +81,7 @@ const Answer: React.FC = () => {
                                isStart={goalIndex === 0}
                                isEnd={filteredGoals &&
                                goalIndex === filteredGoals.length - 1}
-                               goBack={() => handleFormAction(-1)}/>;
+                               goBack={() => handleSubmit(-1)}/>;
         } else {
             return <AnswerPre goal={currentGoal} onAnswer={handlePreAnswer}/>;
         }
@@ -97,7 +99,8 @@ const Answer: React.FC = () => {
 
     const goToGoal = (increment: number = 1) => {
         if (!goals.length || !filteredGoals) {
-            throw new Error('No goals');
+            setDone(true);
+            return;
         }
 
         const newGoalIndex = goalIndex + increment;
@@ -122,20 +125,24 @@ const Answer: React.FC = () => {
         return <Header.Subheader>{goalIndex + 1} / {filteredGoalLength}</Header.Subheader>;
     };
 
-    const handleFormAction = async (increment: any) => {
+    const handleSubmit = async (increment: any) => {
         const parsedIncrement = typeof increment === "number" ? increment as number : 1;
         const haveSingleGoal = !!goalId;
         const todaysAnswer = currentGoal.todays_answer;
-        if ((haveSingleGoal || isPostMode) && todaysAnswer) {
-            await dispatch(updateAnswer(currentGoal, candidateValue));
-            if (isPostMode) {
-                goToGoal(parsedIncrement);
-            } else {
+        try {
+            if ((haveSingleGoal || isPostMode) && todaysAnswer) {
+                await dispatch(updateAnswer(currentGoal, candidateValue));
+                if (isPostMode) {
+                    goToGoal(parsedIncrement);
+                } else {
+                    history.goBack();
+                }
+            } else if (haveSingleGoal) {
+                await dispatch(createAnswer(currentGoal, candidateValue));
                 history.goBack();
             }
-        } else if (haveSingleGoal) {
-            await dispatch(createAnswer(currentGoal, candidateValue));
-            history.goBack();
+        } catch (e) {
+            enqueueSnackbar(`Failed to save answer: ${extractError(e)}`, {variant: "error"});
         }
     };
 
