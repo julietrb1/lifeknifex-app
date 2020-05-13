@@ -3,17 +3,20 @@ import ReactDOM from 'react-dom';
 import './index.scss';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import configureStore from "./store/configure-store";
 import {Provider} from "react-redux";
-// import {ReduxToastr} from "react-redux-toastr/src/ReduxToastr";
-
-const store = configureStore({});
+import store from "./redux/store";
+import {Router} from "react-router-dom";
+import {SnackbarProvider} from "notistack";
+import history from './history';
 
 ReactDOM.render(
-    <Provider store={store}>
-        <App/>
-        {/*<ReduxToastr/>*/}
-    </Provider>
+    <SnackbarProvider maxSnack={1}>
+        <Provider store={store}>
+            <Router history={history}>
+                <App/>
+            </Router>
+        </Provider>
+    </SnackbarProvider>
     , document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

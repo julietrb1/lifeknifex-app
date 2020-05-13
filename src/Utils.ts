@@ -1,7 +1,8 @@
 import moment from "moment";
 import {SemanticCOLORS, SemanticICONS} from "semantic-ui-react/dist/commonjs/generic";
-import {IBackendItem} from "./backend-common";
-import {IGoal} from "./reducers/goals";
+import IGoal from "./models/IGoal";
+import {useEffect, useState} from "react";
+import {ERROR_MSG_SESSION_EXPIRED} from "./constants";
 
 export const healthStrings = ['Healthy', 'Reasonable', 'Poor', 'Unhealthy'];
 export const consumptionSizes = ['Small', 'Medium', 'Large', 'Extra Large'];
@@ -13,8 +14,13 @@ export const firstCase = (text: string, isUpper: boolean = false) => `${isUpper 
     text.charAt(0).toUpperCase() :
     text.charAt(0).toLowerCase()}${text.slice(1)}`;
 
+export const handleStoreError = (e: any) => {
+    if (e?.message !== ERROR_MSG_SESSION_EXPIRED) throw(Error(extractError(e)));
+}
+
 export const extractError = (err: any) => {
     const unknownErrorMessage = 'Unknown error occurred - please contact support';
+    if (typeof err === 'string') return err;
     if (!err) {
         return [unknownErrorMessage];
     } else if (err.message && !err.response) {
@@ -37,6 +43,30 @@ export const extractError = (err: any) => {
     }
 };
 
+export function useDebounce(value: string, delay: number) {
+    // State and setters for debounced value
+    const [debouncedValue, setDebouncedValue] = useState(value);
+
+    useEffect(
+        () => {
+            // Update debounced value after delay
+            const handler = setTimeout(() => {
+                setDebouncedValue(value);
+            }, delay);
+
+            // Cancel the timeout if value changes (also on delay change or unmount)
+            // This is how we prevent debounced value from updating if value is changed ...
+            // .. within the delay period. Timeout gets cleared and restarted.
+            return () => {
+                clearTimeout(handler);
+            };
+        },
+        [value, delay] // Only re-call effect if value or delay changes
+    );
+
+    return debouncedValue;
+}
+
 export function getRelativeMoment(dateString: string, firstLower?: boolean) {
     return moment(dateString).calendar(undefined, {
         sameDay: firstLower ? '[today]' : '[Today]',
@@ -48,26 +78,7 @@ export function getRelativeMoment(dateString: string, firstLower?: boolean) {
     });
 }
 
-export const arrayToObject = (array: any[] | undefined, keyField: string) =>
-    (array || []).reduce((obj, item) => {
-        obj[item[keyField]] = item;
-        return obj;
-    }, {});
-
-// export const arrayToIndexedArray: [string, IBackendItem] = (array: IBackendItem[] | undefined) =>
-//     (array || []).map(item => [String(item.url), item]);
-
-export const arrayToIndexed = <T extends IBackendItem>(array: T[] | undefined) =>
-    (array || []).reduce((acc, cur) => {
-        acc.push([String(cur.url), cur]);
-        return acc;
-    }, new Array<[string, T]>());
-
-export interface IStoreState<T extends IBackendItem> {
-    [url: string]: T;
-}
-
-export function getGoalAnswerName(goal: IGoal) {
+export function getAnswerName(goal: IGoal) {
     switch (goal.style) {
         case 'yesno':
             switch (goal.todays_answer_value) {
@@ -95,3 +106,16 @@ export function getGoalAnswerName(goal: IGoal) {
             return null;
     }
 }
+
+export const getCookie = (name: string): string | null => {
+    const nameLenPlus = (name.length + 1);
+    return document.cookie
+        .split(';')
+        .map(c => c.trim())
+        .filter(cookie => {
+            return cookie.substring(0, nameLenPlus) === `${name}=`;
+        })
+        .map(cookie => {
+            return decodeURIComponent(cookie.substring(nameLenPlus));
+        })[0] || null;
+};
