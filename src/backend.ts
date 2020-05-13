@@ -9,7 +9,7 @@ import qs from 'querystring';
 import IAccount from "./models/IAccount";
 
 let API = 'http://localhost:8000/';
-if (document.location.hostname === 'app.lifeknifex.com') {
+if (document.location.hostname === 'lifeknifex.com') {
     const prodUrl = process.env.REACT_APP_BACKEND_URL_PROD;
     if (!prodUrl) throw Error('In production with no REACT_APP_BACKEND_URL_PROD environment variable');
     API = prodUrl;
