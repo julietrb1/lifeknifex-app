@@ -8,18 +8,7 @@ import IAnswer from "./models/IAnswer";
 import qs from 'querystring';
 import IAccount from "./models/IAccount";
 
-let API = 'http://localhost:8000/';
-if (document.location.hostname === 'lifeknifex.com') {
-    const prodUrl = process.env.REACT_APP_BACKEND_URL_PROD;
-    if (!prodUrl) throw Error('In production with no REACT_APP_BACKEND_URL_PROD environment variable');
-    API = prodUrl;
-}
-
-if (document.location.hostname === 'lifeknifex-app.herokuapp.com') {
-    const ciUrl = process.env.REACT_APP_BACKEND_URL;
-    if (!ciUrl) throw Error('In CI with no REACT_APP_BACKEND_URL_PROD environment variable');
-    API = ciUrl;
-}
+const API = process.env['REACT_APP_BACKEND_URL'] ?? 'http://localhost:8000/';
 
 const API_FEATURES = `${API}features/`;
 const API_CONSUMPTIONS = `${API}consumptions/`;
