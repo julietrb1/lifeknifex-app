@@ -26,10 +26,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false  react-scripts build",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test --env=jest-environment-jsdom-sixteen",
-    "eject": "react-scripts eject",
-    "heroku-postbuild": "echo Skip build on Heroku"
+    "eject": "react-scripts eject"
   },
   "browserslist": [
     ">0.2%",
