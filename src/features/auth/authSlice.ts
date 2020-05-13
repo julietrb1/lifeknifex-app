@@ -28,6 +28,7 @@ const authSlice = createSlice({
         }, loginFailure: (state: IAuthState, {payload: loginError}: PayloadAction<string>) => {
             state.isLoggingIn = false;
             state.loginError = loginError;
+            state.isAuthenticated = false;
         }, logoutPerform: (state: IAuthState) => {
             state.isAuthenticated = false;
             state.isLoggingIn = false;
