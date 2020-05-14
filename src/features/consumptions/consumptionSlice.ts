@@ -44,7 +44,11 @@ const singleConsumptionSuccess = (state: IConsumptionState, {payload}: PayloadAc
 const allConsumptionSuccess = (state: IConsumptionState, {payload}: PayloadAction<IPaginatedResponse<IConsumption>>) => {
     state.isLoading = false;
     state.error = null;
-    payload.results?.forEach(c => state.consumptionsById[c.id] = c);
+
+    if (payload.results)
+        for (let c of payload.results)
+            payload.results?.forEach(c => state.consumptionsById[c.id] = c);
+
     state.consumptionResponse = payload;
 };
 
