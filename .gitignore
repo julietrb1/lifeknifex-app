@@ -14,3 +14,4 @@ yarn-error.log*
 .npm/
 src/semantic/dist/
 /coverage
+/report*.json
