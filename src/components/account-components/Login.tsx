@@ -25,7 +25,7 @@ const Login: React.FC = () => {
 
     useEffect(() => {
         if (loginError) enqueueSnackbar(loginError, {variant: "error"});
-    }, [loginError]);
+    }, [loginError, enqueueSnackbar]);
 
     if (isAuthenticated) return <Redirect to={location.state?.from || {from: {pathname: '/'}}}/>
 

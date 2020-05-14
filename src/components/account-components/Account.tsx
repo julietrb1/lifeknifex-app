@@ -18,7 +18,7 @@ const Account: React.FC = () => {
 
     React.useEffect(() => {
         if (!account) dispatch(fetchAccount());
-    }, [cancelToken, account]);
+    }, [cancelToken, account, dispatch]);
 
     return <div>
         <BreadcrumbSet sections={sections}/>

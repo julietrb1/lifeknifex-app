@@ -91,7 +91,7 @@ export const generateConsumption = (food: IFood) => {
     return consumption;
 };
 
-export const addConsumptionToStore = (store: MockStoreEnhanced<RootState>, food: IFood, isArchived = false) => {
+export const addConsumptionToStore = (store: MockStoreEnhanced<RootState>, food: IFood) => {
     const consumption = generateConsumption(food);
 
     store.getState().consumptionState.consumptionsById[consumption.id] = consumption;

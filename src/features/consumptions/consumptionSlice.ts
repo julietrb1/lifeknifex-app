@@ -47,7 +47,7 @@ const allConsumptionSuccess = (state: IConsumptionState, {payload}: PayloadActio
 
     if (payload.results)
         for (let c of payload.results)
-            payload.results?.forEach(c => state.consumptionsById[c.id] = c);
+            state.consumptionsById[c.id] = c;
 
     state.consumptionResponse = payload;
 };

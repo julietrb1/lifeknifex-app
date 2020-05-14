@@ -35,7 +35,7 @@ const FoodForm: React.FC = () => {
 
     useEffect(() => {
         if (foodId && !food) dispatch(fetchFood(foodId));
-    }, [foodId]);
+    }, [food, foodId, dispatch]);
 
     useEffect(() => {
         if (food) setDraftFood(food);
