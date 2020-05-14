@@ -1,17 +1,17 @@
 import {screen, waitFor} from "@testing-library/react";
 import * as backend from '../../backend';
-import {MockStoreEnhanced} from 'redux-mock-store';
 import {RootState} from "../../redux/rootReducer";
 import {
     addFoodToStore,
     generateAxiosResponse,
     generateFood,
-    generateMockStore,
+    getTestStore,
     renderNode,
     setUpMockBackend
 } from "../../testUtils";
 import userEvent from "@testing-library/user-event";
 import IFood from "../../models/IFood";
+import {EnhancedStore} from "@reduxjs/toolkit";
 
 jest.mock('./../../backend');
 const mockBackend = backend as jest.Mocked<typeof backend>;
@@ -19,11 +19,11 @@ const newRouteUrl = '/nutrition/library/new';
 const newFoodHeading = 'New Food';
 const editFoodHeading = 'Edit Food';
 const foodLibraryHeading = 'Food Library';
-let store: MockStoreEnhanced<RootState>;
+let store: EnhancedStore<RootState>;
 
 describe('FoodForm', () => {
     beforeEach(() => {
-        store = generateMockStore();
+        store = getTestStore();
         setUpMockBackend(mockBackend);
     });
 
@@ -32,6 +32,7 @@ describe('FoodForm', () => {
     });
 
     it('should edit food and go to library', async () => {
+        jest.setTimeout(20000);
         const food = addFoodToStore(store, 'My food');
         mockBackend.reqGetFood.mockResolvedValueOnce(generateAxiosResponse<IFood>(food));
         const newFood = {...food, name: 'My food 2'};

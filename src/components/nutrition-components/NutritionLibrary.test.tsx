@@ -1,18 +1,18 @@
 import {fireEvent, screen, waitFor} from "@testing-library/react";
 import * as backend from '../../backend';
-import {MockStoreEnhanced} from 'redux-mock-store';
 import {RootState} from "../../redux/rootReducer";
-import {addFoodToStore, generateMockStore, renderNode, setUpMockBackend} from "../../testUtils";
+import {addFoodToStore, getTestStore, renderNode, setUpMockBackend} from "../../testUtils";
+import {EnhancedStore} from "@reduxjs/toolkit";
 
 jest.mock('./../../backend');
 const routeUrl = '/nutrition/library';
-let store: MockStoreEnhanced<RootState>;
+let store: EnhancedStore<RootState>;
 const emptyFoodsMessage = 'You don\'t have any foods yet.';
 const mockBackend = backend as jest.Mocked<typeof backend>;
 
 describe('NutritionLibrary', () => {
     beforeEach(() => {
-        store = generateMockStore();
+        store = getTestStore();
         setUpMockBackend(mockBackend);
     });
 

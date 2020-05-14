@@ -1,18 +1,18 @@
 import {fireEvent, screen, waitFor} from "@testing-library/react";
 import * as backend from '../../backend';
-import {MockStoreEnhanced} from 'redux-mock-store';
 import {RootState} from "../../redux/rootReducer";
-import {generateMockStore, renderNode, setUpMockBackend} from "../../testUtils";
+import {addGoalToStore, getTestStore, renderNode, setGoalResponse, setUpMockBackend} from "../../testUtils";
+import {EnhancedStore} from "@reduxjs/toolkit";
 
 jest.mock('./../../backend');
 const mockBackend = backend as jest.Mocked<typeof backend>;
 const routeUrl = '/goals';
-let store: MockStoreEnhanced<RootState>;
+let store: EnhancedStore<RootState>;
 const emptyGoalsMessage = 'You don\'t have any goals yet.';
 
 describe('Goals', () => {
     beforeEach(() => {
-        store = generateMockStore();
+        store = getTestStore();
         setUpMockBackend(mockBackend);
     });
 
@@ -27,19 +27,13 @@ describe('Goals', () => {
     });
 
     it('should show goals', async () => {
-        const goalName = 'My goal';
-        store.getState().goalState.goalsByUrl[''] = {
-            id: 1,
-            url: '',
-            question: goalName,
-            test: 'yesno'
-        };
+        const goal = addGoalToStore(store, 'My goal');
         renderNode(routeUrl, store);
-        await waitFor(() => screen.getByRole('heading', {name: goalName}));
+        await waitFor(() => screen.getByRole('heading', {name: goal.question}));
     });
 
     it('should not perform any requests when loaded', async () => {
-        store.getState().goalState.goalResponse = {};
+        setGoalResponse(store, []);
         renderNode(routeUrl, store);
         await waitFor(() => screen.getByRole('heading', {name: emptyGoalsMessage}));
         expect(backend.reqGetAllGoals).not.toHaveBeenCalled();

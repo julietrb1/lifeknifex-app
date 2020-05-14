@@ -1,14 +1,14 @@
-import {generateMockStore, renderNode} from "../../testUtils";
+import {getTestStore, renderNode} from "../../testUtils";
 import {screen, waitFor} from "@testing-library/react";
-import {MockStoreEnhanced} from "redux-mock-store";
 import {RootState} from "../../redux/rootReducer";
+import {EnhancedStore} from "@reduxjs/toolkit";
 
 const routeUrl = '/';
-let store: MockStoreEnhanced<RootState>;
+let store: EnhancedStore<RootState>;
 
 describe('Home', () => {
     beforeEach(() => {
-        store = generateMockStore();
+        store = getTestStore();
     });
 
     it('should show all six sections', async () => {

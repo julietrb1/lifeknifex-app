@@ -58,5 +58,10 @@
     "redux-mock-store": "^1.5.4",
     "ts-jest": "^25.5.1"
   },
-  "heroku-run-build-script": true
+  "heroku-run-build-script": true,
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "/src/style/"
+    ]
+  }
 }
