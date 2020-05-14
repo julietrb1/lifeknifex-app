@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import BreadcrumbSet from "../common-components/BreadcrumbSet";
 import HeaderBar from "../common-components/HeaderBar";
 import {useDispatch, useSelector} from "react-redux";
@@ -44,15 +44,44 @@ const Answer: React.FC = () => {
 
     useEffect(() => {
         if (!isLoaded) dispatch(fetchAllGoals());
-    }, [isLoaded]);
+    }, [dispatch, isLoaded]);
+
+    const filterGoals = useCallback(() => {
+        if (!filteredGoals) {
+            setFilteredGoals(goals.filter(goal => {
+                const shouldStopPre = !goalId && goal.last_answered !== moment().format(BACKEND_DATE_FORMAT);
+                const shouldStopPost = isPostMode || (goalId && goal.id === Number(goalId));
+                return shouldStopPost || shouldStopPre;
+            }));
+        }
+    }, [filteredGoals, goalId, goals, isPostMode]);
 
     useEffect(() => {
         if (isLoaded && !filteredGoals) filterGoals();
-    }, [goals]);
+    }, [goals, isLoaded, filteredGoals, filterGoals]);
+
+    const goToGoal = useCallback((increment: number = 1) => {
+        if (!goals.length || !filteredGoals) {
+            setDone(true);
+            return;
+        }
+
+        const newGoalIndex = goalIndex + increment;
+        if (newGoalIndex < filteredGoals.length) {
+            setGoalIndex(newGoalIndex);
+            return;
+        }
+
+        if (goalId) {
+            history.replace('/goals');
+        } else {
+            setDone(true);
+        }
+    }, [goals.length, filteredGoals, goalId, goalIndex, history]);
 
     useEffect(() => {
         if (filteredGoals) goToGoal();
-    }, [filteredGoals]);
+    }, [filteredGoals, goToGoal]);
 
     const PageContent = () => {
         if (done) {
@@ -89,35 +118,6 @@ const Answer: React.FC = () => {
                                goBack={() => handleSubmit(-1)}/>;
         } else {
             return <AnswerPre goal={currentGoal} onAnswer={handlePreAnswer}/>;
-        }
-    };
-
-    const filterGoals = () => {
-        if (!filteredGoals) {
-            setFilteredGoals(goals.filter(goal => {
-                const shouldStopPre = !goalId && goal.last_answered !== moment().format(BACKEND_DATE_FORMAT);
-                const shouldStopPost = isPostMode || (goalId && goal.id === Number(goalId));
-                return shouldStopPost || shouldStopPre;
-            }));
-        }
-    };
-
-    const goToGoal = (increment: number = 1) => {
-        if (!goals.length || !filteredGoals) {
-            setDone(true);
-            return;
-        }
-
-        const newGoalIndex = goalIndex + increment;
-        if (newGoalIndex < filteredGoals.length) {
-            setGoalIndex(newGoalIndex);
-            return;
-        }
-
-        if (goalId) {
-            history.replace('/goals');
-        } else {
-            setDone(true);
         }
     };
 

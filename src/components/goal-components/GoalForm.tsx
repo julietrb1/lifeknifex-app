@@ -15,11 +15,13 @@ import {selectGoalById, selectGoalsLoading} from "../../features/goals/goalSelec
 import {RootState} from "../../redux/rootReducer";
 import {createGoal, updateGoal} from "../../features/goals/goalSlice";
 import IGoal from "../../models/IGoal";
+import {useSnackbar} from "notistack";
 
 const GoalForm: React.FC = () => {
     const dispatch = useDispatch();
     const {goBack} = useHistory();
     const {goalId} = useParams();
+    const {enqueueSnackbar} = useSnackbar();
     const goal = useSelector((state: RootState) => selectGoalById(state, goalId));
     const [draftGoal, setDraftGoal] = useState<IGoal>(goal || {
         id: 0,
@@ -48,7 +50,7 @@ const GoalForm: React.FC = () => {
 
     const onDateChange = (date: Date) => setDraftGoal({
         ...draftGoal,
-        start_date: moment(date).format(BACKEND_DATE_FORMAT)
+        start_date: moment(date).isValid() ? moment(date).format(BACKEND_DATE_FORMAT) : moment().format(BACKEND_DATE_FORMAT)
     });
 
     const handleGoalSubmit = async () => {
@@ -56,9 +58,12 @@ const GoalForm: React.FC = () => {
         draftGoal.question = draftGoal.question.replace(/^((Did I)|(Have I))\s+/gi, '');
         draftGoal.question = firstCase(draftGoal.question, true);
 
-        if (draftGoal.id) await dispatch(updateGoal(draftGoal));
-        else await dispatch(createGoal(draftGoal));
-        goBack();
+        try {
+            if (draftGoal.id) await dispatch(updateGoal(draftGoal));
+            else await dispatch(createGoal(draftGoal));
+        } catch (e) {
+            enqueueSnackbar(`Failed to save goal: ${e.message}`, {variant: "error"});
+        }
     };
 
     return (

@@ -107,20 +107,25 @@ const ConsumptionForm: React.FC = () => {
         if (consumptionId && !consumptionLoaded && !consumption && !isSubmitting && !isLoading) {
             dispatch(fetchConsumption(consumptionId));
         }
-    }, [consumptionId, consumptionLoaded, consumption, isSubmitting, isLoading]);
+    }, [consumptionId, consumptionLoaded, consumption, isSubmitting, isLoading, dispatch]);
 
     useEffect(() => {
         if (consumption) setDraftConsumption(consumption);
     }, [consumption]);
 
     useEffect(() => {
-        (async () => {
-            if (!debouncedCurrentFoodSearch) return;
+        const searchFoods = async () => {
             if (isSearchLoading) cancelToken.cancel('New search requested');
             else setIsSearchLoading(true);
-            const foods = await reqGetAllFoods(debouncedCurrentFoodSearch);
+            const {data} = await reqGetAllFoods(debouncedCurrentFoodSearch);
             setIsSearchLoading(false);
-            setFoodResults(foods.data.results?.map((food: IFood) => ({ //TODO: Avoid using backend directly
+            return data.results;
+        };
+
+        (async () => {
+            if (!debouncedCurrentFoodSearch) return;
+            const foods = await searchFoods();
+            setFoodResults(foods?.map((food: IFood) => ({ //TODO: Avoid using backend directly
                 title: food.name,
                 id: food.id,
                 description: healthStrings[food.health_index - 1],
@@ -128,7 +133,7 @@ const ConsumptionForm: React.FC = () => {
                 image: food.icon ? `/img/food_icons/${food.icon}.svg` : null
             })));
         })();
-    }, [debouncedCurrentFoodSearch]);
+    }, [debouncedCurrentFoodSearch, cancelToken, isSearchLoading]);
 
     const HourField = () => {
         if (consumptionId) {

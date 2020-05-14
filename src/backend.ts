@@ -5,30 +5,22 @@ import IFood from "./models/IFood";
 import IGoal from "./models/IGoal";
 import {IPaginatedResponse} from "./models/IPaginatedReponse";
 import IAnswer from "./models/IAnswer";
-import qs from 'querystring';
 import IAccount from "./models/IAccount";
 
 let API = 'http://localhost:8000/';
-if (document.location.hostname === 'app.lifeknifex.com') {
-    const prodUrl = process.env.REACT_APP_BACKEND_URL_PROD;
-    if (!prodUrl) throw Error('In production with no REACT_APP_BACKEND_URL_PROD environment variable');
-    API = prodUrl;
-}
-
-if (document.location.hostname === 'lifeknifex-app.herokuapp.com') {
-    const ciUrl = process.env.REACT_APP_BACKEND_URL;
-    if (!ciUrl) throw Error('In CI with no REACT_APP_BACKEND_URL_PROD environment variable');
-    API = ciUrl;
-}
+const ciUrl = process.env['REACT_APP_BACKEND_URL'];
+const prodUrl = process.env['REACT_APP_BACKEND_URL_PROD'];
+if (prodUrl && document.location.hostname === 'lifeknifex.com') API = prodUrl;
+if (ciUrl && document.location.hostname === 'lifeknifex-app.herokuapp.com') API = ciUrl;
 
 const API_FEATURES = `${API}features/`;
 const API_CONSUMPTIONS = `${API}consumptions/`;
 const API_FOODS = `${API}foods/`;
 const API_GOALS = `${API}goals/`;
 const API_ANSWERS = `${API}answers/`;
-const API_AUTH_LOGIN = `${API}api-auth/login/`
-const API_AUTH_LOGOUT = `${API}api-auth/logout/`
 const API_ACCOUNT = `${API}account/`
+const API_AUTH_LOGIN = `${API_ACCOUNT}login/`
+const API_AUTH_LOGOUT = `${API}api-auth/logout/`
 
 axios.defaults.xsrfCookieName = XSRF_COOKIE_NAME;
 axios.defaults.xsrfHeaderName = XSRF_HEADER_NAME;
@@ -73,17 +65,8 @@ export const reqCreateAnswer = (goal: IGoal, value: number) => axios.post<IAnswe
 export const reqUpdateAnswer = (goal: IGoal, value: number) => axios.patch<IAnswer>(String(goal.todays_answer), {value});
 
 // Account
-export const reqLogInGet = () => axios
-    .get(`${API_AUTH_LOGIN}`);
-export const reqLogInPost = (username: string, password: string) => axios
-    .post(`${API_AUTH_LOGIN}`, qs.stringify({
-        username: username,
-        password: password
-    }), {
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
-    });
+export const reqLogIn = (username: string, password: string) => axios
+    .get<IAccount>(`${API_AUTH_LOGIN}`, {auth: {username, password}});
 export const reqLogOut = () => axios
     .get(`${API_AUTH_LOGOUT}`);
 export const reqGetAccount = () => axios.get<IAccount>(API_ACCOUNT);

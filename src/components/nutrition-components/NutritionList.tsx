@@ -33,11 +33,11 @@ const NutritionList: React.FC = () => {
     const totalFoodCount = useSelector(selectFoodCount);
     useEffect(() => {
         if (!isLoaded && !isLoading) dispatch(fetchAllConsumptions());
-    }, [isLoaded, isLoading]);
+    }, [isLoaded, isLoading, dispatch]);
 
     useEffect(() => {
         if (!areFoodsLoaded && !areFoodsLoading) dispatch(fetchAllFoods());
-    }, [areFoodsLoaded, areFoodsLoading]);
+    }, [dispatch, areFoodsLoaded, areFoodsLoading]);
 
     const pageContent = () => {
         if (isLoading || areFoodsLoading) {
