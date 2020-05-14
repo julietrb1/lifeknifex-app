@@ -3,6 +3,7 @@ import {SemanticCOLORS, SemanticICONS} from "semantic-ui-react/dist/commonjs/gen
 import IGoal from "./models/IGoal";
 import {useEffect, useState} from "react";
 import {ERROR_MSG_SESSION_EXPIRED} from "./constants";
+import {AxiosError} from "axios";
 
 export const healthStrings = ['Healthy', 'Reasonable', 'Poor', 'Unhealthy'];
 export const consumptionSizes = ['Small', 'Medium', 'Large', 'Extra Large'];
@@ -18,30 +19,42 @@ export const handleStoreError = (e: any) => {
     if (e?.message !== ERROR_MSG_SESSION_EXPIRED) throw(Error(extractError(e)));
 }
 
-export const extractError = (err: any) => {
-    const unknownErrorMessage = 'Unknown error occurred - please contact support';
-    if (typeof err === 'string') return err;
-    if (!err) {
-        return [unknownErrorMessage];
-    } else if (err.message && !err.response) {
-        return [err.message];
+export const extractStoreError = (e: any) => {
+    if (e?.message !== ERROR_MSG_SESSION_EXPIRED) return extractError(e);
+    else return '';
+}
+
+const extractErrorUnlimited = (err: any) => {
+    if (!err.isAxiosError) {
+        if (err.message) return err.message;
+        return err
     }
-    const data = err.response.data;
-    if (data.non_field_errors && Array.isArray(data.non_field_errors)) {
+    const axiosError = err as AxiosError;
+    if (axiosError.message && !axiosError.response) return axiosError.message;
+    const data = axiosError?.response?.data;
+    if (data.non_field_errors && Array.isArray(data.non_field_errors))
         return data.non_field_errors;
-    }
-    if (data.message) {
-        return [data.message];
-    } else if (data.errors && typeof Array.isArray(data.errors) && data.errors.length) {
-        return data.errors.map((error: { msg: string }) => error.msg);
-    } else if (data && typeof data === 'string') {
-        return [data];
-    } else if (err.response && err.response.statusText) {
-        return [err.response.statusText];
-    } else {
-        return [unknownErrorMessage];
-    }
+    if (data.detail)
+        return data.detail;
+    if (data.message)
+        return data.message;
+    if (data.errors && typeof Array.isArray(data.errors) && data.errors.length)
+        return data.errors.map((error: any) => error.msg).join(', ');
+    if (data && typeof data === 'string')
+        return data;
+
+    const entries = Object.entries(data);
+    if (entries.length)
+        return entries.map(([k, v]) => `${k}: ${v}`).join(', ');
+    if (Object.keys(data).length)
+        return Object.values(data).join(', ');
+    if (axiosError?.response?.statusText)
+        return axiosError.response.statusText;
+
+    return 'Unknown error occurred - please contact support';
 };
+
+export const extractError = (err: any) => String(extractErrorUnlimited(err)).substr(0, 150);
 
 export function useDebounce(value: string, delay: number) {
     // State and setters for debounced value

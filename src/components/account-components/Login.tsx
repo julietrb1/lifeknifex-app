@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import HeaderBar from '../common-components/HeaderBar';
 import {Button, Divider, Form} from 'semantic-ui-react';
 import {logIn} from '../../features/auth/authSlice';
@@ -22,6 +22,10 @@ const Login: React.FC = () => {
     type LocationState = {
         from: Location
     }
+
+    useEffect(() => {
+        if (loginError) enqueueSnackbar(loginError, {variant: "error"});
+    }, [loginError]);
 
     if (isAuthenticated) return <Redirect to={location.state?.from || {from: {pathname: '/'}}}/>
 

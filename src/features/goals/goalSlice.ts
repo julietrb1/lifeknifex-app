@@ -13,7 +13,7 @@ import {
     reqUpdateGoal
 } from "../../backend";
 import IAnswer from "../../models/IAnswer";
-import {handleStoreError} from "../../Utils";
+import {extractStoreError} from "../../Utils";
 
 interface IGoalState extends ICommonState {
     goalsByUrl: { [goalUrl: string]: IGoal };
@@ -104,8 +104,7 @@ export const fetchAllGoals = (search?: string): AppThunk => async dispatch => {
         const {data} = await reqGetAllGoals(search);
         dispatch(getAllGoalsSuccess(data));
     } catch (e) {
-        dispatch(getAllGoalsFailure(e.message));
-        handleStoreError(e);
+        dispatch(getAllGoalsFailure(extractStoreError(e)));
     }
 };
 
@@ -115,8 +114,7 @@ export const fetchGoal = (goalId: number): AppThunk => async dispatch => {
         const {data} = await reqGetGoal(goalId);
         dispatch(getGoalSuccess(data));
     } catch (e) {
-        dispatch(getGoalFailure(e.message));
-        handleStoreError(e);
+        dispatch(getGoalFailure(extractStoreError(e)));
     }
 };
 
@@ -125,9 +123,11 @@ export const createGoal = (goal: IGoal): AppThunk => async dispatch => {
         dispatch(createGoalStart());
         const {data} = await reqCreateGoal(goal);
         dispatch(createGoalSuccess(data));
+        return goal;
     } catch (e) {
-        dispatch(createGoalFailure(e.message));
-        handleStoreError(e);
+        const message = extractStoreError(e);
+        dispatch(createGoalFailure(message));
+        throw Error(message);
     }
 };
 
@@ -136,9 +136,11 @@ export const updateGoal = (goal: IGoal): AppThunk => async dispatch => {
         dispatch(updateGoalStart());
         const {data} = await reqUpdateGoal(goal);
         dispatch(updateGoalSuccess(data));
+        return data;
     } catch (e) {
-        dispatch(updateGoalFailure(e.message));
-        handleStoreError(e);
+        const message = extractStoreError(e);
+        dispatch(updateGoalFailure(message));
+        throw Error(message);
     }
 };
 
@@ -148,8 +150,7 @@ export const deleteGoal = (goal: IGoal): AppThunk => async dispatch => {
         const {data} = await reqDeleteGoal(goal);
         dispatch(deleteGoalSuccess(data));
     } catch (e) {
-        dispatch(deleteGoalFailure(e.message));
-        handleStoreError(e);
+        dispatch(deleteGoalFailure(extractStoreError(e)));
     }
 };
 
@@ -159,8 +160,7 @@ export const updateAnswer = (goal: IGoal, value: number): AppThunk => async disp
         const {data} = await reqUpdateAnswer(goal, value);
         dispatch(updateAnswerSuccess(data));
     } catch (e) {
-        dispatch(updateAnswerFailure(e.message));
-        handleStoreError(e);
+        dispatch(updateAnswerFailure(extractStoreError(e)));
     }
 };
 
@@ -171,7 +171,6 @@ export const createAnswer = (goal: IGoal, value: number): AppThunk => async disp
         dispatch(createAnswerSuccess(data));
         return data;
     } catch (e) {
-        dispatch(createAnswerFailure(e.message));
-        handleStoreError(e);
+        dispatch(createAnswerFailure(extractStoreError(e)));
     }
 };

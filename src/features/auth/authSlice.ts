@@ -1,7 +1,8 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {AppThunk} from "../../redux/store";
-import {reqGetAccount, reqLogInGet, reqLogInPost, reqLogOut} from "../../backend";
+import {reqGetAccount, reqLogIn, reqLogOut} from "../../backend";
 import IAccount from "../../models/IAccount";
+import {extractStoreError} from "../../Utils";
 
 interface IAuthState {
     isAuthenticated: boolean | null;
@@ -22,7 +23,8 @@ const authSlice = createSlice({
         loginStart: (state: IAuthState) => {
             state.isLoggingIn = true;
             state.loginError = '';
-        }, loginSuccess: (state: IAuthState) => {
+        }, loginSuccess: (state: IAuthState, {payload: account}: PayloadAction<IAccount>) => {
+            state.account = account;
             state.isAuthenticated = true;
             state.isLoggingIn = false;
         }, loginFailure: (state: IAuthState, {payload: loginError}: PayloadAction<string>) => {
@@ -35,31 +37,27 @@ const authSlice = createSlice({
             state.isLoggingIn = false;
             state.loginError = '';
             state.account = null;
-        }, accountFetchSuccess: (state: IAuthState, {payload: account}: PayloadAction<IAccount | null>) => {
-            state.account = account;
-            state.isAuthenticated = true;
-            state.loginError = '';
         }
     }
 });
 
-export const {loginFailure, loginStart, loginSuccess, logoutPerform, accountFetchSuccess} = authSlice.actions;
+export const {loginFailure, loginStart, loginSuccess, logoutPerform} = authSlice.actions;
 
 export default authSlice.reducer;
 
 export const logIn = (username: string, password: string): AppThunk => async dispatch => {
     dispatch(loginStart());
     try {
-        await reqLogInGet();
-        await reqLogInPost(username, password);
-        dispatch(loginSuccess());
-
+        const {data: account} = await reqLogIn(username, password);
+        dispatch(loginSuccess(account));
+        return account;
     } catch (e) {
-        dispatch(loginFailure(e.toString()));
+        dispatch(loginFailure(extractStoreError(e)));
     }
 };
 
 export const logOut = (): AppThunk => async dispatch => {
+    dispatch(loginStart());
     try {
         await reqLogOut();
     } finally {
@@ -71,8 +69,9 @@ export const fetchAccount = (): AppThunk => async dispatch => {
     try {
         dispatch(loginStart());
         const {data: account} = await reqGetAccount();
-        dispatch(accountFetchSuccess(account));
+        dispatch(loginSuccess(account));
+        return account;
     } catch (e) {
-        dispatch(loginFailure(e.toString()));
+        dispatch(loginFailure(''));
     }
 }

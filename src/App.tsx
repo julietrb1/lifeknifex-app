@@ -31,7 +31,11 @@ const App: React.FC = () => {
     axios.interceptors.response.use(function (response) {
         return response;
     }, function (error: AxiosError) {
-        if (isAuthenticated !== false && error.response && !error.config.url?.includes('/api-auth/') && (error.response.status === 401 || error.response.status === 403)) {
+        if (isAuthenticated !== false
+            && error.response
+            && !error.config.url?.includes('/api-auth/')
+            && !error.config.url?.includes('/account/')
+            && (error.response.status === 401 || error.response.status === 403)) {
             dispatch(logOut());
             enqueueSnackbar('Session expired - please log in again.', {variant: "warning"});
             throw new axios.Cancel('Session expired');
