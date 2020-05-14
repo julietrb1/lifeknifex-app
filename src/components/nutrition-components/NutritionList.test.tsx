@@ -1,19 +1,26 @@
 import {fireEvent, screen, waitFor} from "@testing-library/react";
 import * as backend from '../../backend';
-import {MockStoreEnhanced} from 'redux-mock-store';
 import {RootState} from "../../redux/rootReducer";
-import {addConsumptionToStore, addFoodToStore, generateMockStore, renderNode, setUpMockBackend} from "../../testUtils";
+import {
+    addConsumptionToStore,
+    addFoodToStore,
+    getTestStore,
+    renderNode,
+    setConsumptionResponse,
+    setUpMockBackend
+} from "../../testUtils";
+import {EnhancedStore} from "@reduxjs/toolkit";
 
 jest.mock('./../../backend');
 const mockBackend = backend as jest.Mocked<typeof backend>;
 const routeUrl = '/nutrition';
-let store: MockStoreEnhanced<RootState>;
+let store: EnhancedStore<RootState>;
 const emptyConsumptionMessage = 'You haven\'t logged any consumption yet.';
 const emptyFoodMessage = 'You need some food to log.';
 
 describe('NutritionList', () => {
     beforeEach(() => {
-        store = generateMockStore();
+        store = getTestStore();
         setUpMockBackend(mockBackend);
     });
 
@@ -24,6 +31,7 @@ describe('NutritionList', () => {
     it('should show empty consumption list', async () => {
         renderNode(routeUrl, store);
         addFoodToStore(store, 'My food');
+        setConsumptionResponse(store);
         await waitFor(() => screen.getByRole('heading', {name: emptyConsumptionMessage}));
     });
 
@@ -51,6 +59,7 @@ describe('NutritionList', () => {
 
     it('should navigate when Log clicked with food and without consumptions', async () => {
         addFoodToStore(store, 'My food');
+        setConsumptionResponse(store, []);
         renderNode(routeUrl, store);
         fireEvent.click(screen.getByRole('button', {name: 'Get Logging'}));
         await waitFor(() => screen.getByRole('heading', {name: 'Log Consumption'}));

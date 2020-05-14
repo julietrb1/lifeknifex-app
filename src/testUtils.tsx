@@ -1,6 +1,4 @@
-import configureStore, {MockStoreEnhanced} from "redux-mock-store";
-import {RootState} from "./redux/rootReducer";
-import thunk from "redux-thunk";
+import rootReducer, {RootState} from "./redux/rootReducer";
 import {render} from "@testing-library/react";
 import {Provider} from "react-redux";
 import {MemoryRouter as Router} from "react-router";
@@ -15,35 +13,23 @@ import {BACKEND_DATE_FORMAT} from "./constants";
 import IConsumption from "./models/IConsumption";
 import * as backend from "./backend";
 import IGoal from "./models/IGoal";
+import {configureStore, EnhancedStore} from "@reduxjs/toolkit";
+import {createConsumptionSuccess, getAllConsumptionsSuccess} from "./features/consumptions/consumptionSlice";
+import {createFoodSuccess, getAllFoodsSuccess} from './features/foods/foodSlice';
+import {createGoalSuccess, getAllGoalsSuccess} from './features/goals/goalSlice';
+import {loginSuccess} from './features/auth/authSlice';
 
-const mockStore = configureStore<RootState>([thunk]);
-const generateInitialStore = (): RootState => ({
-    authState: {
-        isAuthenticated: true,
-        loginError: '',
-        isLoggingIn: false,
-        account: {
-            username: 'testuser'
-        }
-    }, foodState: {
-        isLoading: false,
-        foodsById: {},
-        foodResponse: null,
-        error: null
-    }, consumptionState: {
-        consumptionsById: {},
-        consumptionResponse: null,
-        isLoading: false,
-        error: null
-    }, goalState: {
-        error: null,
-        isLoading: false,
-        goalResponse: null,
-        goalsByUrl: {}
-    }
-});
+export const getTestStore = () => {
+    const store = configureStore({
+        reducer: rootReducer
+    });
+    store.dispatch(loginSuccess({
+        username: 'radicallyepichuman'
+    }));
+    return store;
+};
 
-const generateResponse = (results: any[]) => ({
+const generatePaginatedResponse = <T extends unknown>(results: any[]): IPaginatedResponse<T> => ({
     count: results.length,
     results
 });
@@ -70,13 +56,16 @@ export const generateFood = (foodName: string, isArchived = false): IFood => ({
     icon: ''
 });
 
-export const addFoodToStore = (store: MockStoreEnhanced<RootState>, foodName: string, isArchived = false) => {
+export const addFoodToStore = (store: EnhancedStore<RootState>, foodName: string, isArchived = false) => {
     const food = generateFood(foodName, isArchived);
-
-    store.getState().foodState.foodsById[1] = food;
-    store.getState().foodState.foodResponse = generateResponse([food]);
+    if (!store.getState().foodState.foodResponse) setFoodResponse(store, []);
+    store.dispatch(createFoodSuccess(food));
     return food;
 };
+
+export const setFoodResponse = (store: EnhancedStore<RootState>, foods: IFood[] = []) => {
+    store.dispatch(getAllFoodsSuccess(generatePaginatedResponse(foods)));
+}
 
 export const generateConsumption = (food: IFood) => {
     const consumption: IConsumption = {
@@ -91,17 +80,36 @@ export const generateConsumption = (food: IFood) => {
     return consumption;
 };
 
-export const addConsumptionToStore = (store: MockStoreEnhanced<RootState>, food: IFood) => {
-    const consumption = generateConsumption(food);
+export const setConsumptionResponse = (store: EnhancedStore<RootState>, consumptions: IConsumption[] = []) => {
+    store.dispatch(getAllConsumptionsSuccess(generatePaginatedResponse(consumptions)));
+}
 
-    store.getState().consumptionState.consumptionsById[consumption.id] = consumption;
-    store.getState().consumptionState.consumptionResponse = generateResponse([consumption]);
+export const addConsumptionToStore = (store: EnhancedStore<RootState>, food: IFood) => {
+    const consumption = generateConsumption(food);
+    if (!store.getState().consumptionState.consumptionResponse) setConsumptionResponse(store, []);
+    store.dispatch(createConsumptionSuccess(consumption));
     return consumption;
 };
 
-export const generateMockStore = () => mockStore(generateInitialStore());
+export const generateGoal = (goalQuestion: string, isArchived = false): IGoal => ({
+    id: 1,
+    url: '',
+    question: goalQuestion,
+    test: 'yesno'
+});
 
-export const renderNode = (routeUrl: string, store: MockStoreEnhanced<RootState>) => render(
+export const addGoalToStore = (store: EnhancedStore<RootState>, goalQuestion: string, isArchived = false) => {
+    const goal = generateGoal(goalQuestion, isArchived);
+    if (!store.getState().goalState.goalResponse) setGoalResponse(store, []);
+    store.dispatch(createGoalSuccess(goal));
+    return goal;
+};
+
+export const setGoalResponse = (store: EnhancedStore<RootState>, goals: IGoal[] = []) => {
+    store.dispatch(getAllGoalsSuccess(generatePaginatedResponse(goals)));
+}
+
+export const renderNode = (routeUrl: string, store: EnhancedStore<RootState>) => render(
     <SnackbarProvider maxSnack={1}><Provider store={store}><Router
         initialEntries={[routeUrl]}><App/></Router></Provider></SnackbarProvider>
 );

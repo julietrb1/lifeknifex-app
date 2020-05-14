@@ -1,12 +1,11 @@
 import {screen, waitFor} from "@testing-library/react";
 import * as backend from '../../backend';
-import {MockStoreEnhanced} from 'redux-mock-store';
 import {RootState} from "../../redux/rootReducer";
 import {
     addConsumptionToStore,
     addFoodToStore,
     generateAxiosResponse,
-    generateMockStore,
+    getTestStore,
     renderNode,
     setUpMockBackend
 } from "../../testUtils";
@@ -15,6 +14,7 @@ import IFood from "../../models/IFood";
 import IConsumption from "../../models/IConsumption";
 import moment from "moment";
 import {TIME_FORMAT_STRING} from "../../constants";
+import {EnhancedStore} from "@reduxjs/toolkit";
 
 jest.mock('./../../backend');
 const mockBackend = backend as jest.Mocked<typeof backend>;
@@ -23,11 +23,12 @@ const editConsumptionUrlBase = '/nutrition/history/'
 const logConsumptionHeading = 'Log Consumption';
 const editConsumptionHeading = 'Edit Consumption';
 const nutritionHeading = 'Nutrition';
-let store: MockStoreEnhanced<RootState>;
+
+let store: EnhancedStore<RootState>;
 
 describe('ConsumptionForm', () => {
     beforeEach(() => {
-        store = generateMockStore();
+        store = getTestStore();
         setUpMockBackend(mockBackend);
     });
 
