@@ -56,7 +56,7 @@ const Login: React.FC = () => {
         <HeaderBar title="Log In" icon="account" />
         <Divider hidden />
         <Form error={!!loginError} onSubmit={performLogin} loading={isLoggingIn}>
-          <Form.Field required>
+          <Form.Field>
             <label htmlFor="username">Username</label>
             <Form.Input
               id="username"
@@ -66,7 +66,7 @@ const Login: React.FC = () => {
               value={username}
             />
           </Form.Field>
-          <Form.Field required>
+          <Form.Field>
             <label htmlFor="password">Password</label>
             <Form.Input
               id="password"
