@@ -1,4 +1,4 @@
-import {RootState} from "../../redux/rootReducer";
+import { RootState } from '../../redux/rootReducer';
 
 export const selectIsAuthenticated = (state: RootState) => state.authState.isAuthenticated;
 export const selectIsLoggingIn = (state: RootState) => state.authState.isLoggingIn;

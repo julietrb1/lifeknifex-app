@@ -1,17 +1,19 @@
-import {Action} from 'redux';
-import {ThunkAction} from 'redux-thunk';
-import rootReducer, {RootState} from './rootReducer';
-import {configureStore} from "@reduxjs/toolkit";
+import { Action } from 'redux';
+import { ThunkAction } from 'redux-thunk';
+import { configureStore } from '@reduxjs/toolkit';
+// eslint-disable-next-line import/no-cycle
+import rootReducer, { RootState } from './rootReducer';
 
 const store = configureStore({
-    reducer: rootReducer
+  reducer: rootReducer,
 });
 
 if (process.env.NODE_ENV === 'development' && module.hot) {
-    module.hot.accept('./rootReducer', () => {
-        const newRootReducer = require('./rootReducer').default;
-        store.replaceReducer(newRootReducer);
-    });
+  module.hot.accept('./rootReducer', () => {
+    // eslint-disable-next-line global-require
+    const newRootReducer = require('./rootReducer').default;
+    store.replaceReducer(newRootReducer);
+  });
 }
 
 export type AppDispatch = typeof store.dispatch;
