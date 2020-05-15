@@ -29,7 +29,7 @@ describe('Goals', () => {
   it('should show empty goal list', async () => {
     renderNode(routeUrl, store);
     await waitFor(() => screen.getByRole('heading', { name: emptyGoalsMessage }));
-    expect(backend.reqGetAllGoals).toHaveBeenCalledTimes(1);
+    expect(backend.reqGetAllGoals).toBeCalledTimes(1);
   });
 
   it('should show goals', async () => {
@@ -42,7 +42,7 @@ describe('Goals', () => {
     setGoalResponse(store, []);
     renderNode(routeUrl, store);
     await waitFor(() => screen.getByRole('heading', { name: emptyGoalsMessage }));
-    expect(backend.reqGetAllGoals).not.toHaveBeenCalled();
+    expect(backend.reqGetAllGoals).not.toBeCalled();
   });
 
   it('should navigate to GoalForm when New Goal clicked', async () => {

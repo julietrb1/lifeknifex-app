@@ -37,8 +37,8 @@ describe('NutritionList', () => {
 
   it('should request when not loaded', async () => {
     renderNode(routeUrl, store);
-    expect(backend.reqGetAllConsumptions).toHaveBeenCalledTimes(1);
-    expect(backend.reqGetAllFoods).toHaveBeenCalledTimes(1);
+    expect(backend.reqGetAllConsumptions).toBeCalledTimes(1);
+    expect(backend.reqGetAllFoods).toBeCalledTimes(1);
   });
 
   it('should show consumptions', async () => {
@@ -53,8 +53,8 @@ describe('NutritionList', () => {
     const food = addFoodToStore(store, 'My food');
     addConsumptionToStore(store, food);
     renderNode(routeUrl, store);
-    expect(backend.reqGetAllFoods).not.toHaveBeenCalled();
-    expect(backend.reqGetAllConsumptions).not.toHaveBeenCalled();
+    expect(backend.reqGetAllFoods).not.toBeCalled();
+    expect(backend.reqGetAllConsumptions).not.toBeCalled();
   });
 
   it('should navigate when Log clicked with food and without consumptions', async () => {
