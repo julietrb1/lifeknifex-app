@@ -18,7 +18,7 @@ import {
 import {
   selectFoodCount,
   selectFoodsLoaded,
-  selectFoodsLoading
+  selectFoodsLoading,
 } from '../../features/foods/foodSelectors';
 import { fetchAllFoods } from '../../features/foods/foodSlice';
 import NutritionHistoryNoFood from './NutritionHistoryNoFood';
@@ -47,16 +47,18 @@ const NutritionList: React.FC = () => {
     if (isLoading || areFoodsLoading) {
       return (
         <div>
-          <Divider hidden />
-          <PlaceholderSet />
+          <Divider hidden/>
+          <PlaceholderSet/>
         </div>
       );
-    } if (totalFoodCount && consumptions.length) {
-      return <ConsumptionList consumptionItems={consumptions} />;
-    } if (!totalFoodCount) {
-      return <NutritionHistoryNoFood />;
     }
-    return <NutritionHistoryEmpty />;
+    if (totalFoodCount && consumptions.length) {
+      return <ConsumptionList consumptionItems={consumptions}/>;
+    }
+    if (!totalFoodCount) {
+      return <NutritionHistoryNoFood/>;
+    }
+    return <NutritionHistoryEmpty/>;
   };
 
   const libraryButton = () => (

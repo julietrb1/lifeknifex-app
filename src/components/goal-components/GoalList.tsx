@@ -102,15 +102,16 @@ const GoalList: React.FC = () => {
     if (!goal.last_answered) {
       return (
         <div>
-          <Icon name="exclamation triangle" color="orange" />
+          <Icon name="exclamation triangle" color="orange"/>
           Never answered
         </div>
       );
-    } if (moment().isSame(goal.last_answered, 'day')) {
+    }
+    if (moment().isSame(goal.last_answered, 'day')) {
       const answerName = getAnswerName(goal);
       return (
         <div>
-          <Icon name="check circle" color="green" />
+          <Icon name="check circle" color="green"/>
           Answered
           {' '}
           {answerName ? `"${answerName.toLowerCase()}"` : null}
@@ -150,15 +151,16 @@ const GoalList: React.FC = () => {
 
   const GoalsContent = () => {
     if (isLoading) {
-      return <PlaceholderSet />;
-    } if (Object.keys(goals).length) {
+      return <PlaceholderSet/>;
+    }
+    if (Object.keys(goals).length) {
       return (
         <Card.Group stackable>
           {Object.values(goals).map(GoalCard)}
         </Card.Group>
       );
     }
-    return <GoalsEmpty />;
+    return <GoalsEmpty/>;
   };
 
   const AnsweringButton = () => {

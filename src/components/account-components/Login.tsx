@@ -6,7 +6,7 @@ import { Redirect, useLocation } from 'react-router-dom';
 import {
   selectIsAuthenticated,
   selectIsLoggingIn,
-  selectLoginError
+  selectLoginError,
 } from '../../features/auth/authSelectors';
 import { logIn } from '../../features/auth/authSlice';
 import HeaderBar from '../common-components/HeaderBar';

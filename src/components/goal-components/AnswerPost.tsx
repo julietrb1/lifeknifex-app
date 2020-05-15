@@ -30,7 +30,8 @@ const BackButton = (isStart: boolean | null, goBack: any, mode: string) => {
 const NextButton = (mode: string, isEnd: boolean | null, checkedValue: number | null) => {
   if (mode === 'post' && !isEnd) {
     return <Button type="submit">Next</Button>;
-  } if (mode === 'post' && isEnd) {
+  }
+  if (mode === 'post' && isEnd) {
     return <Button positive type="submit">Finish</Button>;
   }
   return <Button disabled={!checkedValue} positive type="submit">Finish</Button>;

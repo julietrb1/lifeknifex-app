@@ -81,7 +81,8 @@ const FoodForm: React.FC = () => {
           Archive
         </Button>
       );
-    } if (food?.id && food.is_archived) {
+    }
+    if (food?.id && food.is_archived) {
       return (
         <Button
           type="button"

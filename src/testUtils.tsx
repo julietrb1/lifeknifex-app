@@ -16,7 +16,7 @@ import * as backend from './backend';
 import IGoal from './models/IGoal';
 import {
   createConsumptionSuccess,
-  getAllConsumptionsSuccess
+  getAllConsumptionsSuccess,
 } from './features/consumptions/consumptionSlice';
 import { createFoodSuccess, getAllFoodsSuccess } from './features/foods/foodSlice';
 import { createGoalSuccess, getAllGoalsSuccess } from './features/goals/goalSlice';

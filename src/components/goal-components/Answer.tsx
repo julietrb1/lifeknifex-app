@@ -17,7 +17,7 @@ import { createAnswer, fetchAllGoals, updateAnswer } from '../../features/goals/
 import {
   selectAllGoals,
   selectGoalsLoaded,
-  selectGoalsLoading
+  selectGoalsLoading,
 } from '../../features/goals/goalSelectors';
 
 const sections = [
@@ -54,7 +54,7 @@ const Answer: React.FC = () => {
     if (!filteredGoals) {
       setFilteredGoals(goals.filter((goal) => {
         const filterPre = !goalId
-            && goal.last_answered !== moment().format(BACKEND_DATE_FORMAT);
+          && goal.last_answered !== moment().format(BACKEND_DATE_FORMAT);
         const filterPost = isPostMode || (goalId && goal.id === Number(goalId));
         return filterPost || filterPre;
       }));
@@ -135,8 +135,10 @@ const Answer: React.FC = () => {
 
   const FormContent = () => {
     if (isLoading || !currentGoal) {
-      return <PlaceholderSet />;
-    } if (isPostMode || goalId) {
+      return <PlaceholderSet/>;
+    }
+
+    if (isPostMode || goalId) {
       return (
         <AnswerPost
           goal={currentGoal}
@@ -145,7 +147,7 @@ const Answer: React.FC = () => {
           mode={isPostMode ? 'post' : 'single'}
           isStart={goalIndex === 0}
           isEnd={filteredGoals
-                               && goalIndex === filteredGoals.length - 1}
+          && goalIndex === filteredGoals.length - 1}
           goBack={() => handleSubmit(-1)}
         />
       );
