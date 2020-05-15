@@ -52,6 +52,7 @@ describe('Login', () => {
 
   it('should redirect to home when account present', async () => {
     await store.dispatch(loginSuccess({ username: testUsername }));
+
     renderNode(routeUrl, store);
     await waitFor(() => screen.getByRole('heading', { name: homeHeading }));
   });
