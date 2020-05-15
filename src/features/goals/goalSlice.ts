@@ -45,10 +45,10 @@ const allGoalsSuccess = (
 ) => {
   state.isLoading = false;
   state.error = null;
-    payload.results?.forEach((c) => {
-      state.goalsByUrl[c.url] = c;
-    });
-    state.goalResponse = payload;
+  (payload.results || []).forEach((c) => {
+    state.goalsByUrl[c.url] = c;
+  });
+  state.goalResponse = payload;
 };
 
 const singleAnswerSuccess = (state: IGoalState, { payload }: PayloadAction<IAnswer>) => {

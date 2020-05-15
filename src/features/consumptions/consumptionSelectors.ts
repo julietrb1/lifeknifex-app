@@ -7,7 +7,7 @@ export const selectConsumptionById = (
 
 export const selectConsumptionLoadedById = (
   state: RootState, consumptionId: number,
-) => consumptionId in Object.keys(state.consumptionState.consumptionsById);
+) => consumptionId in state.consumptionState.consumptionsById;
 
 export const selectConsumptionsLoaded = (
   state: RootState,

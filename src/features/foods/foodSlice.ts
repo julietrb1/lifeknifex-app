@@ -43,10 +43,10 @@ const allFoodsSuccess = (
 ) => {
   state.isLoading = false;
   state.error = null;
-    payload.results?.forEach((c) => {
-      state.foodsById[c.id] = c;
-    });
-    state.foodResponse = payload;
+  (payload.results || []).forEach((c) => {
+    state.foodsById[c.id] = c;
+  });
+  state.foodResponse = payload;
 };
 
 const deletionFoodSuccess = (state: IFoodState, { payload }: PayloadAction<number>) => {
