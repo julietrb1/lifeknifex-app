@@ -1,4 +1,4 @@
 export interface IBackendItem {
-    id: number;
-    url: string;
+  id: number;
+  url: string;
 }

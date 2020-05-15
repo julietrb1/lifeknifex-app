@@ -1,4 +1,4 @@
 export default interface ICommonState {
-    isLoading: boolean;
-    error: string | null;
+  isLoading: boolean;
+  error: string | null;
 }

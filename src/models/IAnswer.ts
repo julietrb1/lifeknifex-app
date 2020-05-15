@@ -1,7 +1,7 @@
-import {IBackendItem} from "./IBackendItem";
+import { IBackendItem } from './IBackendItem';
 
 export default interface IAnswer extends IBackendItem {
-    goal: string;
-    value: number;
-    date: string;
+  goal: string;
+  value: number;
+  date: string;
 }

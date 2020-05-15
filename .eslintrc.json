@@ -1,0 +1,13 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "extends": ["react-app", "airbnb-typescript"],
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    "jsx-a11y/label-has-associated-control": "off",
+    "jsx-a11y/label-has-for": "off", // TODO: Fix accessibility labels,
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": ["src/testUtils.tsx" ,"**/*.test.tsx", "**/*.spec.tsx"]}]
+  }
+}

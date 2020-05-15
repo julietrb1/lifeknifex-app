@@ -1,19 +1,21 @@
 import React from 'react';
-import {Placeholder} from "semantic-ui-react";
+import { Placeholder } from 'semantic-ui-react';
 
-const PlaceholderSet = () => <Placeholder>
+const PlaceholderSet = () => (
+  <Placeholder>
     <Placeholder.Header>
-        <Placeholder.Line/>
+      <Placeholder.Line />
     </Placeholder.Header>
     <Placeholder.Paragraph>
-        <Placeholder.Line/>
+      <Placeholder.Line />
     </Placeholder.Paragraph>
     <Placeholder.Header>
-        <Placeholder.Line/>
+      <Placeholder.Line />
     </Placeholder.Header>
     <Placeholder.Paragraph>
-        <Placeholder.Line/>
+      <Placeholder.Line />
     </Placeholder.Paragraph>
-</Placeholder>;
+  </Placeholder>
+);
 
 export default PlaceholderSet;

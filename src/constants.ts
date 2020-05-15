@@ -13,14 +13,14 @@ export const XSRF_HEADER_NAME = 'X-CSRFToken';
 export const ERROR_MSG_SESSION_EXPIRED = 'Session expired';
 
 export const foodIcons = [
-    'Avocado', 'Bacon', 'Banana', 'Beef', 'Carrot', 'Cheese', 'Chicken', 'Chocolate', 'Cookie', 'Egg', 'Grapes',
-    'Ice cream', 'Milkshake', 'Mushroom', 'Nachos', 'Oats', 'Orange', 'Pasta', 'Peanut', 'Scone', 'Sushi', 'Toast',
-    'Wrap', 'Yogurt'
-].map(iconText => {
-    const value = iconText.toLowerCase().replace(/\s+/g, '_');
-    return ({
-        text: iconText,
-        value: value,
-        image: `/img/food_icons/${value}.svg`
-    });
+  'Avocado', 'Bacon', 'Banana', 'Beef', 'Carrot', 'Cheese', 'Chicken', 'Chocolate', 'Cookie', 'Egg', 'Grapes',
+  'Ice cream', 'Milkshake', 'Mushroom', 'Nachos', 'Oats', 'Orange', 'Pasta', 'Peanut', 'Scone', 'Sushi', 'Toast',
+  'Wrap', 'Yogurt',
+].map((iconText) => {
+  const value = iconText.toLowerCase().replace(/\s+/g, '_');
+  return ({
+    text: iconText,
+    value,
+    image: `/img/food_icons/${value}.svg`,
+  });
 });

@@ -1,13 +1,13 @@
 import React from 'react';
-import {foodColors, foodIcons} from "../../Utils";
-import {Icon} from "semantic-ui-react";
+import { Icon } from 'semantic-ui-react';
+import { foodColors, foodIcons } from '../../Utils';
 
 export interface IFoodIconProps {
-    healthIndex: number;
+  healthIndex: number;
 }
 
-const FoodIcon: React.FC<IFoodIconProps> = props => {
-    return <Icon name={foodIcons[props.healthIndex - 1]} color={foodColors[props.healthIndex - 1]}/>;
-};
+const FoodIcon: React.FC<IFoodIconProps> = (
+  { healthIndex }: IFoodIconProps,
+) => <Icon name={foodIcons[healthIndex - 1]} color={foodColors[healthIndex - 1]} />;
 
 export default FoodIcon;
