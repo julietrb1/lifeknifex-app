@@ -24,6 +24,17 @@ const usernameLabel = /Username/;
 const passwordLabel = /Password/;
 const logInButtonText = /Log in/;
 const missingCredentialMessage = /Username and password required/;
+
+const performTestLogin = async (
+  username: string, password: string, headingExpected: boolean, expectedText: RegExp) => {
+  await userEvent.type(screen.getByLabelText(usernameLabel), username);
+  await userEvent.type(screen.getByLabelText(passwordLabel), password);
+  await userEvent.click(screen.getByRole('button', { name: logInButtonText }));
+  await waitFor(() => (headingExpected
+    ? screen.getByRole('heading', { name: expectedText })
+    : screen.getByText(expectedText)));
+};
+
 describe('Login', () => {
   beforeEach(async () => {
     store = getTestStore(true);
@@ -43,26 +54,20 @@ describe('Login', () => {
 
   it('should show error with no username', async () => {
     renderNode(routeUrl, store);
-    await userEvent.type(screen.getByLabelText(passwordLabel), 'invalid');
-    await userEvent.click(screen.getByRole('button', { name: logInButtonText }));
-    await waitFor(() => screen.getByText(missingCredentialMessage));
+    await performTestLogin(testUsername, 'pass', false, missingCredentialMessage);
     expect(mockBackend.reqLogIn).not.toBeCalled();
   });
 
   it('should show error with no password', async () => {
     renderNode(routeUrl, store);
-    await userEvent.type(screen.getByLabelText(usernameLabel), 'invalid');
-    await userEvent.click(screen.getByRole('button', { name: logInButtonText }));
-    await waitFor(() => screen.getByText(missingCredentialMessage));
+    await performTestLogin(testUsername, '', false, missingCredentialMessage);
     expect(mockBackend.reqLogIn).not.toBeCalled();
   });
 
   it('should show error with no username and password', async () => {
     renderNode(routeUrl, store);
     // Required to make the form work
-    await userEvent.type(screen.getByLabelText(usernameLabel), '');
-    await userEvent.click(screen.getByRole('button', { name: logInButtonText }));
-    await waitFor(() => screen.getByText(missingCredentialMessage));
+    await performTestLogin('', '', false, missingCredentialMessage);
     expect(mockBackend.reqLogIn).not.toBeCalled();
   });
 
@@ -72,10 +77,7 @@ describe('Login', () => {
     );
 
     renderNode(routeUrl, store);
-    await userEvent.type(screen.getByLabelText(usernameLabel), testUsername);
-    await userEvent.type(screen.getByLabelText(passwordLabel), 'pass');
-    await userEvent.click(screen.getByRole('button', { name: logInButtonText }));
-    await waitFor(() => screen.getByRole('heading', { name: homeHeading }));
+    await performTestLogin(testUsername, 'pass', true, homeHeading);
     expect(mockBackend.reqLogIn).toBeCalledTimes(1);
   });
 });
