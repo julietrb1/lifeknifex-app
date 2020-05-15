@@ -41,6 +41,10 @@ describe('Login', () => {
     setUpMockBackend(mockBackend);
   });
 
+  afterEach(async () => {
+    jest.clearAllMocks();
+  });
+
   it('should stay on login when no account present', async () => {
     renderNode(routeUrl, store);
     await waitFor(() => screen.getByRole('heading', { name: loginHeading }));
@@ -54,7 +58,7 @@ describe('Login', () => {
 
   it('should show error with no username', async () => {
     renderNode(routeUrl, store);
-    await performTestLogin(testUsername, 'pass', false, missingCredentialMessage);
+    await performTestLogin('', 'pass', false, missingCredentialMessage);
     expect(mockBackend.reqLogIn).not.toBeCalled();
   });
 
