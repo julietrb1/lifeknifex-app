@@ -1,6 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import { EnhancedStore } from '@reduxjs/toolkit';
-import { getTestStore, renderNode } from '../../testUtils';
+import { getTestStore, renderNode, testUsername } from '../../testUtils';
 import { RootState } from '../../redux/rootReducer';
 import { logoutPerform } from '../../features/auth/authSlice';
 
@@ -16,5 +16,10 @@ describe('Account', () => {
     await store.dispatch(logoutPerform());
     renderNode(routeUrl, store);
     await waitFor(() => screen.getByRole('heading', { name: 'Log In' }));
+  });
+
+  it('shows account when logged in', async () => {
+    renderNode(routeUrl, store);
+    await waitFor(() => screen.getByRole('heading', { name: testUsername }));
   });
 });
