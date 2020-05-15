@@ -56,7 +56,7 @@ describe('ConsumptionForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Save Log' }));
     await waitFor(() => screen.getByRole('heading', { name: nutritionHeading }));
     await waitFor(() => screen.getByText(`Consumption of "${newConsumption.food_name}" saved`));
-    expect(backend.reqUpdateConsumption).toHaveBeenCalledWith(newConsumption);
+    expect(backend.reqUpdateConsumption).toBeCalledWith(newConsumption);
   });
 
   // TODO: Fix test - hangs on waiting for getByText(food.name)
@@ -81,7 +81,7 @@ describe('ConsumptionForm', () => {
   //     await waitFor(() => screen.getByText(`Well done! Consumption of "${food.name}" logged.`));
   //     await waitFor(() => screen.getByRole('heading', {name: logConsumptionHeading}));
   // TODO: Check parameters of backend call
-  //     expect(backend.reqCreateConsumption).toHaveBeenCalled();
+  //     expect(backend.reqCreateConsumption).toBeCalled();
   // });
   //
   // it('should show a success snackbar after saving', async () => {
@@ -100,7 +100,7 @@ describe('ConsumptionForm', () => {
   //     await waitFor(() => screen.getByRole('heading', {name: newFoodHeading}));
   //     await userEvent.click(screen.getByLabelText('Healthy'));
   //     await userEvent.click(screen.getByRole('button', {name: 'Save Food'}));
-  //     expect(backend.reqCreateFood).not.toHaveBeenCalled();
+  //     expect(backend.reqCreateFood).not.toBeCalled();
   //     await waitFor(() => screen.getByRole('heading', {name: newFoodHeading}));
   //     await waitFor(() => screen.getByText(`Food requires a name`));
   // });
@@ -110,7 +110,7 @@ describe('ConsumptionForm', () => {
   //     await waitFor(() => screen.getByRole('heading', {name: newFoodHeading}));
   //     await userEvent.type(screen.getByLabelText('Name'), 'My food');
   //     await userEvent.click(screen.getByRole('button', {name: 'Save Food'}));
-  //     expect(backend.reqCreateFood).not.toHaveBeenCalled();
+  //     expect(backend.reqCreateFood).not.toBeCalled();
   //     await waitFor(() => screen.getByRole('heading', {name: newFoodHeading}));
   //     await waitFor(() => screen.getByText(`Food requires a quality`));
   // });

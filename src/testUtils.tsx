@@ -22,13 +22,16 @@ import { createFoodSuccess, getAllFoodsSuccess } from './features/foods/foodSlic
 import { createGoalSuccess, getAllGoalsSuccess } from './features/goals/goalSlice';
 import { loginSuccess } from './features/auth/authSlice';
 
-export const getTestStore = () => {
+export const testUsername = 'radicallyepichuman';
+export const getTestStore = (isLoggedOut: boolean = false) => {
   const store = configureStore({
     reducer: rootReducer,
   });
-  store.dispatch(loginSuccess({
-    username: 'radicallyepichuman',
-  }));
+  if (!isLoggedOut) {
+    store.dispatch(loginSuccess({
+      username: testUsername,
+    }));
+  }
   return store;
 };
 

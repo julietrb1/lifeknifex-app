@@ -44,7 +44,11 @@ const Login: React.FC = () => {
         return;
       }
 
-      dispatch(logIn(username, password));
+      try {
+        await dispatch(logIn(username, password));
+      } catch (e) {
+        // TODO: Handle login errors here instead of in a Snackbar
+      }
     };
 
     return (
@@ -52,18 +56,20 @@ const Login: React.FC = () => {
         <HeaderBar title="Log In" icon="account" />
         <Divider hidden />
         <Form error={!!loginError} onSubmit={performLogin} loading={isLoggingIn}>
-          <Form.Field required>
-            <label>Username</label>
+          <Form.Field>
+            <label htmlFor="username">Username</label>
             <Form.Input
+              id="username"
               error={usernameError}
               name="username"
               onChange={(e) => setUsername(e.target.value)}
               value={username}
             />
           </Form.Field>
-          <Form.Field required>
-            <label>Password</label>
+          <Form.Field>
+            <label htmlFor="password">Password</label>
             <Form.Input
+              id="password"
               error={passwordError}
               name="password"
               type="password"
@@ -71,7 +77,7 @@ const Login: React.FC = () => {
               value={password}
             />
           </Form.Field>
-          <Button primary type="submit">Log In</Button>
+          <Button primary type="submit">Log in</Button>
         </Form>
       </div>
     );

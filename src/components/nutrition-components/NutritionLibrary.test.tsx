@@ -23,7 +23,7 @@ describe('NutritionLibrary', () => {
   it('should show empty food list', async () => {
     renderNode(routeUrl, store);
     await waitFor(() => screen.getByRole('heading', { name: emptyFoodsMessage }));
-    expect(backend.reqGetAllFoods).toHaveBeenCalledTimes(1);
+    expect(backend.reqGetAllFoods).toBeCalledTimes(1);
   });
 
   it('should show foods', async () => {
@@ -36,7 +36,7 @@ describe('NutritionLibrary', () => {
     store.getState().foodState.foodResponse = {};
     renderNode(routeUrl, store);
     await waitFor(() => screen.getByRole('heading', { name: emptyFoodsMessage }));
-    expect(mockBackend.reqGetAllFoods).not.toHaveBeenCalled();
+    expect(mockBackend.reqGetAllFoods).not.toBeCalled();
   });
 
   it('should navigate to Log Consumption when Log clicked', async () => {

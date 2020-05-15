@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'semantic-ui-react';
+import { Button, Header } from 'semantic-ui-react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadcrumbSet from '../common-components/BreadcrumbSet';
@@ -33,8 +33,8 @@ const Account: React.FC = () => {
       <BreadcrumbSet sections={sections} />
       <HeaderBar title="Account" icon="account" />
       <div className="main-links">
-        <span>{account?.username ?? 'Unknown username'}</span>
-        <Button onClick={() => dispatch(logOut())}>Log Out</Button>
+        <Header as="h2">{account?.username ?? 'Unknown username'}</Header>
+        <Button onClick={() => dispatch(logOut())}>Log out</Button>
       </div>
     </div>
   );

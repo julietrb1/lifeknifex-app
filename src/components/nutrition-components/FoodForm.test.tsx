@@ -45,7 +45,7 @@ describe('FoodForm', () => {
     await userEvent.type(screen.getByLabelText('Name'), newFood.name);
     await userEvent.click(screen.getByRole('button', { name: 'Save Food' }));
     await waitFor(() => screen.getByRole('heading', { name: foodLibraryHeading }));
-    expect(backend.reqUpdateFood).toHaveBeenCalledWith(newFood);
+    expect(backend.reqUpdateFood).toBeCalledWith(newFood);
     await waitFor(() => screen.getByText(`Food "${newFood.name}" saved`));
   });
 
@@ -58,7 +58,7 @@ describe('FoodForm', () => {
     await userEvent.click(screen.getByLabelText('Healthy'));
     await userEvent.click(screen.getByRole('button', { name: 'Save Food' }));
     await waitFor(() => screen.getByRole('heading', { name: foodLibraryHeading }));
-    expect(backend.reqCreateFood).toHaveBeenCalledWith({ name: food.name, health_index: 1, icon: '' });
+    expect(backend.reqCreateFood).toBeCalledWith({ name: food.name, health_index: 1, icon: '' });
     await waitFor(() => screen.getByText(`Food "${food.name}" saved`));
   });
 
@@ -67,7 +67,7 @@ describe('FoodForm', () => {
     await waitFor(() => screen.getByRole('heading', { name: newFoodHeading }));
     await userEvent.click(screen.getByLabelText('Healthy'));
     await userEvent.click(screen.getByRole('button', { name: 'Save Food' }));
-    expect(backend.reqCreateFood).not.toHaveBeenCalled();
+    expect(backend.reqCreateFood).not.toBeCalled();
     await waitFor(() => screen.getByRole('heading', { name: newFoodHeading }));
     await waitFor(() => screen.getByText('Food requires a name'));
   });
@@ -77,7 +77,7 @@ describe('FoodForm', () => {
     await waitFor(() => screen.getByRole('heading', { name: newFoodHeading }));
     await userEvent.type(screen.getByLabelText('Name'), 'My food');
     await userEvent.click(screen.getByRole('button', { name: 'Save Food' }));
-    expect(backend.reqCreateFood).not.toHaveBeenCalled();
+    expect(backend.reqCreateFood).not.toBeCalled();
     await waitFor(() => screen.getByRole('heading', { name: newFoodHeading }));
     await waitFor(() => screen.getByText('Food requires a quality'));
   });
