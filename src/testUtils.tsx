@@ -23,13 +23,15 @@ import { createGoalSuccess, getAllGoalsSuccess } from './features/goals/goalSlic
 import { loginSuccess } from './features/auth/authSlice';
 
 export const testUsername = 'radicallyepichuman';
-export const getTestStore = () => {
+export const getTestStore = (isLoggedOut: boolean = false) => {
   const store = configureStore({
     reducer: rootReducer,
   });
-  store.dispatch(loginSuccess({
-    username: testUsername,
-  }));
+  if (!isLoggedOut) {
+    store.dispatch(loginSuccess({
+      username: testUsername,
+    }));
+  }
   return store;
 };
 
