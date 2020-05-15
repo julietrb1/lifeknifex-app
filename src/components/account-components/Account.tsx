@@ -34,7 +34,7 @@ const Account: React.FC = () => {
       <HeaderBar title="Account" icon="account" />
       <div className="main-links">
         <Header as="h2">{account?.username ?? 'Unknown username'}</Header>
-        <Button onClick={() => dispatch(logOut())}>Log Out</Button>
+        <Button onClick={() => dispatch(logOut())}>Log out</Button>
       </div>
     </div>
   );
