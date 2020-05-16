@@ -123,8 +123,8 @@ const ConsumptionForm: React.FC = () => {
   }, [consumption]);
 
   const searchFoods = useCallback(async () => {
-    if (isSearching.current) {
-      cancelToken.current?.cancel('New search requested');
+    if (isSearching.current && cancelToken.current) {
+      cancelToken.current.cancel('New search requested');
       cancelToken.current = axios.CancelToken.source();
     } else {
       // Work with two variables - isSearchLoading for visible state, and isSearching for internal
