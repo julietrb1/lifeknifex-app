@@ -20,6 +20,7 @@ import FoodForm from './components/nutrition-components/FoodForm';
 import ConsumptionForm from './components/nutrition-components/ConsumptionForm';
 import { selectIsAuthenticated } from './features/auth/authSelectors';
 import { fetchAccount, logOut } from './features/auth/authSlice';
+import TopNav from './components/common-components/TopNav';
 
 export const history = createBrowserHistory();
 
@@ -76,6 +77,7 @@ const App: React.FC = () => {
   return (
 
     <Container className="body-container">
+      <TopNav/>
       {/* Home */}
       <PrivateRoute exact path="/" component={Home} />
 

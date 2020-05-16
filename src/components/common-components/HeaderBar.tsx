@@ -8,9 +8,9 @@ export interface IHeaderBarProps {
   icon: string;
 }
 
-const HeaderBar: React.FC<IHeaderBarProps> = ({ title, icon }: IHeaderBarProps) => {
+const HeaderBar: React.FC<IHeaderBarProps> = ({ title }: IHeaderBarProps) => {
   document.title = title ? `${title} - ${APP_TITLE}` : APP_TITLE;
-  return <Header image={`/img/home_cover_${icon}.svg`} as="h1" textAlign="center" content={title} />;
+  return <Header as="h2" content={title}/>;
 };
 
 export default HeaderBar;
