@@ -10,7 +10,7 @@ import PlaceholderSet from '../common-components/PlaceholderSet';
 import { getAnswerName, getRelativeMoment } from '../../Utils';
 import GoalsEmpty from './GoalsEmpty';
 
-import './Goals.scss';
+import './GoalList.scss';
 import CommonStatistic from '../common-components/CommonStatistic';
 import IGoal from '../../models/IGoal';
 import {
