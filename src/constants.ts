@@ -24,3 +24,12 @@ export const foodIcons = [
     image: `/img/food_icons/${value}.svg`,
   });
 });
+
+export const yesNoAnswerSet = [
+  { label: 'Yes', value: 1 }, { label: 'No', value: 2 },
+];
+
+export const likertAnswerSet = [
+  { label: 'Effectively', value: 1 }, { label: 'Adequately', value: 2 },
+  { label: 'Poorly', value: 3 }, { label: 'Unsuccessfully', value: 4 },
+];

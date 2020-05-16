@@ -18,7 +18,7 @@ const mockBackend = backend as jest.Mocked<typeof backend>;
 const newRouteUrl = '/nutrition/library/new';
 const newFoodHeading = 'New Food';
 const editFoodHeading = 'Edit Food';
-const foodLibraryHeading = 'Food Library';
+const foodLibraryHeading = /Food Library/;
 let store: EnhancedStore<RootState>;
 
 describe('FoodForm', () => {
@@ -37,6 +37,7 @@ describe('FoodForm', () => {
     mockBackend.reqGetFood.mockResolvedValueOnce(generateAxiosResponse<IFood>(food));
     const newFood = { ...food, name: 'My food 2' };
     mockBackend.reqUpdateFood.mockResolvedValue(generateAxiosResponse<IFood>(newFood));
+
     renderNode(`/nutrition/library/manage/${food.id}`, store);
     expect((screen.getByDisplayValue(food.name) as HTMLInputElement).value).toEqual(food.name);
     expect((screen.getByLabelText('Healthy') as HTMLInputElement).checked).toBeTruthy();
@@ -53,6 +54,7 @@ describe('FoodForm', () => {
     const food = generateFood('My food');
     mockBackend.reqCreateFood.mockResolvedValue(generateAxiosResponse<IFood>(food));
     renderNode(newRouteUrl, store);
+
     await waitFor(() => screen.getByRole('heading', { name: newFoodHeading }));
     await userEvent.type(screen.getByLabelText('Name'), food.name);
     await userEvent.click(screen.getByLabelText('Healthy'));

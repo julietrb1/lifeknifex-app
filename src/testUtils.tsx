@@ -21,6 +21,7 @@ import {
 import { createFoodSuccess, getAllFoodsSuccess } from './features/foods/foodSlice';
 import { createGoalSuccess, getAllGoalsSuccess } from './features/goals/goalSlice';
 import { loginSuccess } from './features/auth/authSlice';
+import IAnswer from './models/IAnswer';
 
 export const testUsername = 'radicallyepichuman';
 export const getTestStore = (isLoggedOut: boolean = false) => {
@@ -102,23 +103,30 @@ export const addConsumptionToStore = (store: EnhancedStore<RootState>, food: IFo
   return consumption;
 };
 
+let lastId = 0;
+const getRandomId = () => {
+  lastId += 1;
+  return lastId;
+};
+
 export const generateGoal = (
   goalQuestion: string, todaysAnswerValue: number | undefined = undefined, style: string = 'yesno',
-): IGoal => ({
-  id: 1,
-  url: '',
-  question: goalQuestion,
-  last_answered: todaysAnswerValue ? moment().format(BACKEND_DATE_FORMAT) : undefined,
-  style,
-  test: 'atleast',
-  frequency: 1,
-  todays_answer: '',
-  todays_answer_value: todaysAnswerValue,
-});
-
-export const setGoalResponse = (store: EnhancedStore<RootState>, goals: IGoal[] = []) => {
-  store.dispatch(getAllGoalsSuccess(generatePaginatedResponse(goals)));
+): IGoal => {
+  const id = getRandomId();
+  return ({
+    id,
+    url: `goals/${id}`,
+    question: goalQuestion,
+    last_answered: todaysAnswerValue ? moment().format(BACKEND_DATE_FORMAT) : undefined,
+    style,
+    test: 'atleast',
+    frequency: 1,
+    todays_answer: '',
+    todays_answer_value: todaysAnswerValue,
+  });
 };
+
+export const setGoalResponse = (store: EnhancedStore<RootState>, goals: IGoal[] = []) => store.dispatch(getAllGoalsSuccess(generatePaginatedResponse(goals)));
 
 export const addGoalToStore = (
   store: EnhancedStore<RootState>,
@@ -167,4 +175,17 @@ export const setUpMockBackend = (mockBackend: jest.Mocked<typeof backend>) => {
   mockBackend.reqGetGoal.mockResolvedValue(
     generateAxiosResponse<IGoal>({} as IGoal),
   );
+
+  const answerFn = (
+    g: IGoal, a: number,
+  ) => Promise.resolve(generateAxiosResponse<IAnswer>({
+    id: g.id,
+    goal: g.url,
+    date: moment().format(BACKEND_DATE_FORMAT),
+    value: a,
+    url: a.toString(),
+  }));
+
+  mockBackend.reqUpdateAnswer.mockImplementation(answerFn);
+  mockBackend.reqCreateAnswer.mockImplementation(answerFn);
 };

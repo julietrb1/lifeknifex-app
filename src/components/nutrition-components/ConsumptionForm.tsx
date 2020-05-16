@@ -1,5 +1,5 @@
-import React, { SyntheticEvent, useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { SyntheticEvent, useCallback, useEffect, useRef, useState, } from 'react';
+import axios, { CancelTokenSource } from 'axios';
 import moment from 'moment';
 import {
   Button,
@@ -13,6 +13,7 @@ import {
   Radio,
   Search,
   SearchProps,
+  SearchResultProps,
 } from 'semantic-ui-react';
 import './ConsumptionForm.scss';
 import { useHistory, useParams } from 'react-router-dom';
@@ -68,7 +69,8 @@ const quantities = [
 ];
 
 const ConsumptionForm: React.FC = () => {
-  const cancelToken = axios.CancelToken.source();
+  const cancelToken = useRef<CancelTokenSource | null>(null);
+  const isSearching = useRef<boolean>(false);
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -108,7 +110,7 @@ const ConsumptionForm: React.FC = () => {
     { name: consumptionId ? 'Edit' : 'Log Consumption' },
   ];
 
-  const [foodResults, setFoodResults] = useState<any[]>();
+  const [foodResults, setFoodResults] = useState<SearchResultProps[]>();
 
   useEffect(() => {
     if (consumptionId && !consumptionLoaded && !consumption && !isSubmitting && !isLoading) {
@@ -120,15 +122,24 @@ const ConsumptionForm: React.FC = () => {
     if (consumption) setDraftConsumption(consumption);
   }, [consumption]);
 
-  useEffect(() => {
-    const searchFoods = async () => {
-      if (isSearchLoading) cancelToken.cancel('New search requested');
-      else setIsSearchLoading(true);
-      const { data } = await reqGetAllFoods(debouncedCurrentFoodSearch);
-      setIsSearchLoading(false);
-      return data.results;
-    };
+  const searchFoods = useCallback(async () => {
+    if (isSearching.current) {
+      cancelToken.current?.cancel('New search requested');
+      cancelToken.current = axios.CancelToken.source();
+    } else {
+      // Work with two variables - isSearchLoading for visible state, and isSearching for internal
+      // state to prevent infinite loops. Are React hooks being used incorrectly? This seems like
+      // a design pitfall.
+      setIsSearchLoading(true);
+      isSearching.current = true;
+    }
+    const { data } = await reqGetAllFoods(debouncedCurrentFoodSearch, cancelToken.current?.token);
+    isSearching.current = false;
+    setIsSearchLoading(false);
+    return data.results;
+  }, [cancelToken, debouncedCurrentFoodSearch]);
 
+  useEffect(() => {
     (async () => {
       if (!debouncedCurrentFoodSearch) return;
       const foods = await searchFoods();
@@ -137,10 +148,10 @@ const ConsumptionForm: React.FC = () => {
         id: food.id,
         description: healthStrings[food.health_index - 1],
         url: food.url,
-        image: food.icon ? `/img/food_icons/${food.icon}.svg` : null,
+        image: food.icon ? `/img/food_icons/${food.icon}.svg` : '',
       })));
     })();
-  }, [debouncedCurrentFoodSearch, cancelToken, isSearchLoading]);
+  }, [debouncedCurrentFoodSearch, cancelToken, searchFoods]);
 
   const handleHourChange = (event: React.SyntheticEvent<HTMLElement>, { value }: DropdownProps) => {
     setDraftConsumption({ ...draftConsumption, date: String(value) });
