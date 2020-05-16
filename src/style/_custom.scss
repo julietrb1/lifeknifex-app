@@ -1,8 +1,9 @@
-@import url('https://fonts.googleapis.com/css?family=Barlow+Semi+Condensed:400,500');
+@import url('https://fonts.googleapis.com/css2?family=Abel&family=Alegreya+Sans&family=Asap&family=Asap+Condensed&family=Assistant&family=Barlow&family=Barlow+Condensed&family=Bungee&family=Cabin&family=Fira+Sans&family=Fira+Sans+Extra+Condensed&family=Francois+One&family=Jost&family=Lato&family=Open+Sans&family=Signika&family=Ubuntu&family=Ubuntu+Condensed&display=swap');
 @import 'colors';
 
 // Overrides
-//$font-family-sans-serif: 'Barlow Semi Condensed', sans-serif;
+$font-family-sans-serif: 'Ubuntu', sans-serif;
+$headings-font-family: 'Ubuntu Condensed', sans-serif;
 //$headings-font-weight: 600;
 $dark: $neutral-bg;
 

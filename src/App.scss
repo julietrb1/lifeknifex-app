@@ -1,3 +1,10 @@
+@import 'style/semantic/semantic.min.css';
+@import 'style/custom';
+
+body {
+  background: rgb(237, 240, 244); // TODO: Modify Semantic UI instead of adding an override background
+}
+
 @import 'style/colors';
 
 $form-max-width: 400px;
