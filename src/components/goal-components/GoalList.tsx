@@ -10,7 +10,7 @@ import PlaceholderSet from '../common-components/PlaceholderSet';
 import { getAnswerName, getRelativeMoment } from '../../Utils';
 import GoalsEmpty from './GoalsEmpty';
 
-import './Goals.scss';
+import './GoalList.scss';
 import CommonStatistic from '../common-components/CommonStatistic';
 import IGoal from '../../models/IGoal';
 import {
@@ -166,16 +166,13 @@ const GoalList: React.FC = () => {
   const AnsweringButton = () => {
     const anyAnswered = Object.values(goals).some((goal) => !!goal.todays_answer);
     const allAnswered = Object.values(goals).every((goal) => !!goal.todays_answer);
-    let url; let
-      text;
+    const url = '/goals/answer';
+    let text;
     if (allAnswered) {
-      url = '/goals/answer?mode=post';
       text = 'Change Answers';
     } else if (anyAnswered) {
-      url = '/goals/answer';
       text = 'Continue Answering';
     } else {
-      url = '/goals/answer';
       text = 'Start Answering';
     }
 

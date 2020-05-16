@@ -16,7 +16,7 @@ const routeUrl = '/goals';
 let store: EnhancedStore<RootState>;
 const emptyGoalsMessage = 'You don\'t have any goals yet.';
 
-describe('Goals', () => {
+describe('GoalForm', () => {
   beforeEach(() => {
     store = getTestStore();
     setUpMockBackend(mockBackend);

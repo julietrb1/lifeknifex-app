@@ -2,15 +2,7 @@ import React from 'react';
 import { Button, Divider, Form, Radio, } from 'semantic-ui-react';
 import { useHistory } from 'react-router-dom';
 import IGoal from '../../models/IGoal';
-
-const yesNoAnswerSet = [
-  { label: 'Yes', value: 1 }, { label: 'No', value: 2 },
-];
-
-const likertAnswerSet = [
-  { label: 'Effectively', value: 1 }, { label: 'Adequately', value: 2 },
-  { label: 'Poorly', value: 3 }, { label: 'Unsuccessfully', value: 4 },
-];
+import { likertAnswerSet, yesNoAnswerSet } from '../../constants';
 
 const BackButton = (isStart: boolean | null, goBack: any, mode: string) => {
   const history = useHistory();
@@ -56,15 +48,16 @@ const AnswerPost: React.FC<IAnswerPostProps> = (
   return (
     <div>
       <Form.Group inline>
-        {answerSet.map((item) => (
+        {answerSet.map(({ label, value }) => (
           <Form.Field
-            key={item.value}
+            key={value}
             control={Radio}
-            label={item.label}
-            value={item.value}
+            id={`post_${value}`}
+            label={<label htmlFor={`post_${value}`}>{label}</label>}
+            value={value}
             name="goal-value"
-            checked={checkedValue === item.value}
-            onChange={() => onAnswer(item.value)}
+            checked={checkedValue === value}
+            onChange={() => onAnswer(value)}
           />
         ))}
       </Form.Group>

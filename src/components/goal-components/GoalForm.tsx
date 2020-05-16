@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { Button, Divider, Form, Input, Label, Radio, } from 'semantic-ui-react';
@@ -14,15 +14,19 @@ import { BACKEND_DATE_FORMAT } from '../../constants';
 import { firstCase } from '../../Utils';
 import { selectGoalById, selectGoalsLoading } from '../../features/goals/goalSelectors';
 import { RootState } from '../../redux/rootReducer';
-import { createGoal, updateGoal } from '../../features/goals/goalSlice';
+import { createGoal, fetchGoal, updateGoal } from '../../features/goals/goalSlice';
 import IGoal from '../../models/IGoal';
+
+interface IGoalFormParams {
+  goalId: string;
+}
 
 const GoalForm: React.FC = () => {
   const dispatch = useDispatch();
   const { goBack } = useHistory();
-  const { goalId } = useParams();
+  const { goalId } = useParams<IGoalFormParams>();
   const { enqueueSnackbar } = useSnackbar();
-  const goal = useSelector((state: RootState) => selectGoalById(state, goalId));
+  const goal = useSelector((state: RootState) => selectGoalById(state, Number(goalId)));
   const [draftGoal, setDraftGoal] = useState<IGoal>(goal || {
     id: 0,
     url: '',
@@ -40,12 +44,20 @@ const GoalForm: React.FC = () => {
     { name: actionWord },
   ];
 
+  useEffect(() => {
+    if (goalId && !goal) dispatch(fetchGoal(Number(goalId)));
+  }, [goal, goalId, dispatch]);
+
+  useEffect(() => {
+    if (goal) setDraftGoal(goal);
+  }, [goal]);
+
   const isFormValid = !!(
     draftGoal
-        && draftGoal.question && draftGoal.question.length >= 3
-        && draftGoal.test
-        && draftGoal.style
-        && draftGoal.start_date
+    && draftGoal.question && draftGoal.question.length >= 3
+    && draftGoal.test
+    && draftGoal.style
+    && draftGoal.start_date
   );
 
   const onDateChange = (date: Date) => setDraftGoal({
@@ -74,8 +86,9 @@ const GoalForm: React.FC = () => {
       <HeaderBar title={`${actionWord} Goal`} icon="goals" />
       <Form onSubmit={handleGoalSubmit} loading={isLoading}>
         <Form.Field required>
-          <label>Question</label>
+          <label htmlFor="question">Question</label>
           <Input
+            id="question"
             type="text"
             onChange={(e) => setDraftGoal({ ...draftGoal, question: e.target.value })}
             placeholder="Get to bed on time last night"
@@ -83,7 +96,7 @@ const GoalForm: React.FC = () => {
             labelPosition="right"
           >
             <Label basic>Did I</Label>
-            <input />
+            <input/>
             <Label>?</Label>
           </Input>
         </Form.Field>
@@ -92,9 +105,10 @@ const GoalForm: React.FC = () => {
         </Form.Field>
         <Form.Field inline>
           <Radio
-            label="At least every"
+            label={<label htmlFor="atleast">At least every</label>}
             name="draftGoal-test"
             value="atleast"
+            id="atleast"
             checked={draftGoal.test === 'atleast'}
             onChange={(e, d) => setDraftGoal({ ...draftGoal, test: String(d.value) })}
           />
@@ -110,8 +124,9 @@ const GoalForm: React.FC = () => {
         </Form.Field>
         <Form.Field inline>
           <Radio
-            label="No more than every"
+            label={<label htmlFor="nomore">No more than every</label>}
             name="goal-test"
+            id="nomore"
             value="nomore"
             checked={draftGoal.test === 'nomore'}
             onChange={(e, d) => setDraftGoal({ ...draftGoal, test: String(d.value) })}
@@ -128,9 +143,10 @@ const GoalForm: React.FC = () => {
         </Form.Field>
         <Form.Field>
           <Radio
-            label="Never"
+            label={<label htmlFor="never">Never</label>}
             name="goal-test"
             value="never"
+            id="never"
             checked={draftGoal.test === 'never'}
             onChange={(e, d) => setDraftGoal({ ...draftGoal, test: String(d.value) })}
           />
@@ -142,18 +158,20 @@ const GoalForm: React.FC = () => {
         </Form.Field>
         <Form.Field>
           <Radio
-            label="Yes/No"
+            label={<label htmlFor="yesno">Yes/No</label>}
             name="goal-style"
             value="yesno"
+            id="yesno"
             checked={draftGoal.style === 'yesno'}
             onChange={(e, d) => setDraftGoal({ ...draftGoal, style: String(d.value) })}
           />
         </Form.Field>
         <Form.Field>
           <Radio
-            label="Likert"
+            label={<label htmlFor="likert">Likert</label>}
             name="goal-style"
             value="likert"
+            id="likert"
             checked={draftGoal.style === 'likert'}
             onChange={(e, d) => setDraftGoal({ ...draftGoal, style: String(d.value) })}
           />

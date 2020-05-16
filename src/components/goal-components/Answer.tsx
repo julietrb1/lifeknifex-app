@@ -1,43 +1,58 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Header } from 'semantic-ui-react';
-import moment from 'moment';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import BreadcrumbSet from '../common-components/BreadcrumbSet';
 import HeaderBar from '../common-components/HeaderBar';
 import PlaceholderSet from '../common-components/PlaceholderSet';
-import { BACKEND_DATE_FORMAT } from '../../constants';
 import AnswerEmpty from './AnswerEmpty';
 import AnswerPre from './AnswerPre';
 import AnswerPost from './AnswerPost';
 import { extractError, firstCase } from '../../Utils';
-import IGoal from '../../models/IGoal';
 import { createAnswer, fetchAllGoals, updateAnswer } from '../../features/goals/goalSlice';
 import {
-  selectAllGoals,
+  selectGoalById,
+  selectGoalIdsByAnswered,
+  selectGoalsInIds,
   selectGoalsLoaded,
   selectGoalsLoading,
 } from '../../features/goals/goalSelectors';
+import { RootState } from '../../redux/rootReducer';
 
 const sections = [
   { name: 'Goals', href: '/goals' },
   { name: 'Answer' },
 ];
 
+interface IAnswerParams {
+  goalId: string;
+}
+
 const Answer: React.FC = () => {
   const dispatch = useDispatch();
-  const { search } = useLocation();
-  const { goalId } = useParams();
+  const { goalId } = useParams<IAnswerParams>();
   const history = useHistory();
-  const goals = useSelector(selectAllGoals);
   const isLoading = useSelector(selectGoalsLoading);
   const isLoaded = useSelector(selectGoalsLoaded);
-  const [goalIndex, setGoalIndex] = useState(-1);
-  const [done, setDone] = useState(false);
-  const isPostMode = new URLSearchParams(search).get('mode') === 'post';
-  const [filteredGoals, setFilteredGoals] = useState<IGoal[] | null>(null);
-  const currentGoal = filteredGoals?.[goalIndex];
+  const [goalIndex, setGoalIndex] = useState(0);
+  const [preGoalIds] = useState(useSelector((
+    state: RootState,
+  ) => selectGoalIdsByAnswered(state, false)));
+  const [postGoalIds] = useState(useSelector((
+    state: RootState,
+  ) => selectGoalIdsByAnswered(state, true)));
+  const isPostMode = useSelector(() => !!goalId || !preGoalIds.length);
+  const postGoals = useSelector((state: RootState) => selectGoalsInIds(state, postGoalIds));
+  const preGoals = useSelector((state: RootState) => selectGoalsInIds(state, preGoalIds));
+  const multiGoalList = isPostMode
+    ? postGoals
+    : preGoals;
+  const filteredGoals = useSelector((state: RootState) => (goalId
+    ? [selectGoalById(state, Number(goalId))]
+    : multiGoalList));
+  const done = goalIndex === filteredGoals.length;
+  const currentGoal = filteredGoals[goalIndex];
   const [candidateValue, setCandidateValue] = useState(currentGoal?.todays_answer_value ?? 0);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -50,39 +65,12 @@ const Answer: React.FC = () => {
     if (!isLoaded) dispatch(fetchAllGoals());
   }, [dispatch, isLoaded]);
 
-  const filterGoals = useCallback(() => {
-    if (!filteredGoals) {
-      setFilteredGoals(goals.filter((goal) => {
-        const filterPre = !goalId
-          && goal.last_answered !== moment().format(BACKEND_DATE_FORMAT);
-        const filterPost = isPostMode || (goalId && goal.id === Number(goalId));
-        return filterPost || filterPre;
-      }));
-    }
-  }, [filteredGoals, goalId, goals, isPostMode]);
-
-  useEffect(() => {
-    if (isLoaded && !filteredGoals) filterGoals();
-  }, [goals, isLoaded, filteredGoals, filterGoals]);
-
   const goToGoal = useCallback((increment: number = 1) => {
-    if (!goals.length || !filteredGoals) {
-      setDone(true);
-      return;
-    }
-
-    const newGoalIndex = goalIndex + increment;
-    if (newGoalIndex < filteredGoals.length) {
-      setGoalIndex(newGoalIndex);
-      return;
-    }
-
-    if (goalId) {
+    setGoalIndex(goalIndex + increment);
+    if (goalIndex + increment === filteredGoals.length && goalId) {
       history.replace('/goals');
-    } else {
-      setDone(true);
     }
-  }, [goals.length, filteredGoals, goalId, goalIndex, history]);
+  }, [filteredGoals, goalId, goalIndex, history]);
 
   useEffect(() => {
     if (filteredGoals && goalIndex < 0) goToGoal();
@@ -91,7 +79,7 @@ const Answer: React.FC = () => {
   const handleSubmit = async (increment: number) => {
     if (!currentGoal) return;
     const haveSingleGoal = !!goalId;
-    const todaysAnswer = currentGoal.todays_answer;
+    const todaysAnswer = currentGoal.todays_answer_value;
     try {
       if ((haveSingleGoal || isPostMode) && todaysAnswer) {
         await dispatch(updateAnswer(currentGoal, candidateValue));
@@ -137,8 +125,7 @@ const Answer: React.FC = () => {
     if (isLoading || !currentGoal) {
       return <PlaceholderSet/>;
     }
-
-    if (isPostMode || goalId) {
+    if (isPostMode) {
       return (
         <AnswerPost
           goal={currentGoal}
@@ -163,11 +150,7 @@ const Answer: React.FC = () => {
     const filteredGoalLength = filteredGoals?.length || '--';
     return (
       <Header.Subheader>
-        {goalIndex + 1}
-        {' '}
-        /
-        {' '}
-        {filteredGoalLength}
+        {`${goalIndex + 1} / ${filteredGoalLength}`}
       </Header.Subheader>
     );
   };

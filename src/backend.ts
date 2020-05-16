@@ -1,4 +1,4 @@
-import axios, { CancelTokenSource } from 'axios';
+import axios, { CancelToken, CancelTokenSource } from 'axios';
 import { XSRF_COOKIE_NAME, XSRF_HEADER_NAME } from './constants';
 import IConsumption from './models/IConsumption';
 import IFood from './models/IFood';
@@ -50,8 +50,8 @@ export const reqDeleteConsumption = (consumption: IConsumption) => axios.delete(
 // Foods
 export const reqGetFood = (foodId: number) => axios.get<IFood>(`${API_FOODS}${foodId}/`);
 export const reqGetAllFoods = (
-  search?: string,
-) => axios.get<IPaginatedResponse<IFood>>(API_FOODS, { params: { search } });
+  search?: string, cancelToken?: CancelToken,
+) => axios.get<IPaginatedResponse<IFood>>(API_FOODS, { cancelToken, params: { search } });
 export const reqCreateFood = (food: IFood) => axios.post<IFood>(API_FOODS, food);
 export const reqUpdateFood = (food: IFood) => axios.patch<IFood>(`${API_FOODS}${food.id}/`, food);
 export const reqDeleteFood = (food: IFood) => axios.delete(`${API_FOODS}${food.id}/`);

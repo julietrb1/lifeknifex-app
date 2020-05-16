@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form } from 'semantic-ui-react';
-import { COLOR_GOALS } from '../../constants';
+import { COLOR_GOALS, likertAnswerSet, yesNoAnswerSet, } from '../../constants';
 
 export interface IAnswerPreProps {
   goal: any;
@@ -8,48 +8,22 @@ export interface IAnswerPreProps {
 }
 
 const AnswerPre: React.FC<IAnswerPreProps> = ({ goal, onAnswer }: IAnswerPreProps) => {
-  if (goal.style === 'yesno') {
-    return (
-      <div>
-        <Form.Button fluid basic color={COLOR_GOALS} onClick={() => onAnswer(1)}>Yes</Form.Button>
-        <Form.Button fluid basic color={COLOR_GOALS} onClick={() => onAnswer(2)}>No</Form.Button>
-      </div>
-    );
-  }
+  const pairs = goal.style === 'yesno' ? yesNoAnswerSet : likertAnswerSet;
   return (
     <div>
-      <Form.Button
-        fluid
-        basic
-        color={COLOR_GOALS}
-        onClick={() => onAnswer(1)}
-      >
-        Effectively
-      </Form.Button>
-      <Form.Button
-        fluid
-        basic
-        color={COLOR_GOALS}
-        onClick={() => onAnswer(2)}
-      >
-        Adequately
-      </Form.Button>
-      <Form.Button
-        fluid
-        basic
-        color={COLOR_GOALS}
-        onClick={() => onAnswer(3)}
-      >
-        Poorly
-      </Form.Button>
-      <Form.Button
-        fluid
-        basic
-        color={COLOR_GOALS}
-        onClick={() => onAnswer(4)}
-      >
-        Unsuccessfully
-      </Form.Button>
+      {
+        pairs.map(({ label, value }) => (
+          <Form.Button
+            key={label}
+            fluid
+            basic
+            color={COLOR_GOALS}
+            onClick={() => onAnswer(value)}
+          >
+            {label}
+          </Form.Button>
+        ))
+      }
     </div>
   );
 };
