@@ -1,6 +1,7 @@
 import React from 'react';
 import { Menu } from 'semantic-ui-react';
 import { useHistory, useLocation } from 'react-router-dom';
+import './TopNav.scss';
 
 const TopNav: React.FC = () => {
   const { pathname } = useLocation();
@@ -11,16 +12,18 @@ const TopNav: React.FC = () => {
     { name: 'account', path: '/account' },
   ];
   return (
-    <Menu text>
+    <Menu text className="topnav-menu">
       <Menu.Item header>Sort By</Menu.Item>
-      {sections.map(({ name, path }) => (
-        <Menu.Item
-          key={`topnav-${name}`}
-          name={name}
-          active={pathname.startsWith(path)}
-          onClick={() => history.push(path)}
-        />
-      ))}
+      <div className="topnav-sections">
+        {sections.map(({ name, path }) => (
+          <Menu.Item
+            key={`topnav-${name}`}
+            name={name}
+            active={pathname.startsWith(path)}
+            onClick={() => history.push(path)}
+          />
+        ))}
+      </div>
     </Menu>
   );
 };

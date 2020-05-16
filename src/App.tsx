@@ -75,59 +75,61 @@ const App: React.FC = () => {
   );
 
   return (
-
-    <Container className="body-container">
+    <div>
       <TopNav/>
-      {/* Home */}
-      <PrivateRoute exact path="/" component={Home} />
+      <Container className="body-container">
 
-      {/* Nutrition */}
-      <PrivateRoute exact path="/nutrition" component={NutritionList} />
-      <PrivateRoute exact path="/nutrition/library" component={NutritionLibrary} />
-      <PrivateRoute exact path="/nutrition/log" component={ConsumptionForm} />
-      <PrivateRoute exact path="/nutrition/library/new" component={FoodForm} />
-      <PrivateRoute path="/nutrition/library/manage/:foodId" component={FoodForm} />
-      <PrivateRoute path="/nutrition/history/:consumptionId" component={ConsumptionForm} />
+        {/* Home */}
+        <PrivateRoute exact path="/" component={Home}/>
 
-      {/* Goals */}
-      <PrivateRoute exact path="/goals" component={GoalList} />
-      <PrivateRoute exact path="/goals/new" component={GoalNewEdit} />
-      <PrivateRoute exact path="/goals/manage/:goalId" component={GoalNewEdit} />
-      <PrivateRoute exact path="/goals/answer/:goalId?" component={Answer} />
+        {/* Nutrition */}
+        <PrivateRoute exact path="/nutrition" component={NutritionList}/>
+        <PrivateRoute exact path="/nutrition/library" component={NutritionLibrary}/>
+        <PrivateRoute exact path="/nutrition/log" component={ConsumptionForm}/>
+        <PrivateRoute exact path="/nutrition/library/new" component={FoodForm}/>
+        <PrivateRoute path="/nutrition/library/manage/:foodId" component={FoodForm}/>
+        <PrivateRoute path="/nutrition/history/:consumptionId" component={ConsumptionForm}/>
 
-      {/* Auth */}
-      <PrivateRoute exact path="/account" component={Account} />
-      <Route exact path="/login" component={Login} />
-      <Route exact path="/register" component={Register} />
+        {/* Goals */}
+        <PrivateRoute exact path="/goals" component={GoalList}/>
+        <PrivateRoute exact path="/goals/new" component={GoalNewEdit}/>
+        <PrivateRoute exact path="/goals/manage/:goalId" component={GoalNewEdit}/>
+        <PrivateRoute exact path="/goals/answer/:goalId?" component={Answer}/>
 
-      {/* Page content */}
-      <Divider hidden />
-      <div className="footer">
-        <a href="https://www.djangoproject.com/fundraising/">
-          <img src="/img/django-hero.png" alt="Django Hero badge" />
-        </a>
-        <a href="http://www.djangoproject.com/">
-          <img
-            src="https://www.djangoproject.com/m/img/badges/djangopowered126x54_grey.gif"
-            alt="Powered by Django."
-            title="Powered by Django."
-          />
-        </a>
-        <p>
-          <small>
-            Images include content from
-            <a href="https://icons8.com">Icons8</a>
-            {' '}
-            used under
-            <a
-              href="https://creativecommons.org/licenses/by-nd/3.0/"
-            >
-              CC BY-ND 3.0
-            </a>
-          </small>
-        </p>
-      </div>
-    </Container>
+        {/* Auth */}
+        <PrivateRoute exact path="/account" component={Account}/>
+        <Route exact path="/login" component={Login}/>
+        <Route exact path="/register" component={Register}/>
+
+        {/* Page content */}
+        <Divider hidden/>
+        <div className="footer">
+          <a href="https://www.djangoproject.com/fundraising/">
+            <img src="/img/django-hero.png" alt="Django Hero badge"/>
+          </a>
+          <a href="http://www.djangoproject.com/">
+            <img
+              src="https://www.djangoproject.com/m/img/badges/djangopowered126x54_grey.gif"
+              alt="Powered by Django."
+              title="Powered by Django."
+            />
+          </a>
+          <p>
+            <small>
+              Images include content from
+              <a href="https://icons8.com">Icons8</a>
+              {' '}
+              used under
+              <a
+                href="https://creativecommons.org/licenses/by-nd/3.0/"
+              >
+                CC BY-ND 3.0
+              </a>
+            </small>
+          </p>
+        </div>
+      </Container>
+    </div>
   );
 };
 
