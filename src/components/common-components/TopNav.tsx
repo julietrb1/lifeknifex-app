@@ -13,7 +13,7 @@ const TopNav: React.FC = () => {
     { name: 'Account', path: '/account' },
   ];
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar bg="light" expand="lg" className="mb-4">
       <Navbar.Brand as={Link} to="/">LifeKnifeX</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav"/>
       <Navbar.Collapse id="basic-navbar-nav">
