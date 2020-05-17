@@ -6,7 +6,7 @@ $font-family-sans-serif: 'Asap', sans-serif;
 $headings-font-family: 'Asap Condensed', sans-serif;
 $dark: $neutral-bg;
 $body-bg: rgb(237, 240, 244);
-$primary: hsl(199, 42, 23);
+$primary: $theme-blue-light-2;
 
 // Bootstrap itself
 @import '~bootstrap/scss/bootstrap.scss';
