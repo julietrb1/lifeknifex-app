@@ -1,20 +1,18 @@
 import React from 'react';
-import { Button, Icon, Image, Segment, } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import Image from 'react-bootstrap/Image';
 import { COLOR_GOALS } from '../../constants';
-// import PropTypes from 'prop-types';
 
 const AnswerEmpty = () => (
-  <Segment textAlign="center" placeholder>
-    <Image className="placeholder-image" src="/img/undraw_i_can_fly_7egl.svg" size="medium" />
-    <h3>All done!</h3>
-    <Button animated="vertical" as={Link} to="/goals" color={COLOR_GOALS}>
-      <Button.Content visible>Back to Goals</Button.Content>
-      <Button.Content hidden>
-        <Icon name="target" />
-      </Button.Content>
-    </Button>
-  </Segment>
+  <Card className="text-center">
+    <Card.Body>
+      <Image className="placeholder-image" src="/img/undraw_i_can_fly_7egl.svg"/>
+      <h3 className="mb-5">All done!</h3>
+      <Button as={Link} to="/goals" color={COLOR_GOALS}>Back to Goals</Button>
+    </Card.Body>
+  </Card>
 );
 
 AnswerEmpty.propTypes = {};
