@@ -10,10 +10,16 @@ $form-max-width: 400px;
   display: block;
 }
 
-.placeholder-image {
-  margin: 16px auto;
-  height: 160px;
+.placeholder {
 
+  &-image {
+    margin: 16px auto;
+    height: 160px;
+  }
+
+  &-text {
+    color: $theme-grey-dark-1;
+  }
 }
 
 .footer {
