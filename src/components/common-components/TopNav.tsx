@@ -20,6 +20,7 @@ const TopNav: React.FC = () => {
         <Nav className="mr-auto">
           {sections.map(({ name, path }) => (
             <Nav.Link
+              key={path}
               active={pathname.startsWith(path)}
               onClick={() => history.push(path)}
             >
