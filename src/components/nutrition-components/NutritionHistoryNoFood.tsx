@@ -1,19 +1,17 @@
 import React from 'react';
-import { Button, Icon, Image, Segment, } from 'semantic-ui-react';
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 import { Link } from 'react-router-dom';
-import { COLOR_NUTRITION } from '../../constants';
+import Image from 'react-bootstrap/Image';
 
 const NutritionHistoryNoFood = () => (
-  <Segment textAlign="center" placeholder>
-    <Image className="placeholder-image" src="/img/empty_jam_jar_orange.svg" size="small" />
-    <h3>You need some food to log.</h3>
-    <Button animated="vertical" as={Link} to="/nutrition/library/new" color={COLOR_NUTRITION}>
-      <Button.Content visible>New Food</Button.Content>
-      <Button.Content hidden>
-        <Icon name="plus" />
-      </Button.Content>
-    </Button>
-  </Segment>
+  <Card className="text-center">
+    <Card.Body>
+      <Image className="placeholder-image" src="/img/food_question.svg"/>
+      <h3 className="mb-5">You need some food to log.</h3>
+      <Button variant="primary" as={Link} to="/nutrition/library/new">New Food</Button>
+    </Card.Body>
+  </Card>
 );
 
 export default NutritionHistoryNoFood;

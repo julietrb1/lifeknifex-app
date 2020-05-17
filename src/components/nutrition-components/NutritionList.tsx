@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Button, Divider, Icon } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import BSButton from 'react-bootstrap/Button';
 import HeaderBar from '../common-components/HeaderBar';
 import ConsumptionList from './ConsumptionList';
 import BreadcrumbSet from '../common-components/BreadcrumbSet';
@@ -61,20 +62,6 @@ const NutritionList: React.FC = () => {
     return <NutritionHistoryEmpty/>;
   };
 
-  const libraryButton = () => (
-    <Button
-      basic
-      as={Link}
-      to="/nutrition/library"
-      animated="vertical"
-    >
-      <Button.Content visible>Food Library</Button.Content>
-      <Button.Content hidden>
-        <Icon name="book" />
-      </Button.Content>
-    </Button>
-  );
-
   const newButton = () => {
     if (isLoading || consumptions.length) {
       return (
@@ -100,7 +87,7 @@ const NutritionList: React.FC = () => {
       <HeaderBar title="Nutrition" icon="nutrition" />
       <div className="buttons">
         {newButton()}
-        {libraryButton()}
+        <BSButton variant="outline-primary" as={Link} to="/nutrition/log">Food Library</BSButton>
       </div>
       <Divider hidden />
       {pageContent()}

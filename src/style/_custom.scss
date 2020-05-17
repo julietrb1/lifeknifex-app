@@ -1,23 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Abel&family=Alegreya+Sans&family=Asap&family=Asap+Condensed&family=Assistant&family=Barlow&family=Barlow+Condensed&family=Bungee&family=Cabin&family=Fira+Sans&family=Fira+Sans+Extra+Condensed&family=Francois+One&family=Jost&family=Lato&family=Open+Sans&family=Signika&family=Ubuntu&family=Ubuntu+Condensed&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Abel&family=Alegreya+Sans&family=Asap:wght@400;700&family=Asap+Condensed:wght@400;500&family=Assistant&family=Barlow&family=Barlow+Condensed&family=Bungee&family=Cabin&family=Fira+Sans&family=Fira+Sans+Extra+Condensed&family=Francois+One&family=Jost&family=Lato&family=Open+Sans&family=Signika&family=Ubuntu&family=Ubuntu+Condensed&display=swap');
 @import 'colors';
 
 // Overrides
-$font-family-sans-serif: 'Ubuntu', sans-serif;
-$headings-font-family: 'Ubuntu Condensed', sans-serif;
-//$headings-font-weight: 600;
+$font-family-sans-serif: 'Asap', sans-serif;
+$headings-font-family: 'Asap Condensed', sans-serif;
 $dark: $neutral-bg;
+$body-bg: rgb(237, 240, 244);
+$primary: hsl(199, 42, 23);
 
-// Custom.scss
-// Option B: Include parts of Bootstrap
-
-// Required
-@import "node_modules/bootstrap/scss/functions";
-@import "node_modules/bootstrap/scss/variables";
-@import "node_modules/bootstrap/scss/mixins";
-
-// Optional
-@import "node_modules/bootstrap/scss/reboot";
-@import "node_modules/bootstrap/scss/type";
-@import "node_modules/bootstrap/scss/images";
-@import "node_modules/bootstrap/scss/code";
-@import "node_modules/bootstrap/scss/grid";
+// Bootstrap itself
+@import '~bootstrap/scss/bootstrap.scss';

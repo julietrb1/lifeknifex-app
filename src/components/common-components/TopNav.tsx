@@ -1,30 +1,34 @@
 import React from 'react';
-import { Menu } from 'semantic-ui-react';
-import { useHistory, useLocation } from 'react-router-dom';
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import './TopNav.scss';
 
 const TopNav: React.FC = () => {
   const { pathname } = useLocation();
   const history = useHistory();
   const sections = [
-    { name: 'nutrition', path: '/nutrition' },
-    { name: 'goals', path: '/goals' },
-    { name: 'account', path: '/account' },
+    { name: 'Nutrition', path: '/nutrition' },
+    { name: 'Goals', path: '/goals' },
+    { name: 'Account', path: '/account' },
   ];
   return (
-    <Menu text className="topnav-menu">
-      <Menu.Item header>Sort By</Menu.Item>
-      <div className="topnav-sections">
-        {sections.map(({ name, path }) => (
-          <Menu.Item
-            key={`topnav-${name}`}
-            name={name}
-            active={pathname.startsWith(path)}
-            onClick={() => history.push(path)}
-          />
-        ))}
-      </div>
-    </Menu>
+    <Navbar bg="light" expand="lg">
+      <Navbar.Brand as={Link} to="/">LifeKnifeX</Navbar.Brand>
+      <Navbar.Toggle aria-controls="basic-navbar-nav"/>
+      <Navbar.Collapse id="basic-navbar-nav">
+        <Nav className="mr-auto">
+          {sections.map(({ name, path }) => (
+            <Nav.Link
+              active={pathname.startsWith(path)}
+              onClick={() => history.push(path)}
+            >
+              {name}
+            </Nav.Link>
+          ))}
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
   );
 };
 

@@ -1,7 +1,8 @@
+import Container from 'react-bootstrap/Container';
 import React, { useEffect } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import './App.scss';
-import { Container, Divider } from 'semantic-ui-react';
+import { Divider } from 'semantic-ui-react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createBrowserHistory } from 'history';
 import { useDispatch, useSelector } from 'react-redux';
@@ -75,61 +76,59 @@ const App: React.FC = () => {
   );
 
   return (
-    <div>
+    <Container>
       <TopNav/>
-      <Container className="body-container">
 
-        {/* Home */}
-        <PrivateRoute exact path="/" component={Home}/>
+      {/* Home */}
+      <PrivateRoute exact path="/" component={Home}/>
 
-        {/* Nutrition */}
-        <PrivateRoute exact path="/nutrition" component={NutritionList}/>
-        <PrivateRoute exact path="/nutrition/library" component={NutritionLibrary}/>
-        <PrivateRoute exact path="/nutrition/log" component={ConsumptionForm}/>
-        <PrivateRoute exact path="/nutrition/library/new" component={FoodForm}/>
-        <PrivateRoute path="/nutrition/library/manage/:foodId" component={FoodForm}/>
-        <PrivateRoute path="/nutrition/history/:consumptionId" component={ConsumptionForm}/>
+      {/* Nutrition */}
+      <PrivateRoute exact path="/nutrition" component={NutritionList}/>
+      <PrivateRoute exact path="/nutrition/library" component={NutritionLibrary}/>
+      <PrivateRoute exact path="/nutrition/log" component={ConsumptionForm}/>
+      <PrivateRoute exact path="/nutrition/library/new" component={FoodForm}/>
+      <PrivateRoute path="/nutrition/library/manage/:foodId" component={FoodForm}/>
+      <PrivateRoute path="/nutrition/history/:consumptionId" component={ConsumptionForm}/>
 
-        {/* Goals */}
-        <PrivateRoute exact path="/goals" component={GoalList}/>
-        <PrivateRoute exact path="/goals/new" component={GoalNewEdit}/>
-        <PrivateRoute exact path="/goals/manage/:goalId" component={GoalNewEdit}/>
-        <PrivateRoute exact path="/goals/answer/:goalId?" component={Answer}/>
+      {/* Goals */}
+      <PrivateRoute exact path="/goals" component={GoalList}/>
+      <PrivateRoute exact path="/goals/new" component={GoalNewEdit}/>
+      <PrivateRoute exact path="/goals/manage/:goalId" component={GoalNewEdit}/>
+      <PrivateRoute exact path="/goals/answer/:goalId?" component={Answer}/>
 
-        {/* Auth */}
-        <PrivateRoute exact path="/account" component={Account}/>
-        <Route exact path="/login" component={Login}/>
-        <Route exact path="/register" component={Register}/>
+      {/* Auth */}
+      <PrivateRoute exact path="/account" component={Account}/>
+      <Route exact path="/login" component={Login}/>
+      <Route exact path="/register" component={Register}/>
 
-        {/* Page content */}
-        <Divider hidden/>
-        <div className="footer">
-          <a href="https://www.djangoproject.com/fundraising/">
-            <img src="/img/django-hero.png" alt="Django Hero badge"/>
-          </a>
-          <a href="http://www.djangoproject.com/">
-            <img
-              src="https://www.djangoproject.com/m/img/badges/djangopowered126x54_grey.gif"
-              alt="Powered by Django."
-              title="Powered by Django."
-            />
-          </a>
-          <p>
-            <small>
-              Images include content from
-              <a href="https://icons8.com">Icons8</a>
-              {' '}
-              used under
-              <a
-                href="https://creativecommons.org/licenses/by-nd/3.0/"
-              >
-                CC BY-ND 3.0
-              </a>
-            </small>
-          </p>
-        </div>
-      </Container>
-    </div>
+      {/* Page content */}
+      <Divider hidden/>
+      <div className="footer">
+        <a href="https://www.djangoproject.com/fundraising/">
+          <img src="/img/django-hero.png" alt="Django Hero badge"/>
+        </a>
+        <a href="http://www.djangoproject.com/">
+          <img
+            src="https://www.djangoproject.com/m/img/badges/djangopowered126x54_grey.gif"
+            alt="Powered by Django."
+            title="Powered by Django."
+          />
+        </a>
+        <p>
+          <small>
+            Images include content from
+            <a href="https://icons8.com">Icons8</a>
+            {' '}
+            used under
+            <a
+              href="https://creativecommons.org/licenses/by-nd/3.0/"
+            >
+              CC BY-ND 3.0
+            </a>
+          </small>
+        </p>
+      </div>
+    </Container>
   );
 };
 

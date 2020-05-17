@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Card, Divider, Header, Icon, Statistic, } from 'semantic-ui-react';
+import { Card, Divider, Header, Icon, Statistic, } from 'semantic-ui-react';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { Link } from 'react-router-dom';
 import moment from 'moment-timezone';
 import HeaderBar from '../common-components/HeaderBar';
@@ -72,23 +74,16 @@ const GoalList: React.FC = () => {
 
   const NewButton = () => (
     <Button
-      basic
       as={Link}
-      to="/goals/new"
-      animated="vertical"
-    >
-      <Button.Content visible>New Goal</Button.Content>
-      <Button.Content hidden>
-        <Icon name="plus" />
-      </Button.Content>
-    </Button>
+      to="/goals/new" variant="outline-primary"
+    >New Goal</Button>
   );
 
   const AnswerButton = (goal: IGoal) => {
     const isChange = goal.last_answered && moment().isSame(goal.last_answered, 'day');
     const url = `/goals/answer/${goal.id}`;
     return (
-      <Button size="tiny" basic as={Link} to={url} color={COLOR_GOALS}>
+      <Button as={Link} to={url} variant="primary" size="sm">
         {isChange
           ? 'Change'
           : 'Log'}
@@ -141,10 +136,11 @@ const GoalList: React.FC = () => {
         </Card.Description>
       </Card.Content>
       <Card.Content extra>
-        <div>
+        <ButtonGroup>
           {AnswerButton(goal)}
-          <Button size="tiny" basic as={Link} to={`/goals/manage/${goal.id}`}>Edit Goal</Button>
-        </div>
+          <Button as={Link} to={`/goals/manage/${goal.id}`} variant="primary" size="sm">Edit
+            Goal</Button>
+        </ButtonGroup>
       </Card.Content>
     </Card>
   );
@@ -178,16 +174,9 @@ const GoalList: React.FC = () => {
 
     return (
       <Button
-        color={COLOR_GOALS}
         as={Link}
         to={url}
-        animated="vertical"
-      >
-        <Button.Content visible>{text}</Button.Content>
-        <Button.Content hidden>
-          <Icon name="sticky note" />
-        </Button.Content>
-      </Button>
+      >{text}</Button>
     );
   };
 
@@ -206,11 +195,11 @@ const GoalList: React.FC = () => {
       <Divider horizontal>
         <Header as="h4">Goal Library</Header>
       </Divider>
-      <div className="goal-actions">
-        <NewButton />
-        <AnsweringButton />
-      </div>
-      <GoalsContent />
+      <ButtonGroup className="goal-actions">
+        <NewButton/>
+        <AnsweringButton/>
+      </ButtonGroup>
+      <GoalsContent/>
     </div>
   );
 };
