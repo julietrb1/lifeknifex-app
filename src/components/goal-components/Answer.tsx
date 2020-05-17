@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Form, Header } from 'semantic-ui-react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import Form from 'react-bootstrap/Form';
 import BreadcrumbSet from '../common-components/BreadcrumbSet';
 import HeaderBar from '../common-components/HeaderBar';
 import PlaceholderSet from '../common-components/PlaceholderSet';
@@ -103,14 +103,14 @@ const Answer: React.FC = () => {
     }
     const loading = isLoading || !filteredGoals;
     return (
-      <Form loading={loading} onSubmit={() => handleSubmit(1)}>
-        <Header as="h3">
+      <Form onSubmit={() => handleSubmit(1)}>
+        <h3>
           {currentGoal
             ? `Did I ${firstCase(currentGoal.question)}?`
             : 'Loading Goal...'}
-          <GoalProgressCount />
-        </Header>
-        <FormContent />
+        </h3>
+        <GoalProgressCount/>
+        <FormContent/>
       </Form>
     );
   };
@@ -149,9 +149,9 @@ const Answer: React.FC = () => {
 
     const filteredGoalLength = filteredGoals?.length || '--';
     return (
-      <Header.Subheader>
+      <div>
         {`${goalIndex + 1} / ${filteredGoalLength}`}
-      </Header.Subheader>
+      </div>
     );
   };
 
