@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
-import { Button, Card, Icon, Image, Label, } from 'semantic-ui-react';
+import {
+  Button, Card, Icon, Image, Label,
+} from 'semantic-ui-react';
 import * as constants from '../../constants';
 import { APP_TITLE } from '../../constants';
 import './Home.scss';

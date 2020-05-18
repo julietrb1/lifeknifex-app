@@ -12,8 +12,8 @@ const GoalDashboard = () => {
   return (
     <Card className="dashboard">
       <Card.Body className="dashboard-body">
-        <CommonStatistic count={Number(goalsResponse?.count)} label="Goals"/>
-        <CommonStatistic count={getGoalToAnswerCount()} label="To answer"/>
+        <CommonStatistic count={Number(goalsResponse?.count)} label="Goals" />
+        <CommonStatistic count={getGoalToAnswerCount()} label="To answer" />
       </Card.Body>
     </Card>
   );

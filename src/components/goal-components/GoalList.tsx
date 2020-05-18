@@ -4,6 +4,7 @@ import CardDeck from 'react-bootstrap/CardDeck';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { Link } from 'react-router-dom';
+import { BsPlusCircleFill } from 'react-icons/all';
 import HeaderBar from '../common-components/HeaderBar';
 import BreadcrumbSet from '../common-components/BreadcrumbSet';
 import PlaceholderSet from '../common-components/PlaceholderSet';
@@ -17,7 +18,6 @@ import {
 } from '../../features/goals/goalSelectors';
 import { fetchAllGoals } from '../../features/goals/goalSlice';
 import GoalCard from './GoalCard';
-import { BsPlusCircleFill } from 'react-icons/all';
 import GoalDashboard from '../common-components/GoalDashboard';
 
 const sections = [
@@ -40,23 +40,23 @@ const GoalList: React.FC = () => {
       to="/goals/new"
       variant="outline-primary"
     >
-      <BsPlusCircleFill className="mr-2"/>
+      <BsPlusCircleFill className="mr-2" />
       New Goal
     </Button>
   );
 
   const GoalsContent = () => {
-    if (isLoading) return <PlaceholderSet/>;
+    if (isLoading) return <PlaceholderSet />;
     if (Object.keys(goals).length) {
       return (
         <CardDeck>
           {Object.values(goals).map(
-            (g) => <GoalCard key={g.url} goal={g}/>,
+            (g) => <GoalCard key={g.url} goal={g} />,
           )}
         </CardDeck>
       );
     }
-    return <GoalsEmpty/>;
+    return <GoalsEmpty />;
   };
 
   const AnsweringButton = () => {
@@ -80,13 +80,13 @@ const GoalList: React.FC = () => {
   return (
     <div>
       <BreadcrumbSet sections={sections} />
-      <HeaderBar title="Goals" icon="goals"/>
-      <GoalDashboard/>
+      <HeaderBar title="Goals" icon="goals" />
+      <GoalDashboard />
       <ButtonGroup className="goal-actions">
-        <NewButton/>
-        <AnsweringButton/>
+        <NewButton />
+        <AnsweringButton />
       </ButtonGroup>
-      <GoalsContent/>
+      <GoalsContent />
     </div>
   );
 };

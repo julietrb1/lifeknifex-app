@@ -13,7 +13,7 @@ const NutritionLibraryEmpty: React.FC<INutritionLibraryEmptyProps> = (
 ) => (
   <Card className="text-center">
     <Card.Body>
-      <Image className="placeholder-image" src="/img/undraw_pizza_sharing.svg" size="medium"/>
+      <Image className="placeholder-image" src="/img/undraw_pizza_sharing.svg" size="medium" />
       <h3 className="placeholder-text">
         {isArchivedVisible
           ? 'No archived foods for you!'
@@ -22,8 +22,10 @@ const NutritionLibraryEmpty: React.FC<INutritionLibraryEmptyProps> = (
       {isArchivedVisible
         ? null
         : (
-          <Button as={Link} to="/nutrition/library/new" variant="primary">Let&apos;s Create
-            One</Button>
+          <Button as={Link} to="/nutrition/library/new" variant="primary">
+            Let&apos;s Create
+            One
+          </Button>
         )}
     </Card.Body>
   </Card>

@@ -101,7 +101,7 @@ const Answer: React.FC = () => {
     if (done) {
       return <AnswerEmpty />;
     }
-    const loading = isLoading || !filteredGoals;
+    // const loading = isLoading || !filteredGoals; // TODO: Show loading in Bootstrap
     return (
       <Form onSubmit={() => handleSubmit(1)}>
         <h3>
@@ -109,8 +109,8 @@ const Answer: React.FC = () => {
             ? `Did I ${firstCase(currentGoal.question)}?`
             : 'Loading Goal...'}
         </h3>
-        <GoalProgressCount/>
-        <FormContent/>
+        <GoalProgressCount />
+        <FormContent />
       </Form>
     );
   };
@@ -123,7 +123,7 @@ const Answer: React.FC = () => {
 
   const FormContent = () => {
     if (isLoading || !currentGoal) {
-      return <PlaceholderSet/>;
+      return <PlaceholderSet />;
     }
     if (isPostMode) {
       return (

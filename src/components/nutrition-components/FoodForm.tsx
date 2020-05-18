@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import './FoodForm.scss';
 import { Link, useHistory, useParams } from 'react-router-dom';
-import { Button, Confirm, Divider, Dropdown, Form, Radio, } from 'semantic-ui-react';
+import {
+  Button, Confirm, Divider, Dropdown, Form, Radio,
+} from 'semantic-ui-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { healthStrings } from '../../Utils';

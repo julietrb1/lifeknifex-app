@@ -2,7 +2,9 @@ import { screen, waitFor } from '@testing-library/react';
 import { EnhancedStore } from '@reduxjs/toolkit';
 import userEvent from '@testing-library/user-event';
 import * as backend from '../../backend';
-import { getTestStore, renderNode, setUpMockBackend, testUsername, } from '../../testUtils';
+import {
+  getTestStore, renderNode, setUpMockBackend, testUsername,
+} from '../../testUtils';
 import { RootState } from '../../redux/rootReducer';
 import { logoutPerform } from '../../features/auth/authSlice';
 

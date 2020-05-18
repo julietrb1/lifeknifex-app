@@ -1,4 +1,6 @@
-import React, { SyntheticEvent, useCallback, useEffect, useRef, useState, } from 'react';
+import React, {
+  SyntheticEvent, useCallback, useEffect, useRef, useState,
+} from 'react';
 import axios, { CancelTokenSource } from 'axios';
 import moment from 'moment';
 import {

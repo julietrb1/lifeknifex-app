@@ -2,7 +2,9 @@ import { screen } from '@testing-library/react';
 import { EnhancedStore } from '@reduxjs/toolkit';
 import * as backend from '../../backend';
 import { RootState } from '../../redux/rootReducer';
-import { addGoalToStore, getTestStore, renderNode, setUpMockBackend, } from '../../testUtils';
+import {
+  addGoalToStore, getTestStore, renderNode, setUpMockBackend,
+} from '../../testUtils';
 
 jest.mock('./../../backend');
 const mockBackend = backend as jest.Mocked<typeof backend>;

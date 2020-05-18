@@ -1,5 +1,7 @@
 import React from 'react';
-import { Button, Divider, Form, InputOnChangeData, Message, } from 'semantic-ui-react';
+import {
+  Button, Divider, Form, InputOnChangeData, Message,
+} from 'semantic-ui-react';
 import { RouteComponentProps } from 'react-router-dom';
 import HeaderBar from '../common-components/HeaderBar';
 import { getFeature } from '../../backend';

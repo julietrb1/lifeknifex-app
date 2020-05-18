@@ -2,7 +2,9 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { EnhancedStore } from '@reduxjs/toolkit';
 import * as backend from '../../backend';
 import { RootState } from '../../redux/rootReducer';
-import { addFoodToStore, getTestStore, renderNode, setUpMockBackend, } from '../../testUtils';
+import {
+  addFoodToStore, getTestStore, renderNode, setUpMockBackend,
+} from '../../testUtils';
 
 jest.mock('./../../backend');
 const routeUrl = '/nutrition/library';

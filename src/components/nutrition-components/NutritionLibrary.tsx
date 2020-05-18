@@ -38,18 +38,18 @@ const NutritionLibrary: React.FC = () => {
 
   const PageContent = () => {
     if (isLoading) {
-      return <PlaceholderSet/>;
+      return <PlaceholderSet />;
     }
     if (foods.length) {
       return (
         <div>
-          <FoodList foods={foods}/>
-          <Divider hidden/>
-          <LoadMoreButton/>
+          <FoodList foods={foods} />
+          <Divider hidden />
+          <LoadMoreButton />
         </div>
       );
     }
-    return <NutritionLibraryEmpty isArchivedVisible={isArchivedVisible}/>;
+    return <NutritionLibraryEmpty isArchivedVisible={isArchivedVisible} />;
   };
 
   const handleLoadMore = () => {
@@ -67,17 +67,20 @@ const NutritionLibrary: React.FC = () => {
           >
             <Button.Content visible>Load More</Button.Content>
             <Button.Content hidden>
-              <Icon name="arrow down"/>
+              <Icon name="arrow down" />
             </Button.Content>
           </Button>
         </div>
       );
     }
     if (isLoading) {
-      return <PlaceholderSet/>;
+      return <PlaceholderSet />;
     }
-    return <div className="load-more-container"><Button disabled basic>All Foods loaded</Button>
-    </div>;
+    return (
+      <div className="load-more-container">
+        <Button disabled basic>All Foods loaded</Button>
+      </div>
+    );
   };
 
   const NewButton = () => {

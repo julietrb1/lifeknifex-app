@@ -48,18 +48,18 @@ const NutritionList: React.FC = () => {
     if (isLoading || areFoodsLoading) {
       return (
         <div>
-          <Divider hidden/>
-          <PlaceholderSet/>
+          <Divider hidden />
+          <PlaceholderSet />
         </div>
       );
     }
     if (totalFoodCount && consumptions.length) {
-      return <ConsumptionList consumptionItems={consumptions}/>;
+      return <ConsumptionList consumptionItems={consumptions} />;
     }
     if (!totalFoodCount) {
-      return <NutritionHistoryNoFood/>;
+      return <NutritionHistoryNoFood />;
     }
-    return <NutritionHistoryEmpty/>;
+    return <NutritionHistoryEmpty />;
   };
 
   const newButton = () => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form } from 'semantic-ui-react';
-import { COLOR_GOALS, likertAnswerSet, yesNoAnswerSet, } from '../../constants';
+import { COLOR_GOALS, likertAnswerSet, yesNoAnswerSet } from '../../constants';
 
 export interface IAnswerPreProps {
   goal: any;

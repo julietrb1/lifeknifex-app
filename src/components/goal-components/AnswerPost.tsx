@@ -69,7 +69,7 @@ const AnswerPost: React.FC<IAnswerPostProps> = (
       </Form.Group>
       <ButtonGroup>
         {BackButton(isStart, goBack, mode)}
-        <Button/>
+        <Button />
         {NextButton(mode, isEnd, checkedValue)}
       </ButtonGroup>
     </div>

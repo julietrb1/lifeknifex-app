@@ -1,6 +1,8 @@
 import React from 'react';
 import moment, { Moment } from 'moment';
-import { Card, Divider, Header, Label, } from 'semantic-ui-react';
+import {
+  Card, Divider, Header, Label,
+} from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { consumptionSizes, getRelativeMoment } from '../../Utils';
 import { COLOR_NUTRITION, TIME_FORMAT_STRING } from '../../constants';

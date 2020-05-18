@@ -26,7 +26,7 @@ const BreadcrumbSet: React.FC<IBreadcrumbSetProps> = ({ sections }: IBreadcrumbS
     }
   });
 
-  return <div/>; // TODO: Consider how to replace breadcrumbs (or if at all)
+  return <div />; // TODO: Consider how to replace breadcrumbs (or if at all)
 };
 
 export default BreadcrumbSet;

@@ -1,5 +1,7 @@
 import React from 'react';
-import { Button, Icon, Image, Segment, } from 'semantic-ui-react';
+import {
+  Button, Icon, Image, Segment,
+} from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { COLOR_GOALS } from '../../constants';
 

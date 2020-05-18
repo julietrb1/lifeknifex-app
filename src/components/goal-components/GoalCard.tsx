@@ -3,7 +3,9 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
 import React from 'react';
-import { FcCalendar, FcCheckmark, FcDeleteDatabase, FcMediumPriority } from 'react-icons/all';
+import {
+  FcCalendar, FcCheckmark, FcDeleteDatabase, FcMediumPriority,
+} from 'react-icons/all';
 import moment from 'moment-timezone';
 import { COLOR_GOALS } from '../../constants';
 import IGoal from '../../models/IGoal';
@@ -17,7 +19,7 @@ const lastAnswered = (goal: IGoal) => {
   if (!goal.last_answered) {
     return (
       <div>
-        <FcDeleteDatabase className="mr-2"/>
+        <FcDeleteDatabase className="mr-2" />
         Never answered
       </div>
     );
@@ -26,7 +28,7 @@ const lastAnswered = (goal: IGoal) => {
     const answerName = getAnswerName(goal);
     return (
       <div>
-        <FcCheckmark className="mr-2"/>
+        <FcCheckmark className="mr-2" />
         {`Answered ${answerName ? `"${answerName.toLowerCase()}"` : null} today`}
       </div>
     );
@@ -34,7 +36,7 @@ const lastAnswered = (goal: IGoal) => {
   const relativeMoment = getRelativeMoment(goal.last_answered, true);
   return (
     <div>
-      <FcMediumPriority className="mr-2"/>
+      <FcMediumPriority className="mr-2" />
       {`Answered ${relativeMoment}`}
     </div>
   );
@@ -83,14 +85,16 @@ const GoalCard: React.FC<IGoalCardProps> = ({ goal }: IGoalCardProps) => (
     </Card.Header>
     <Card.Body>
       {lastAnswered(goal)}
-      <FcCalendar className="mr-2"/>
+      <FcCalendar className="mr-2" />
       {getGoalMeta(goal)}
     </Card.Body>
     <Card.Footer>
       <ButtonGroup>
         {AnswerButton(goal)}
-        <Button as={Link} to={`/goals/manage/${goal.id}`} variant="outline-primary" size="sm">Edit
-          Goal</Button>
+        <Button as={Link} to={`/goals/manage/${goal.id}`} variant="outline-primary" size="sm">
+          Edit
+          Goal
+        </Button>
       </ButtonGroup>
     </Card.Footer>
   </Card>
