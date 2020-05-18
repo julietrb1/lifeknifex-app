@@ -4,10 +4,10 @@ import { useSelector } from 'react-redux';
 import CommonStatistic from './CommonStatistic';
 import { selectAllGoals, selectGoalResponse } from '../../features/goals/goalSelectors';
 
-
 const GoalDashboard = () => {
   const goals = useSelector(selectAllGoals);
-  const getGoalToAnswerCount = () => Object.values(goals).filter((goal) => !goal.todays_answer).length;
+  const getGoalToAnswerCount = (
+  ) => Object.values(goals).filter((goal) => !goal.todays_answer).length;
   const goalsResponse = useSelector(selectGoalResponse);
   return (
     <Card className="dashboard">
