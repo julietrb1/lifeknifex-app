@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
-import { Button, Card, Divider, Header, Icon, Image, Label, } from 'semantic-ui-react';
+import { Button, Card, Icon, Image, Label, } from 'semantic-ui-react';
 import * as constants from '../../constants';
 import { APP_TITLE } from '../../constants';
 import './Home.scss';
@@ -37,12 +37,6 @@ const Home: React.FC = () => {
   document.title = `Home - ${APP_TITLE}`;
   return (
     <div>
-      <Header
-        as="h2"
-        content="LifeKnifeX"
-        subheader="The swiss army knife of personal order"
-      />
-      <Divider hidden />
       <Card.Group centered>
         <Card color={constants.COLOR_NUTRITION}>
           <Card.Content>

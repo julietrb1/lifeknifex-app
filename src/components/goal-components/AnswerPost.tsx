@@ -1,5 +1,8 @@
 import React from 'react';
-import { Button, Divider, Form, Radio, } from 'semantic-ui-react';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import ToggleButton from 'react-bootstrap/ToggleButton';
 import { useHistory } from 'react-router-dom';
 import IGoal from '../../models/IGoal';
 import { likertAnswerSet, yesNoAnswerSet } from '../../constants';
@@ -21,12 +24,12 @@ const BackButton = (isStart: boolean | null, goBack: any, mode: string) => {
 
 const NextButton = (mode: string, isEnd: boolean | null, checkedValue: number | null) => {
   if (mode === 'post' && !isEnd) {
-    return <Button type="submit">Next</Button>;
+    return <Button variant="primary" type="submit">Next</Button>;
   }
   if (mode === 'post' && isEnd) {
-    return <Button positive type="submit">Finish</Button>;
+    return <Button variant="primary" type="submit">Finish</Button>;
   }
-  return <Button disabled={!checkedValue} positive type="submit">Finish</Button>;
+  return <Button disabled={!checkedValue} variant="primary" type="submit">Finish</Button>;
 };
 
 export interface IAnswerPostProps {
@@ -47,26 +50,28 @@ const AnswerPost: React.FC<IAnswerPostProps> = (
   const answerSet = goal.style === 'yesno' ? yesNoAnswerSet : likertAnswerSet;
   return (
     <div>
-      <Form.Group inline>
-        {answerSet.map(({ label, value }) => (
-          <Form.Field
-            key={value}
-            control={Radio}
-            id={`post_${value}`}
-            label={<label htmlFor={`post_${value}`}>{label}</label>}
-            value={value}
-            name="goal-value"
-            checked={checkedValue === value}
-            onChange={() => onAnswer(value)}
-          />
-        ))}
+      <Form.Group>
+        <ButtonGroup>
+          {answerSet.map(({ label, value }) => (
+            <ToggleButton
+              type="radio"
+              key={value}
+              value={value}
+              id={`post_${value}`}
+              name="goal-value"
+              checked={checkedValue === value}
+              onChange={() => onAnswer(value)}
+            >
+              {label}
+            </ToggleButton>
+          ))}
+        </ButtonGroup>
       </Form.Group>
-      <Divider hidden />
-      <Button.Group>
+      <ButtonGroup>
         {BackButton(isStart, goBack, mode)}
-        <Button.Or />
+        <Button/>
         {NextButton(mode, isEnd, checkedValue)}
-      </Button.Group>
+      </ButtonGroup>
     </div>
   );
 };

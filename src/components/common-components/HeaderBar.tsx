@@ -9,7 +9,7 @@ export interface IHeaderBarProps {
 
 const HeaderBar: React.FC<IHeaderBarProps> = ({ title }: IHeaderBarProps) => {
   document.title = title ? `${title} - ${APP_TITLE}` : APP_TITLE;
-  return <h2>{title}</h2>;
+  return <h2 className="mb-4">{title}</h2>;
 };
 
 export default HeaderBar;

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
-import { Button, Divider, Form, Input, Label, Radio, } from 'semantic-ui-react';
+import { Divider, Form, Input, Label, Radio, } from 'semantic-ui-react';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import DatePicker from 'react-datepicker';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
@@ -190,12 +192,11 @@ const GoalForm: React.FC = () => {
           />
         </Form.Field>
 
-        <Divider hidden />
-        <Button.Group>
-          <Button type="button" onClick={goBack}>Back</Button>
-          <Button.Or />
-          <Button positive type="submit" disabled={!isFormValid}>Save Goal</Button>
-        </Button.Group>
+        <Divider hidden/>
+        <ButtonGroup>
+          <Button type="button" variant="outline-primary" onClick={goBack}>Back</Button>
+          <Button variant="primary" type="submit" disabled={!isFormValid}>Save Goal</Button>
+        </ButtonGroup>
       </Form>
     </div>
   );

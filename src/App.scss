@@ -10,14 +10,67 @@ $form-max-width: 400px;
   display: block;
 }
 
-.placeholder {
+.dashboard {
+  background: $theme-blue;
 
+  .dashboard-body {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+  }
+
+  &-item {
+    @extend .text-center;
+    display: inline-block;
+    min-width: 100px;
+  }
+
+  &-value {
+    @extend .display-2;
+    color: $theme-blue-light-8;
+    line-height: 0.9;
+  }
+
+  &-label {
+    @extend h4;
+    font-size: 16px;
+    color: $theme-blue-light-5;
+    text-transform: uppercase;
+
+  }
+}
+
+.goal {
+  &-card {
+    min-width: 18rem;
+    max-width: 18rem;
+
+    &-header {
+      background: $theme-grey;
+    }
+  }
+}
+
+.color-band {
+  height: 4px;
+
+  &-1 {
+    background: $theme-brown;
+  }
+
+  &-2 {
+    background: $theme-sand;
+  }
+}
+
+.placeholder {
   &-image {
     margin: 16px auto;
     height: 160px;
   }
 
   &-text {
+    @extend .mb-5;
     color: $theme-grey-dark-1;
   }
 }

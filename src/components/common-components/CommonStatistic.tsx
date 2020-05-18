@@ -1,5 +1,4 @@
 import React from 'react';
-import { Statistic } from 'semantic-ui-react';
 
 interface ICommonStatisticProps {
   count: number | string;
@@ -9,10 +8,10 @@ interface ICommonStatisticProps {
 const CommonStatistic: React.FC<ICommonStatisticProps> = (
   { count, label }: ICommonStatisticProps,
 ) => (
-  <Statistic>
-    <Statistic.Value>{count ? count.toLocaleString() : '--'}</Statistic.Value>
-    <Statistic.Label>{label}</Statistic.Label>
-  </Statistic>
+  <div className="dashboard-item">
+    <div className="dashboard-value">{count ? count.toLocaleString() : '--'}</div>
+    <div className="dashboard-label">{label}</div>
+  </div>
 );
 
 export default CommonStatistic;
