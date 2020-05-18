@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react';
-import { Button, Divider, Icon } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import BSButton from 'react-bootstrap/Button';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import HeaderBar from '../common-components/HeaderBar';
 import ConsumptionList from './ConsumptionList';
 import BreadcrumbSet from '../common-components/BreadcrumbSet';
 import NutritionHistoryEmpty from './NutritionHistoryEmpty';
-import { COLOR_NUTRITION } from '../../constants';
 import './NutritionList.scss';
 import PlaceholderSet from '../common-components/PlaceholderSet';
 import { fetchAllConsumptions } from '../../features/consumptions/consumptionSlice';
@@ -48,7 +47,6 @@ const NutritionList: React.FC = () => {
     if (isLoading || areFoodsLoading) {
       return (
         <div>
-          <Divider hidden />
           <PlaceholderSet />
         </div>
       );
@@ -65,17 +63,7 @@ const NutritionList: React.FC = () => {
   const newButton = () => {
     if (isLoading || consumptions.length) {
       return (
-        <Button
-          color={COLOR_NUTRITION}
-          as={Link}
-          to="/nutrition/log"
-          animated="vertical"
-        >
-          <Button.Content visible>Log</Button.Content>
-          <Button.Content hidden>
-            <Icon name="plus" />
-          </Button.Content>
-        </Button>
+        <Button as={Link} to="/nutrition/log" variant="primary">Log</Button>
       );
     }
     return null;
@@ -85,11 +73,12 @@ const NutritionList: React.FC = () => {
     <div>
       <BreadcrumbSet sections={sections} />
       <HeaderBar title="Nutrition" />
-      <div className="buttons">
-        {newButton()}
-        <BSButton variant="outline-primary" as={Link} to="/nutrition/log">Food Library</BSButton>
+      <div className="text-center mb-4">
+        <ButtonGroup>
+          {newButton()}
+          <Button variant="outline-primary" as={Link} to="/nutrition/library">Food Library</Button>
+        </ButtonGroup>
       </div>
-      <Divider hidden />
       {pageContent()}
     </div>
   );
