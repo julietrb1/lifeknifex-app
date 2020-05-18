@@ -2,7 +2,6 @@ import Container from 'react-bootstrap/Container';
 import React, { useEffect } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import './App.scss';
-import { Divider } from 'semantic-ui-react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createBrowserHistory } from 'history';
 import { useDispatch, useSelector } from 'react-redux';
@@ -104,9 +103,7 @@ const App: React.FC = () => {
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
 
-        {/* Page content */}
-        <Divider hidden />
-        <div className="footer">
+        <div className="footer mt-5">
           <a href="https://www.djangoproject.com/fundraising/">
             <img src="/img/django-hero.png" alt="Django Hero badge" />
           </a>
