@@ -1,6 +1,7 @@
 import React from 'react';
-import { Form } from 'semantic-ui-react';
-import { COLOR_GOALS, likertAnswerSet, yesNoAnswerSet } from '../../constants';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import { likertAnswerSet, yesNoAnswerSet } from '../../constants';
 
 export interface IAnswerPreProps {
   goal: any;
@@ -10,21 +11,19 @@ export interface IAnswerPreProps {
 const AnswerPre: React.FC<IAnswerPreProps> = ({ goal, onAnswer }: IAnswerPreProps) => {
   const pairs = goal.style === 'yesno' ? yesNoAnswerSet : likertAnswerSet;
   return (
-    <div>
+    <ButtonGroup>
       {
         pairs.map(({ label, value }) => (
-          <Form.Button
+          <Button
             key={label}
-            fluid
-            basic
-            color={COLOR_GOALS}
+            variant="secondary"
             onClick={() => onAnswer(value)}
           >
             {label}
-          </Form.Button>
+          </Button>
         ))
       }
-    </div>
+    </ButtonGroup>
   );
 };
 

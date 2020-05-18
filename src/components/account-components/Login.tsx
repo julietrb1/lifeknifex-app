@@ -53,7 +53,7 @@ const Login: React.FC = () => {
 
     return (
       <div className="login">
-        <HeaderBar title="Log In" icon="account" />
+        <HeaderBar title="Log In" />
         <Divider hidden />
         <Form error={!!loginError} onSubmit={performLogin} loading={isLoggingIn}>
           <Form.Field>

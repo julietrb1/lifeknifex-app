@@ -248,7 +248,7 @@ const ConsumptionForm: React.FC = () => {
   return (
     <div>
       <BreadcrumbSet sections={sections} />
-      <HeaderBar title={consumptionId ? 'Edit Consumption' : 'Log Consumption'} icon="nutrition" />
+      <HeaderBar title={consumptionId ? 'Edit Consumption' : 'Log Consumption'} />
       <Form
         loading={isLoading}
         onSubmit={handleFormSubmit}

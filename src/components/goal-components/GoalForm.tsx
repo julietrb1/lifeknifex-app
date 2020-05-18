@@ -87,7 +87,7 @@ const GoalForm: React.FC = () => {
   return (
     <div>
       <BreadcrumbSet sections={sections} />
-      <HeaderBar title={`${actionWord} Goal`} icon="goals" />
+      <HeaderBar title={`${actionWord} Goal`} />
       <Form onSubmit={handleGoalSubmit} loading={isLoading}>
         <Form.Field required>
           <label htmlFor="question">Question</label>
@@ -128,7 +128,7 @@ const GoalForm: React.FC = () => {
         </Form.Field>
         <Form.Field inline>
           <Radio
-            label={<label htmlFor="nomore">No more than every</label>}
+             label={<label htmlFor="nomore">No more than every</label>}
             name="goal-test"
             id="nomore"
             value="nomore"

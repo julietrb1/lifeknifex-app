@@ -31,7 +31,7 @@ const Account: React.FC = () => {
   return (
     <div>
       <BreadcrumbSet sections={sections} />
-      <HeaderBar title="Account" icon="account" />
+      <HeaderBar title="Account" />
       <h2>{account?.username ?? 'Unknown username'}</h2>
       <Button onClick={() => dispatch(logOut())}>Log out</Button>
     </div>

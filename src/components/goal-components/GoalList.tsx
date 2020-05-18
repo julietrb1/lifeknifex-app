@@ -77,15 +77,18 @@ const GoalList: React.FC = () => {
     );
   };
 
+  const actions = (
+    <ButtonGroup>
+      <NewButton />
+      <AnsweringButton />
+    </ButtonGroup>
+  );
+
   return (
     <div>
       <BreadcrumbSet sections={sections} />
-      <HeaderBar title="Goals" icon="goals" />
+      <HeaderBar title="Goals" actions={actions} />
       <GoalDashboard />
-      <ButtonGroup className="goal-actions">
-        <NewButton />
-        <AnsweringButton />
-      </ButtonGroup>
       <GoalsContent />
     </div>
   );

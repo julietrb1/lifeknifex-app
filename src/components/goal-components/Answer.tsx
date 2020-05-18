@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 import BreadcrumbSet from '../common-components/BreadcrumbSet';
 import HeaderBar from '../common-components/HeaderBar';
 import PlaceholderSet from '../common-components/PlaceholderSet';
@@ -111,6 +112,7 @@ const Answer: React.FC = () => {
         </h3>
         <GoalProgressCount />
         <FormContent />
+        <Button className="float-right" variant="outline-primary" as={Link} to="/goals">Back to Goals</Button>
       </Form>
     );
   };
@@ -158,7 +160,7 @@ const Answer: React.FC = () => {
   return (
     <div>
       <BreadcrumbSet sections={sections} />
-      <HeaderBar title="Answer Goals" icon="goals" />
+      <HeaderBar title="Answer Goals" />
       <PageContent />
     </div>
   );

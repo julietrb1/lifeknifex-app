@@ -106,7 +106,7 @@ const NutritionLibrary: React.FC = () => {
   return (
     <div>
       <BreadcrumbSet sections={sections} />
-      <HeaderBar title="Food Library" icon="nutrition" />
+      <HeaderBar title="Food Library" />
       <Divider hidden />
       <Checkbox
         toggle

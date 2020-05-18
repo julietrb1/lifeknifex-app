@@ -84,7 +84,7 @@ const NutritionList: React.FC = () => {
   return (
     <div>
       <BreadcrumbSet sections={sections} />
-      <HeaderBar title="Nutrition" icon="nutrition" />
+      <HeaderBar title="Nutrition" />
       <div className="buttons">
         {newButton()}
         <BSButton variant="outline-primary" as={Link} to="/nutrition/log">Food Library</BSButton>

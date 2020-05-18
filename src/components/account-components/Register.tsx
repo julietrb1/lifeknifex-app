@@ -77,7 +77,7 @@ class Register extends RequestComponent<RouteComponentProps, IRegisterState> {
   render() {
     return (
       <div className="register">
-        <HeaderBar title="Register" icon="account" />
+        <HeaderBar title="Register" />
         <Divider hidden />
         <Form
           onSubmit={this.handleSubmit}

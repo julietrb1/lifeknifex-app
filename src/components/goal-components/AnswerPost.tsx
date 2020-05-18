@@ -2,6 +2,7 @@ import React from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import { useHistory } from 'react-router-dom';
 import IGoal from '../../models/IGoal';
@@ -34,7 +35,7 @@ const NextButton = (mode: string, isEnd: boolean | null, checkedValue: number | 
 
 export interface IAnswerPostProps {
   goal: IGoal;
-  checkedValue: number | null;
+  checkedValue: number;
   onAnswer: (answer: number) => any;
   isStart: boolean | null;
   isEnd: boolean | null;
@@ -51,25 +52,26 @@ const AnswerPost: React.FC<IAnswerPostProps> = (
   return (
     <div>
       <Form.Group>
-        <ButtonGroup>
+        <ToggleButtonGroup
+          type="radio"
+          name="goal-value"
+          value={checkedValue}
+          onChange={(v: number) => onAnswer(v)}
+        >
           {answerSet.map(({ label, value }) => (
             <ToggleButton
-              type="radio"
+              variant="secondary"
               key={value}
               value={value}
               id={`post_${value}`}
-              name="goal-value"
-              checked={checkedValue === value}
-              onChange={() => onAnswer(value)}
             >
               {label}
             </ToggleButton>
           ))}
-        </ButtonGroup>
+        </ToggleButtonGroup>
       </Form.Group>
       <ButtonGroup>
         {BackButton(isStart, goBack, mode)}
-        <Button />
         {NextButton(mode, isEnd, checkedValue)}
       </ButtonGroup>
     </div>

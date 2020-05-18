@@ -110,7 +110,7 @@ const FoodForm: React.FC = () => {
   return (
     <div>
       <BreadcrumbSet sections={sections} />
-      <HeaderBar title={`${actionWord} Food`} icon="nutrition" />
+      <HeaderBar title={`${actionWord} Food`} />
       <Form onSubmit={handleSave} loading={isLoading}>
         <Form.Field error={errorOnFood}>
           <label htmlFor="name">Name</label>
