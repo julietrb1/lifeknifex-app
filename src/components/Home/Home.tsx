@@ -6,6 +6,7 @@ import {
 import * as constants from '../../constants';
 import { APP_TITLE } from '../../constants';
 import './Home.scss';
+import GoalDashboard from '../common-components/GoalDashboard';
 
 const Home: React.FC = () => {
   const comingSoonBadge = (
@@ -39,6 +40,8 @@ const Home: React.FC = () => {
   document.title = `Home - ${APP_TITLE}`;
   return (
     <div>
+      <h2>Goals</h2>
+      <GoalDashboard />
       <Card.Group centered>
         <Card color={constants.COLOR_NUTRITION}>
           <Card.Content>
