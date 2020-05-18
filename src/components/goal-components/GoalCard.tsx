@@ -18,7 +18,7 @@ interface IGoalCardProps {
 const lastAnswered = (goal: IGoal) => {
   if (!goal.last_answered) {
     return (
-      <div>
+      <div className="mb-2">
         <FcDeleteDatabase className="mr-2" />
         Never answered
       </div>
@@ -27,7 +27,7 @@ const lastAnswered = (goal: IGoal) => {
   if (moment().isSame(goal.last_answered, 'day')) {
     const answerName = getAnswerName(goal);
     return (
-      <div>
+      <div className="mb-2">
         <FcCheckmark className="mr-2" />
         {`Answered ${answerName ? `"${answerName.toLowerCase()}"` : null} today`}
       </div>
@@ -35,7 +35,7 @@ const lastAnswered = (goal: IGoal) => {
   }
   const relativeMoment = getRelativeMoment(goal.last_answered, true);
   return (
-    <div>
+    <div className="mb-2">
       <FcMediumPriority className="mr-2" />
       {`Answered ${relativeMoment}`}
     </div>
@@ -84,9 +84,11 @@ const GoalCard: React.FC<IGoalCardProps> = ({ goal }: IGoalCardProps) => (
       {goal.question}
     </Card.Header>
     <Card.Body>
-      {lastAnswered(goal)}
-      <FcCalendar className="mr-2" />
-      {getGoalMeta(goal)}
+      <div className="text-muted">
+        {lastAnswered(goal)}
+        <FcCalendar className="mr-2" />
+        {getGoalMeta(goal)}
+      </div>
     </Card.Body>
     <Card.Footer>
       <ButtonGroup>
