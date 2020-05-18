@@ -13,14 +13,7 @@ const BackButton = (isStart: boolean | null, goBack: any, mode: string) => {
   if (mode === 'post') {
     return <Button disabled={isStart || false} type="button" onClick={goBack}>Back</Button>;
   }
-  return (
-    <Button
-      type="button"
-      onClick={history.goBack}
-    >
-      Cancel
-    </Button>
-  );
+  return <Button type="button" onClick={history.goBack}>Back</Button>;
 };
 
 const NextButton = (mode: string, isEnd: boolean | null, checkedValue: number | null) => {
@@ -30,7 +23,7 @@ const NextButton = (mode: string, isEnd: boolean | null, checkedValue: number | 
   if (mode === 'post' && isEnd) {
     return <Button variant="primary" type="submit">Finish</Button>;
   }
-  return <Button disabled={!checkedValue} variant="primary" type="submit">Finish</Button>;
+  return <Button disabled={!checkedValue} variant="primary" type="submit">Save</Button>;
 };
 
 export interface IAnswerPostProps {

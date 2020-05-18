@@ -112,7 +112,10 @@ const Answer: React.FC = () => {
         </h3>
         <GoalProgressCount />
         <FormContent />
-        <Button className="float-right" variant="outline-primary" as={Link} to="/goals">Back to Goals</Button>
+        {goalId
+          ? ''
+          : (<Button className="float-right" variant="outline-primary" as={Link} to="/goals">Back to Goals</Button>)}
+
       </Form>
     );
   };
@@ -133,7 +136,7 @@ const Answer: React.FC = () => {
           goal={currentGoal}
           onAnswer={setCandidateValue}
           checkedValue={candidateValue}
-          mode={isPostMode ? 'post' : 'single'}
+          mode={goalId ? 'single' : 'post'}
           isStart={goalIndex === 0}
           isEnd={filteredGoals
           && goalIndex === filteredGoals.length - 1}
