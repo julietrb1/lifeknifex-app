@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import {
-  Button, Card, Icon, Image, Label,
+  Card, Icon, Image, Label,
 } from 'semantic-ui-react';
 import * as constants from '../../constants';
 import { APP_TITLE } from '../../constants';
@@ -40,8 +42,15 @@ const Home: React.FC = () => {
   document.title = `Home - ${APP_TITLE}`;
   return (
     <div>
+      <ButtonGroup>
+        <Button as={Link} to="/nutrition" variant="primary">Visit Nutrition</Button>
+        <Button as={Link} to="/nutrition/log" variant="outline-primary">Log</Button>
+        <Button as={Link} to="/nutrition/library" variant="outline-primary">Library</Button>
+      </ButtonGroup>
       <h2>Goals</h2>
       <GoalDashboard />
+      <Button as={Link} to="/goals" variant="outline-primary">Visit Goals</Button>
+      <Button as={Link} to="/account" variant="outline-primary">Visit Account</Button>
       <Card.Group centered>
         <Card color={constants.COLOR_NUTRITION}>
           <Card.Content>
@@ -53,26 +62,7 @@ const Home: React.FC = () => {
               little by little.
             </Card.Description>
           </Card.Content>
-          <Card.Content extra>
-            <Button animated="vertical" as={Link} to="/nutrition" color={constants.COLOR_NUTRITION}>
-              <Button.Content visible>Visit</Button.Content>
-              <Button.Content hidden>
-                <Icon name="food" />
-              </Button.Content>
-            </Button>
-            <Button animated="vertical" as={Link} to="/nutrition/log" basic>
-              <Button.Content visible>Log</Button.Content>
-              <Button.Content hidden>
-                <Icon name="plus" />
-              </Button.Content>
-            </Button>
-            <Button animated="vertical" as={Link} to="/nutrition/library" basic>
-              <Button.Content visible>Library</Button.Content>
-              <Button.Content hidden>
-                <Icon name="book" />
-              </Button.Content>
-            </Button>
-          </Card.Content>
+          <Card.Content extra />
         </Card>
 
         <Card color={constants.COLOR_GOALS}>
@@ -85,14 +75,7 @@ const Home: React.FC = () => {
               start here. Every bit counts.
             </Card.Description>
           </Card.Content>
-          <Card.Content extra>
-            <Button animated="vertical" as={Link} to="/goals" color={constants.COLOR_GOALS}>
-              <Button.Content visible>Visit</Button.Content>
-              <Button.Content hidden>
-                <Icon name="target" />
-              </Button.Content>
-            </Button>
-          </Card.Content>
+          <Card.Content extra />
         </Card>
 
         <Card color={constants.COLOR_CAREER}>
@@ -149,14 +132,7 @@ const Home: React.FC = () => {
               done here.
             </Card.Description>
           </Card.Content>
-          <Card.Content extra>
-            <Button animated="vertical" as={Link} to="/account" color={constants.COLOR_ACCOUNT}>
-              <Button.Content visible>Visit</Button.Content>
-              <Button.Content hidden>
-                <Icon name="user" />
-              </Button.Content>
-            </Button>
-          </Card.Content>
+          <Card.Content extra />
         </Card>
       </Card.Group>
     </div>
