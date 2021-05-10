@@ -64,9 +64,9 @@ const getGoalMeta = (goal: IGoal) => {
   }
 };
 
-const AnswerButton = (goal: IGoal) => {
-  const isChange = goal.last_answered && moment().isSame(goal.last_answered, 'day');
-  const url = `/goals/answer/${goal.id}`;
+const AnswerButton = ({ id, last_answered }: IGoal) => {
+  const isChange = last_answered && moment().isSame(last_answered, 'day');
+  const url = `/goals/answer/${id}`;
   return (
     <Button as={Link} to={url} variant="primary" size="sm">
       {isChange

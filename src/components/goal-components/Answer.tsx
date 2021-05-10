@@ -98,28 +98,6 @@ const Answer: React.FC = () => {
     }
   };
 
-  const PageContent = () => {
-    if (done) {
-      return <AnswerEmpty />;
-    }
-    // const loading = isLoading || !filteredGoals; // TODO: Show loading in Bootstrap
-    return (
-      <Form onSubmit={() => handleSubmit(1)}>
-        <h3>
-          {currentGoal
-            ? `Did I ${firstCase(currentGoal.question)}?`
-            : 'Loading Goal...'}
-        </h3>
-        <GoalProgressCount />
-        <FormContent />
-        {goalId
-          ? ''
-          : (<Button className="float-right" variant="outline-primary" as={Link} to="/goals">Back to Goals</Button>)}
-
-      </Form>
-    );
-  };
-
   const handlePreAnswer = async (answerValue: number) => {
     if (!currentGoal) return;
     await dispatch(createAnswer(currentGoal, answerValue));
@@ -157,6 +135,28 @@ const Answer: React.FC = () => {
       <div>
         {`${goalIndex + 1} / ${filteredGoalLength}`}
       </div>
+    );
+  };
+
+  const PageContent = () => {
+    if (done) {
+      return <AnswerEmpty />;
+    }
+    // const loading = isLoading || !filteredGoals; // TODO: Show loading in Bootstrap
+    return (
+      <Form onSubmit={() => handleSubmit(1)}>
+        <h3>
+          {currentGoal
+            ? `Did I ${firstCase(currentGoal.question)}?`
+            : 'Loading Goal...'}
+        </h3>
+        <GoalProgressCount />
+        <FormContent />
+        {goalId
+          ? ''
+          : (<Button className="float-right" variant="outline-primary" as={Link} to="/goals">Back to Goals</Button>)}
+
+      </Form>
     );
   };
 

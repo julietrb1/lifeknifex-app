@@ -36,22 +36,6 @@ const NutritionLibrary: React.FC = () => {
     if (!areFoodsLoaded) dispatch(fetchAllFoods());
   }, [dispatch, areFoodsLoaded]);
 
-  const PageContent = () => {
-    if (isLoading) {
-      return <PlaceholderSet />;
-    }
-    if (foods.length) {
-      return (
-        <div>
-          <FoodList foods={foods} />
-          <Divider hidden />
-          <LoadMoreButton />
-        </div>
-      );
-    }
-    return <NutritionLibraryEmpty isArchivedVisible={isArchivedVisible} />;
-  };
-
   const handleLoadMore = () => {
     // TODO: Fetch more through redux
   };
@@ -81,6 +65,22 @@ const NutritionLibrary: React.FC = () => {
         <Button disabled basic>All Foods loaded</Button>
       </div>
     );
+  };
+
+  const PageContent = () => {
+    if (isLoading) {
+      return <PlaceholderSet />;
+    }
+    if (foods.length) {
+      return (
+        <div>
+          <FoodList foods={foods} />
+          <Divider hidden />
+          <LoadMoreButton />
+        </div>
+      );
+    }
+    return <NutritionLibraryEmpty isArchivedVisible={isArchivedVisible} />;
   };
 
   const NewButton = () => {

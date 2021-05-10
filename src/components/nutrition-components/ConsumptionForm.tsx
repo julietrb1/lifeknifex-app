@@ -85,7 +85,7 @@ const ConsumptionForm: React.FC = () => {
     (state: RootState) => selectConsumptionById(state, consumptionId),
   );
   const [availableHours, setAvailableHours] = useState<
-  {text: string, value: string, key: number}[]>(generateHours());
+  { text: string, value: string, key: number }[]>(generateHours());
   const generateBlankConsumption = () => ({
     date: availableHours[availableHours.length - 1].value,
     quantity: 1,
@@ -216,7 +216,8 @@ const ConsumptionForm: React.FC = () => {
   };
 
   const handleSearchChange = async (
-    event: React.MouseEvent<HTMLElement>, { value }: SearchProps) => {
+    event: React.MouseEvent<HTMLElement>, { value }: SearchProps,
+  ) => {
     const newFoodSearch = value?.toString() ?? '';
     setDraftConsumption({ ...draftConsumption, food: '' });
     setCurrentFoodSearch(newFoodSearch);
