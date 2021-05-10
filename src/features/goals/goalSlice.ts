@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign,import/no-cycle */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import ICommonState from '../ICommonState';
 import { AppThunk } from '../../redux/store';

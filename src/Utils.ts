@@ -40,7 +40,7 @@ const extractErrorUnlimited = (err: any) => {
 export const extractError = (err: any) => String(extractErrorUnlimited(err)).substr(0, 150);
 
 export const handleStoreError = (e: any) => {
-  throw (Error(extractError(e)));
+  throw Error(extractError(e));
 };
 
 export const extractStoreError = (e: any) => {

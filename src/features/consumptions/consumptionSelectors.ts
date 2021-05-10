@@ -19,6 +19,4 @@ export const selectConsumptionsLoading = (
 
 export const selectAllConsumptions = (
   state: RootState,
-) => Object.values(
-  state.consumptionState.consumptionsById,
-).filter((c) => c !== null) as IConsumption[];
+) => Object.values(state.consumptionState.consumptionsById).filter((c) => c !== null) as IConsumption[];

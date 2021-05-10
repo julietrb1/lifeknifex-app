@@ -1,4 +1,3 @@
-/* eslint-disable import/no-cycle */
 import { combineReducers } from '@reduxjs/toolkit';
 import consumptionReducer from '../features/consumptions/consumptionSlice';
 import authReducer from '../features/auth/authSlice';

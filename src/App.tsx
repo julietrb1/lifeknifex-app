@@ -60,8 +60,7 @@ const App: React.FC = () => {
       {...rest}
       render={(props) => (
         isAuthenticated !== false
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          ? <Component {...props} />
+                    ? <Component {...props} />
           : (
             <Redirect to={{
               pathname: '/login',

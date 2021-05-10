@@ -1,7 +1,5 @@
-/* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import ICommonState from '../ICommonState';
-// eslint-disable-next-line import/no-cycle
 import { AppThunk } from '../../redux/store';
 import IFood from '../../models/IFood';
 import { IPaginatedResponse } from '../../models/IPaginatedReponse';

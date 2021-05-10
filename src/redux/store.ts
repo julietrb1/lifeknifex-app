@@ -1,7 +1,6 @@
 import { Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import { configureStore } from '@reduxjs/toolkit';
-// eslint-disable-next-line import/no-cycle
 import rootReducer, { RootState } from './rootReducer';
 
 const store = configureStore({
@@ -10,8 +9,7 @@ const store = configureStore({
 
 if (process.env.NODE_ENV === 'development' && module.hot) {
   module.hot.accept('./rootReducer', () => {
-    // eslint-disable-next-line global-require
-    const newRootReducer = require('./rootReducer').default;
+        const newRootReducer = require('./rootReducer').default;
     store.replaceReducer(newRootReducer);
   });
 }

@@ -1,9 +1,7 @@
-/* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { reqGetAccount, reqLogIn, reqLogOut } from '../../backend';
 import IAccount from '../../models/IAccount';
 import { extractStoreError } from '../../Utils';
-// eslint-disable-next-line import/no-cycle
 import { AppThunk } from '../../redux/reduxTypes';
 
 interface IAuthState {
